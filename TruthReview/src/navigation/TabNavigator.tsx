@@ -26,12 +26,20 @@ import AddReviewScreen from '../features/review/screens/AddReviewScreen';
 import FiltersScreen from '../features/search/screens/FiltersScreen';
 import EditProfileScreen from '../features/auth/screens/EditProfileScreen';
 import MyReviewsScreen from '../features/review/screens/MyReviewsScreen';
+import AddPropertyScreen from '../features/pg/screens/AddPropertyScreen';
+import VerifyResidencyScreen from '../features/review/screens/VerifyResidencyScreen';
+
+// Owner Screens
+import ClaimPropertyScreen from '../features/owner/screens/ClaimPropertyScreen';
+import OwnerPanelScreen from '../features/owner/screens/OwnerPanelScreen';
 
 // Admin Screens
 import AdminPanelScreen from '../features/admin/screens/AdminPanelScreen';
 import ManagePGsScreen from '../features/admin/screens/ManagePGsScreen';
 import ManageReviewsScreen from '../features/admin/screens/ManageReviewsScreen';
 import ManageUsersScreen from '../features/admin/screens/ManageUsersScreen';
+import ManageVerificationsScreen from '../features/admin/screens/ManageVerificationsScreen';
+import ManageReportsScreen from '../features/admin/screens/ManageReportsScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -48,6 +56,9 @@ function HomeNavigator() {
       <HomeStack.Screen name="PGDetails" component={PGDetailsScreen} />
       <HomeStack.Screen name="PGReviews" component={PGReviewsScreen} />
       <HomeStack.Screen name="AddReview" component={AddReviewScreen} />
+      <HomeStack.Screen name="AddProperty" component={AddPropertyScreen} />
+      <HomeStack.Screen name="VerifyResidency" component={VerifyResidencyScreen} />
+      <HomeStack.Screen name="ClaimProperty" component={ClaimPropertyScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -73,22 +84,33 @@ function FavoritesNavigator() {
   );
 }
 
-// 4. Profile Stack Navigator (contains Admin check)
+// 4. Profile Stack Navigator (contains Admin / Owner checks)
 function ProfileNavigator() {
   const { user } = useSelector((state: RootState) => state.auth);
   const isAdmin = user?.role === 'admin';
+  const isOwner = user?.role === 'owner';
 
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
       <ProfileStack.Screen name="Profile" component={ProfileScreen} />
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
       <ProfileStack.Screen name="MyReviews" component={MyReviewsScreen} />
+      <ProfileStack.Screen name="AddProperty" component={AddPropertyScreen} />
+      
+      {/* Owner specific dashboard */}
+      {isOwner && (
+        <ProfileStack.Screen name="OwnerPanel" component={OwnerPanelScreen} />
+      )}
+      
+      {/* Admin specific dashboards */}
       {isAdmin && (
         <>
           <ProfileStack.Screen name="AdminPanel" component={AdminPanelScreen} />
           <ProfileStack.Screen name="ManagePGs" component={ManagePGsScreen} />
           <ProfileStack.Screen name="ManageReviews" component={ManageReviewsScreen} />
           <ProfileStack.Screen name="ManageUsers" component={ManageUsersScreen} />
+          <ProfileStack.Screen name="ManageVerifications" component={ManageVerificationsScreen} />
+          <ProfileStack.Screen name="ManageReports" component={ManageReportsScreen} />
         </>
       )}
     </ProfileStack.Navigator>

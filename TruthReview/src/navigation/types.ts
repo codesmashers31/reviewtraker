@@ -12,11 +12,26 @@ export type HomeStackParamList = {
   PGDetails: { pgId: string };
   PGReviews: { pgId: string };
   AddReview: { pgId: string; reviewId?: string };
+  AddProperty: undefined;
+  VerifyResidency: { pgId: string };
+  ClaimProperty: { pgId: string };
 };
 
 export type SearchStackParamList = {
   Search: undefined;
-  Filters: undefined;
+  Filters: {
+    filters?: {
+      verifiedOnly?: boolean;
+      ac?: boolean;
+      wifi?: boolean;
+      foodIncluded?: boolean;
+      maleHostel?: boolean;
+      femaleHostel?: boolean;
+      highTrustScore?: boolean;
+      budgetRange?: string | null;
+      propertyType?: string | null;
+    };
+  } | undefined;
   PGDetails: { pgId: string };
 };
 
@@ -33,6 +48,10 @@ export type ProfileStackParamList = {
   ManagePGs: undefined;
   ManageReviews: undefined;
   ManageUsers: undefined;
+  ManageVerifications: undefined;
+  ManageReports: undefined;
+  OwnerPanel: undefined;
+  AddProperty: undefined;
 };
 
 export type MainTabParamList = {

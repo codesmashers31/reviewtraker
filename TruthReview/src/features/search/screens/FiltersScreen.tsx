@@ -9,9 +9,17 @@ import Button from '../../../components/Button';
 type Props = NativeStackScreenProps<SearchStackParamList, 'Filters'>;
 
 export default function FiltersScreen({ navigation }: Props) {
+  // State for filter controls
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [highTrustScore, setHighTrustScore] = useState(false);
+  const [ac, setAc] = useState(false);
+  const [wifi, setWifi] = useState(false);
+  const [foodIncluded, setFoodIncluded] = useState(false);
+  const [maleHostel, setMaleHostel] = useState(false);
+  const [femaleHostel, setFemaleHostel] = useState(false);
+  
   const [budgetRange, setBudgetRange] = useState<string | null>(null);
-  const [selectedGender, setSelectedGender] = useState<'all' | 'boys' | 'girls' | 'unisex'>('all');
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [propertyType, setPropertyType] = useState<string | null>(null);
 
   const budgets = [
     { label: 'Under ₹6,000', value: 'under_6000' },
@@ -20,41 +28,66 @@ export default function FiltersScreen({ navigation }: Props) {
     { label: 'Above ₹12,000', value: 'above_12000' },
   ];
 
-  const genders = [
-    { label: 'All Genders', value: 'all' },
-    { label: 'Boys Only', value: 'boys' },
-    { label: 'Girls Only', value: 'girls' },
-    { label: 'Co-Ed', value: 'unisex' },
+  const typesList = [
+    'All',
+    'PG',
+    'Hostel',
+    'Hotel',
+    'Service Apartment',
+    'Rental Room',
+    'Co-Living Property',
   ];
-
-  const amenitiesList = [
-    'AC',
-    'High-Speed Wi-Fi',
-    'Daily Cleaning',
-    '3 Meals Veg/Non-Veg',
-    'CCTV Security',
-    'Gym Access',
-    'Laundry Service',
-    '24/7 Power Backup',
-  ];
-
-  const toggleAmenity = (name: string) => {
-    if (selectedAmenities.includes(name)) {
-      setSelectedAmenities(selectedAmenities.filter((a) => a !== name));
-    } else {
-      setSelectedAmenities([...selectedAmenities, name]);
-    }
-  };
 
   const handleApply = () => {
-    // Navigate back to Search and pass the selected filters
-    navigation.navigate('Search');
+    // Navigate back to Search screen and pass active filters
+    navigation.navigate('Search', {
+      filters: {
+        verifiedOnly,
+        highTrustScore,
+        ac,
+        wifi,
+        foodIncluded,
+        maleHostel,
+        femaleHostel,
+        budgetRange,
+        propertyType,
+      },
+    } as any);
   };
 
   const handleReset = () => {
+    setVerifiedOnly(false);
+    setHighTrustScore(false);
+    setAc(false);
+    setWifi(false);
+    setFoodIncluded(false);
+    setMaleHostel(false);
+    setFemaleHostel(false);
     setBudgetRange(null);
-    setSelectedGender('all');
-    setSelectedAmenities([]);
+    setPropertyType(null);
+  };
+
+  const renderToggle = (label: string, value: boolean, setValue: (v: boolean) => void, icon: string) => {
+    return (
+      <TouchableOpacity
+        onPress={() => setValue(!value)}
+        className={`flex-row justify-between items-center border p-4.5 rounded-2xl mb-2.5 active:opacity-90 ${
+          value ? 'bg-primary-50/20 border-primary-300' : 'bg-slate-50 border-slate-200'
+        }`}
+      >
+        <View className="flex-row items-center">
+          <Ionicons name={icon as any} size={18} color={value ? '#0ea5e9' : '#475569'} />
+          <Text className={`text-xs font-bold ml-3.5 ${value ? 'text-primary-700' : 'text-slate-700'}`}>
+            {label}
+          </Text>
+        </View>
+        <Ionicons
+          name={value ? 'checkbox' : 'square-outline'}
+          size={18}
+          color={value ? '#0ea5e9' : '#94a3b8'}
+        />
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -76,94 +109,75 @@ export default function FiltersScreen({ navigation }: Props) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
-        {/* Budget Section */}
-        <View className="mb-6">
-          <Text className="text-base font-extrabold text-slate-800 mb-3">Monthly Rent Budget</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {budgets.map((b) => (
-              <TouchableOpacity
-                key={b.value}
-                onPress={() => setBudgetRange(budgetRange === b.value ? null : b.value)}
-                className={`px-4 py-3.5 rounded-2xl border ${
-                  budgetRange === b.value
-                    ? 'bg-primary-500 border-primary-500'
-                    : 'bg-slate-50 border-slate-200'
-                } min-w-[46%] flex-grow m-0.5`}
+        
+        {/* Verification & Trust */}
+        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Verification & Trust</Text>
+        {renderToggle('Verified Property Listings Only', verifiedOnly, setVerifiedOnly, 'checkmark-circle-outline')}
+        {renderToggle('High Trust Score (>= 75)', highTrustScore, setHighTrustScore, 'shield-checkmark-outline')}
+
+        {/* Accommodation Gender Category */}
+        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-3">Accommodation Gender Rules</Text>
+        {renderToggle("Male Hostel (Boys Only)", maleHostel, setMaleHostel, 'man-outline')}
+        {renderToggle("Female Hostel (Girls Only)", femaleHostel, setFemaleHostel, 'woman-outline')}
+
+        {/* Amenities */}
+        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-3">Amenities & Facilities</Text>
+        {renderToggle('Air Conditioning (AC) Available', ac, setAc, 'snow')}
+        {renderToggle('Wi-Fi / Internet Available', wifi, setWifi, 'wifi')}
+        {renderToggle('Meals / Food Included', foodIncluded, setFoodIncluded, 'fast-food-outline')}
+
+        {/* Property Type Category Selector */}
+        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-3">Property Category</Text>
+        <View className="flex-row flex-wrap gap-2 mb-4">
+          {typesList.map((t) => (
+            <TouchableOpacity
+              key={t}
+              onPress={() => setPropertyType(propertyType === t ? null : t)}
+              className={`px-3.5 py-2.5 rounded-xl border ${
+                propertyType === t
+                  ? 'bg-primary-500 border-primary-500'
+                  : 'bg-slate-50 border-slate-200'
+              } flex-grow m-0.5`}
+            >
+              <Text
+                className={`text-xs font-extrabold text-center ${
+                  propertyType === t ? 'text-white' : 'text-slate-600'
+                }`}
               >
-                <Text
-                  className={`text-xs font-bold text-center ${
-                    budgetRange === b.value ? 'text-white' : 'text-slate-600'
-                  }`}
-                >
-                  {b.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+                {t}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Gender Sharing Section */}
-        <View className="mb-6">
-          <Text className="text-base font-extrabold text-slate-800 mb-3">Hostel Category</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {genders.map((g) => (
-              <TouchableOpacity
-                key={g.value}
-                onPress={() => setSelectedGender(g.value as any)}
-                className={`px-4 py-3.5 rounded-2xl border ${
-                  selectedGender === g.value
-                    ? 'bg-primary-500 border-primary-500'
-                    : 'bg-slate-50 border-slate-200'
-                } min-w-[46%] flex-grow m-0.5`}
+        {/* Budget Selector */}
+        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-3">Monthly Rent Budget</Text>
+        <View className="flex-row flex-wrap gap-2 mb-10">
+          {budgets.map((b) => (
+            <TouchableOpacity
+              key={b.value}
+              onPress={() => setBudgetRange(budgetRange === b.value ? null : b.value)}
+              className={`px-4 py-3.5 rounded-2xl border ${
+                budgetRange === b.value
+                  ? 'bg-primary-500 border-primary-500'
+                  : 'bg-slate-50 border-slate-200'
+              } min-w-[46%] flex-grow m-0.5`}
+            >
+              <Text
+                className={`text-xs font-bold text-center ${
+                  budgetRange === b.value ? 'text-white' : 'text-slate-600'
+                }`}
               >
-                <Text
-                  className={`text-xs font-bold text-center ${
-                    selectedGender === g.value ? 'text-white' : 'text-slate-600'
-                  }`}
-                >
-                  {g.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Amenities Section */}
-        <View className="mb-8">
-          <Text className="text-base font-extrabold text-slate-800 mb-3">Amenities & Facilities</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {amenitiesList.map((amenity) => {
-              const isSelected = selectedAmenities.includes(amenity);
-              return (
-                <TouchableOpacity
-                  key={amenity}
-                  onPress={() => toggleAmenity(amenity)}
-                  className={`flex-row items-center border ${
-                    isSelected ? 'bg-primary-50 border-primary-400' : 'bg-white border-slate-200'
-                  } px-4 py-3 rounded-xl m-0.5`}
-                >
-                  <Ionicons
-                    name={isSelected ? 'checkbox' : 'square-outline'}
-                    size={16}
-                    color={isSelected ? '#0ea5e9' : '#94a3b8'}
-                  />
-                  <Text
-                    className={`text-xs font-bold ml-2 ${
-                      isSelected ? 'text-primary-600' : 'text-slate-600'
-                    }`}
-                  >
-                    {amenity}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                {b.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
 
       {/* Footer Apply CTA */}
       <View className="border-t border-slate-100 bg-white px-5 py-4">
-        <Button title="Apply Filters" onPress={handleApply} />
+        <Button title="Apply Active Filters" onPress={handleApply} />
       </View>
     </SafeAreaView>
   );

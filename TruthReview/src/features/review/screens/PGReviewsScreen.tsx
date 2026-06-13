@@ -1,24 +1,54 @@
-import React, { useState } from 'react';
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, SafeAreaView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 import { HomeStackParamList } from '../../../navigation/types';
-import { mockPGs } from '../../../utils/mockData';
-import { mockReviews, ReviewItem } from '../../../utils/mockReviews';
+import { MockDb, Property, Review } from '../../../services/mockDb';
 import ReviewCard from '../../../components/ReviewCard';
 import EmptyState from '../../../components/EmptyState';
+import { RootState } from '../../../store';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'PGReviews'>;
 
 export default function PGReviewsScreen({ route, navigation }: Props) {
   const { pgId } = route.params;
-  const pg = mockPGs.find((p) => p.id === pgId);
-  const [reviewsList, setReviewsList] = useState<ReviewItem[]>(() =>
-    mockReviews.filter((r) => r.pgId === pgId)
-  );
+  const isFocused = useIsFocused();
+  const { user } = useSelector((state: RootState) => state.auth);
+  
+  const [property, setProperty] = useState<Property | null>(null);
+  const [reviewsList, setReviewsList] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!pg) return null;
+  const loadReviewsData = async () => {
+    setLoading(true);
+    const props = await MockDb.getProperties();
+    const found = props.find((p) => p.id === pgId);
+    setProperty(found || null);
+
+    const revs = await MockDb.getReviews();
+    setReviewsList(revs.filter((r) => r.propertyId === pgId));
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      loadReviewsData();
+    }
+  }, [pgId, isFocused]);
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-white justify-center items-center">
+        <ActivityIndicator size="large" color="#0ea5e9" />
+        <Text className="text-slate-400 font-bold mt-2">Loading reviews...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!property) return null;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -33,30 +63,35 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
           </TouchableOpacity>
           <Text className="text-xl font-extrabold text-slate-800 ml-3">Reviews</Text>
         </View>
-        <Text className="text-slate-400 font-semibold text-xs truncate max-w-[150px]">{pg.name}</Text>
+        <Text className="text-slate-400 font-semibold text-xs truncate max-w-[150px]">{property.name}</Text>
       </View>
 
       {/* Main Reviews List */}
       <FlatList
         data={reviewsList}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ReviewCard review={item} />}
-        contentContainerStyle={{ padding: 16, paddingBottom: 100, flexGrow: 1 }}
+        renderItem={({ item }) => (
+          <ReviewCard 
+            review={item} 
+            currentUserRole={user?.role} 
+            currentUserId={user?.id} 
+          />
+        )}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120, flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           reviewsList.length > 0 ? (
             <View className="flex-row items-center bg-sky-50/20 border border-sky-100/40 p-5 rounded-2xl mb-6">
               <View className="items-center pr-6 border-r border-slate-100">
-                <Text className="text-5xl font-black text-slate-800">{pg.rating.toFixed(1)}</Text>
+                <Text className="text-5xl font-black text-slate-800">{property.trustScore}</Text>
                 <View className="flex-row items-center mt-1">
-                  <Ionicons name="star" size={14} color="#f59e0b" />
-                  <Text className="text-slate-500 text-xs font-bold ml-1">Out of 5</Text>
+                  <Text className="text-slate-500 text-[10px] font-black uppercase">Trust Score</Text>
                 </View>
               </View>
               <View className="flex-1 pl-6">
-                <Text className="text-slate-800 font-extrabold text-sm mb-0.5">Rating Summary</Text>
+                <Text className="text-slate-800 font-extrabold text-sm mb-0.5">Verified Resident Experiences</Text>
                 <Text className="text-slate-400 font-medium text-xs leading-4">
-                  All reviews are submitted by verified tenants who have stayed at this PG location.
+                  Scores out of 100 represent aggregate platform trust ratings based on verified stays.
                 </Text>
               </View>
             </View>
@@ -65,7 +100,7 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
         ListEmptyComponent={
           <EmptyState
             title="No Reviews Yet"
-            description="Be the first to share your experience about this PG listing. Your feedback helps others make informed choices!"
+            description="Be the first to share your experience about this accommodation. Your feedback helps others make informed choices!"
             icon="star-outline"
           />
         }

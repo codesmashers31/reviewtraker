@@ -125,6 +125,35 @@ export default function LoginScreen({ navigation }: Props) {
     }
   };
 
+  const handleDemoOwner = async () => {
+    dispatch(setLoading(true));
+    try {
+      const demoOwner = {
+        id: 'owner_123',
+        name: 'Property Owner',
+        email: 'owner@truthreview.com',
+        role: 'owner' as const,
+        phoneNumber: '+91 87654 32109',
+      };
+      const demoToken = 'mock_jwt_token_for_owner';
+
+      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, demoToken);
+      await storage.setItem(STORAGE_KEYS.USER_INFO, demoOwner);
+
+      dispatch(setCredentials({ user: demoOwner, token: demoToken }));
+      Toast.show({
+        type: 'success',
+        text1: 'Logged in as Owner',
+        text2: 'Owner dashboard access granted.',
+        position: 'bottom',
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
@@ -192,17 +221,24 @@ export default function LoginScreen({ navigation }: Props) {
               <Text className="text-slate-400 text-xs font-bold text-center uppercase tracking-widest mb-2">
                 Demo Accounts
               </Text>
-              <View className="flex-row space-x-3 gap-3">
-                <View className="flex-1">
+              <View className="flex-row space-x-2 gap-2">
+                <View className="flex-grow flex-shrink flex-1">
                   <Button
-                    title="User Demo"
+                    title="User"
                     variant="outline"
                     onPress={handleDemoLogin}
                   />
                 </View>
-                <View className="flex-1">
+                <View className="flex-grow flex-shrink flex-1">
                   <Button
-                    title="Admin Demo"
+                    title="Owner"
+                    variant="outline"
+                    onPress={handleDemoOwner}
+                  />
+                </View>
+                <View className="flex-grow flex-shrink flex-1">
+                  <Button
+                    title="Admin"
                     variant="outline"
                     onPress={handleDemoAdmin}
                   />
