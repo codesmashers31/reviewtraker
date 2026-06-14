@@ -1,68 +1,160 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as zod from 'zod';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AuthStackParamList } from '../../../navigation/types';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import { setCredentials, setLoading, setAuthError } from '../authSlice';
+import { setCredentials, setLoading } from '../authSlice';
 import { storage, STORAGE_KEYS } from '../../../services/storage';
 
-const loginSchema = zod.object({
-  email: zod.string().email('Please enter a valid email address'),
-  password: zod.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type FormData = zod.infer<typeof loginSchema>;
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const dispatch = useDispatch();
-  const [submitting, setSubmitting] = useState(false);
+  const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [otpError, setOtpError] = useState('');
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  // Countdown timer for resending OTP
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
-  const onLogin = async (data: FormData) => {
-    setSubmitting(true);
-    dispatch(setLoading(true));
+  const validateEmail = (text: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!text) {
+      setEmailError('Email address is required');
+      return false;
+    } else if (!emailRegex.test(text)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const handleSendOtp = async () => {
+    if (!validateEmail(email)) return;
+
+    setSendingOtp(true);
     try {
-      // Direct API Call would be:
-      // const res = await authService.login(data.email, data.password);
-      // But for preview/robustness, we handle local mock fallback if API isn't online
-      // We will try the API request, and if it fails due to network, we inform and prompt demo
-      
-      // Simulate API call delay for now
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // If we had the live backend, we would do:
-      // const response = await api.post('/auth/login', data);
-      
-      throw new Error('API Offline: Backend server not reached. Click "Demo Login" below to preview.');
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+
+      // Generate a mock 6-digit OTP
+      const mockOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOtp(mockOtp);
+      setIsOtpSent(true);
+      setCountdown(30);
+
+      // Display the OTP in a toast so they can type it in
+      Toast.show({
+        type: 'info',
+        text1: 'Verification Code Sent',
+        text2: `Use mock code: ${mockOtp} to sign in`,
+        position: 'top',
+        visibilityTime: 6000,
+      });
     } catch (error: any) {
-      dispatch(setAuthError(error.message));
       Toast.show({
         type: 'error',
-        text1: 'Authentication Failed',
-        text2: error.message || 'Could not connect to server.',
+        text1: 'Failed to Send OTP',
+        text2: 'Something went wrong, please try again.',
         position: 'bottom',
       });
     } finally {
-      setSubmitting(false);
+      setSendingOtp(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode || otpCode.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP');
+      return;
+    }
+
+    if (otpCode !== generatedOtp) {
+      setOtpError('Incorrect verification code. Please try again.');
+      return;
+    }
+
+    setOtpError('');
+    setVerifyingOtp(true);
+    dispatch(setLoading(true));
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      const loggedUser = {
+        id: `user_${Math.random().toString(36).substr(2, 9)}`,
+        name: email.split('@')[0],
+        email: email,
+        role: 'user' as const,
+        phoneNumber: '',
+      };
+      const token = 'mock_jwt_token_for_user';
+
+      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      await storage.setItem(STORAGE_KEYS.USER_INFO, loggedUser);
+
+      dispatch(setCredentials({ user: loggedUser, token }));
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Logged In Successfully',
+        text2: `Welcome to Truth Review, ${loggedUser.name}!`,
+        position: 'bottom',
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setVerifyingOtp(false);
+      dispatch(setLoading(false));
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    dispatch(setLoading(true));
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      const googleUser = {
+        id: 'user_google123',
+        name: 'Google User',
+        email: 'google.user@gmail.com',
+        role: 'user' as const,
+        phoneNumber: '',
+      };
+      const token = 'mock_jwt_token_for_google';
+
+      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      await storage.setItem(STORAGE_KEYS.USER_INFO, googleUser);
+
+      dispatch(setCredentials({ user: googleUser, token }));
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Signed In with Google',
+        text2: 'Welcome to Truth Review!',
+        position: 'bottom',
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
       dispatch(setLoading(false));
     }
   };
@@ -71,11 +163,11 @@ export default function LoginScreen({ navigation }: Props) {
     dispatch(setLoading(true));
     try {
       const demoUser = {
-        id: 'user_123',
-        name: 'John Doe',
-        email: 'john@example.com',
+        id: 'user_demo99',
+        name: 'Demo Account',
+        email: 'demo@truthreview.com',
         role: 'user' as const,
-        phoneNumber: '+1234567890',
+        phoneNumber: '+91 99999 88888',
       };
       const demoToken = 'mock_jwt_token_for_demo';
 
@@ -83,68 +175,11 @@ export default function LoginScreen({ navigation }: Props) {
       await storage.setItem(STORAGE_KEYS.USER_INFO, demoUser);
 
       dispatch(setCredentials({ user: demoUser, token: demoToken }));
+      
       Toast.show({
         type: 'success',
-        text1: 'Logged in as Demo User',
-        text2: 'Welcome to TruthReview!',
-        position: 'bottom',
-      });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const handleDemoAdmin = async () => {
-    dispatch(setLoading(true));
-    try {
-      const demoAdmin = {
-        id: 'admin_123',
-        name: 'Admin User',
-        email: 'admin@truthreview.com',
-        role: 'admin' as const,
-        phoneNumber: '+9876543210',
-      };
-      const demoToken = 'mock_jwt_token_for_admin';
-
-      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, demoToken);
-      await storage.setItem(STORAGE_KEYS.USER_INFO, demoAdmin);
-
-      dispatch(setCredentials({ user: demoAdmin, token: demoToken }));
-      Toast.show({
-        type: 'success',
-        text1: 'Logged in as Admin',
-        text2: 'Admin panel access granted.',
-        position: 'bottom',
-      });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const handleDemoOwner = async () => {
-    dispatch(setLoading(true));
-    try {
-      const demoOwner = {
-        id: 'owner_123',
-        name: 'Property Owner',
-        email: 'owner@truthreview.com',
-        role: 'owner' as const,
-        phoneNumber: '+91 87654 32109',
-      };
-      const demoToken = 'mock_jwt_token_for_owner';
-
-      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, demoToken);
-      await storage.setItem(STORAGE_KEYS.USER_INFO, demoOwner);
-
-      dispatch(setCredentials({ user: demoOwner, token: demoToken }));
-      Toast.show({
-        type: 'success',
-        text1: 'Logged in as Owner',
-        text2: 'Owner dashboard access granted.',
+        text1: 'Logged In as Demo Account',
+        text2: 'Explore hotels & PGs!',
         position: 'bottom',
       });
     } catch (e) {
@@ -158,103 +193,143 @@ export default function LoginScreen({ navigation }: Props) {
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="flex-1 justify-between px-6 py-8">
+          
           <View>
-            <View className="mt-8 mb-10">
-              <Text className="text-3xl font-extrabold text-slate-800">Welcome Back</Text>
+            {/* Header / Title */}
+            <View className="mt-8 mb-8">
+              <Text className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign In</Text>
               <Text className="text-sm text-slate-500 mt-2 font-medium">
-                Log in to search and review PGs.
+                Access verified reviews for Hotels & PGs.
               </Text>
             </View>
 
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { onChange, onBlur, value } }) => (
+            {/* Email OTP Verification Section */}
+            {!isOtpSent ? (
+              <View>
                 <Input
                   label="Email Address"
                   placeholder="name@example.com"
                   autoCapitalize="none"
                   keyboardType="email-address"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors.email?.message}
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    if (emailError) validateEmail(text);
+                  }}
+                  error={emailError}
                 />
-              )}
-            />
 
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
+                <Button
+                  title="Send Verification Code"
+                  loading={sendingOtp}
+                  onPress={handleSendOtp}
+                  className="mt-4"
+                />
+              </View>
+            ) : (
+              <View>
+                <View className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-5 flex-row justify-between items-center">
+                  <View className="flex-1">
+                    <Text className="text-xs text-slate-400 font-bold uppercase">Sending to</Text>
+                    <Text className="text-sm font-semibold text-slate-800 mt-0.5">{email}</Text>
+                  </View>
+                  <TouchableOpacity 
+                    onPress={() => {
+                      setIsOtpSent(false);
+                      setOtpCode('');
+                      setOtpError('');
+                    }}
+                    className="bg-slate-200/60 px-3 py-1.5 rounded-lg"
+                  >
+                    <Text className="text-xs font-bold text-slate-600">Change</Text>
+                  </TouchableOpacity>
+                </View>
+
                 <Input
-                  label="Password"
-                  placeholder="••••••••"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors.password?.message}
+                  label="Verification Code (OTP)"
+                  placeholder="Enter 6-digit code"
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  value={otpCode}
+                  onChangeText={(text) => {
+                    setOtpCode(text);
+                    if (otpError) setOtpError('');
+                  }}
+                  error={otpError}
                 />
-              )}
-            />
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ForgotPassword')}
-              className="align-self-end mt-1 mb-6"
-            >
-              <Text className="text-primary-500 text-sm font-semibold text-right">
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
+                <Button
+                  title="Verify & Sign In"
+                  loading={verifyingOtp}
+                  onPress={handleVerifyOtp}
+                  className="mt-4"
+                />
 
-            <Button
-              title="Sign In"
-              loading={submitting}
-              onPress={handleSubmit(onLogin)}
-              className="mt-2"
-            />
-
-            {/* Demo Helpers */}
-            <View className="border-t border-slate-100 my-6 pt-6 space-y-3">
-              <Text className="text-slate-400 text-xs font-bold text-center uppercase tracking-widest mb-2">
-                Demo Accounts
-              </Text>
-              <View className="flex-row space-x-2 gap-2">
-                <View className="flex-grow flex-shrink flex-1">
-                  <Button
-                    title="User"
-                    variant="outline"
-                    onPress={handleDemoLogin}
-                  />
-                </View>
-                <View className="flex-grow flex-shrink flex-1">
-                  <Button
-                    title="Owner"
-                    variant="outline"
-                    onPress={handleDemoOwner}
-                  />
-                </View>
-                <View className="flex-grow flex-shrink flex-1">
-                  <Button
-                    title="Admin"
-                    variant="outline"
-                    onPress={handleDemoAdmin}
-                  />
+                {/* Resend Timer */}
+                <View className="items-center mt-5">
+                  {countdown > 0 ? (
+                    <Text className="text-xs text-slate-400 font-semibold">
+                      Resend code in {countdown}s
+                    </Text>
+                  ) : (
+                    <TouchableOpacity onPress={handleSendOtp}>
+                      <Text className="text-xs font-bold text-primary-600">
+                        Resend verification code
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
+            )}
+
+            {/* Divider */}
+            <View className="flex-row items-center my-8">
+              <View className="flex-1 h-[1px] bg-slate-100" />
+              <Text className="text-xs font-bold text-slate-450 uppercase px-4">or</Text>
+              <View className="flex-1 h-[1px] bg-slate-100" />
             </View>
+
+            {/* Google Login Action */}
+            <TouchableOpacity
+              onPress={handleGoogleLogin}
+              style={styles.googleButton}
+              className="border border-slate-200 rounded-xl py-3 px-4 flex-row items-center justify-center mb-4"
+              activeOpacity={0.8}
+            >
+              <Ionicons name="logo-google" size={16} color="#DB4437" />
+              <Text className="text-slate-800 text-sm font-bold ml-2">Continue with Google</Text>
+            </TouchableOpacity>
+
+            {/* Demo Account Bypass Button */}
+            <TouchableOpacity
+              onPress={handleDemoLogin}
+              style={styles.demoButton}
+              className="border border-slate-200 rounded-xl py-3 px-4 flex-row items-center justify-center"
+              activeOpacity={0.8}
+            >
+              <Ionicons name="flash" size={16} color="#2563eb" />
+              <Text className="text-primary-600 text-sm font-bold ml-2">Instant Demo Login</Text>
+            </TouchableOpacity>
+
           </View>
 
-          <View className="flex-row justify-center items-center mt-6">
-            <Text className="text-slate-500 text-sm font-medium">Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text className="text-primary-500 text-sm font-bold">Sign Up</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Footer Text */}
+          <Text className="text-center text-xs text-slate-400 font-medium leading-4 px-6 mt-8">
+            By continuing, you agree to the Terms of Service and Privacy Policy of Truth Review.
+          </Text>
+
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  googleButton: {
+    backgroundColor: '#ffffff',
+  },
+  demoButton: {
+    backgroundColor: '#f8fafc',
+    borderStyle: 'dashed',
+  }
+});

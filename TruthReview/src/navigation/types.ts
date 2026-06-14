@@ -57,6 +57,7 @@ export type ProfileStackParamList = {
 export type MainTabParamList = {
   HomeStack: NavigatorScreenParams<HomeStackParamList>;
   SearchStack: NavigatorScreenParams<SearchStackParamList>;
+  AddReviewTab: undefined;
   FavoritesStack: NavigatorScreenParams<FavoritesStackParamList>;
   ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
 };

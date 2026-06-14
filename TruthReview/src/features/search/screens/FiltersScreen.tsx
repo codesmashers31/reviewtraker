@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -18,15 +19,7 @@ export default function FiltersScreen({ navigation }: Props) {
   const [maleHostel, setMaleHostel] = useState(false);
   const [femaleHostel, setFemaleHostel] = useState(false);
   
-  const [budgetRange, setBudgetRange] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState<string | null>(null);
-
-  const budgets = [
-    { label: 'Under ₹6,000', value: 'under_6000' },
-    { label: '₹6,000 - ₹9,000', value: '6000_9000' },
-    { label: '₹9,000 - ₹12,000', value: '9000_12000' },
-    { label: 'Above ₹12,000', value: 'above_12000' },
-  ];
 
   const typesList = [
     'All',
@@ -49,7 +42,6 @@ export default function FiltersScreen({ navigation }: Props) {
         foodIncluded,
         maleHostel,
         femaleHostel,
-        budgetRange,
         propertyType,
       },
     } as any);
@@ -63,7 +55,6 @@ export default function FiltersScreen({ navigation }: Props) {
     setFoodIncluded(false);
     setMaleHostel(false);
     setFemaleHostel(false);
-    setBudgetRange(null);
     setPropertyType(null);
   };
 
@@ -145,30 +136,6 @@ export default function FiltersScreen({ navigation }: Props) {
                 }`}
               >
                 {t}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Budget Selector */}
-        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-3">Monthly Rent Budget</Text>
-        <View className="flex-row flex-wrap gap-2 mb-10">
-          {budgets.map((b) => (
-            <TouchableOpacity
-              key={b.value}
-              onPress={() => setBudgetRange(budgetRange === b.value ? null : b.value)}
-              className={`px-4 py-3.5 rounded-2xl border ${
-                budgetRange === b.value
-                  ? 'bg-primary-500 border-primary-500'
-                  : 'bg-slate-50 border-slate-200'
-              } min-w-[46%] flex-grow m-0.5`}
-            >
-              <Text
-                className={`text-xs font-bold text-center ${
-                  budgetRange === b.value ? 'text-white' : 'text-slate-600'
-                }`}
-              >
-                {b.label}
               </Text>
             </TouchableOpacity>
           ))}

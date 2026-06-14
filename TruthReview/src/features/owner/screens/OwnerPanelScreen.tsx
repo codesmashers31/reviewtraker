@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, FlatList, TextInput, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, TextInput, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

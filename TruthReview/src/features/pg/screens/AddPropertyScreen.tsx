@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
@@ -16,7 +17,7 @@ const propertySchema = zod.object({
   name: zod.string().min(4, 'Property Name must be at least 4 characters').max(100),
   type: zod.enum(['PG', 'Hostel', 'Hotel', 'Service Apartment', 'Rental Room', 'Co-Living Property'] as const),
   genderType: zod.enum(['boys', 'girls', 'unisex', 'none'] as const),
-  price: zod.number().min(500, 'Rent must be at least ₹500/month'),
+  price: zod.number(),
   address: zod.string().min(10, 'Full address must be at least 10 characters'),
   area: zod.string().min(3, 'Area/Neighborhood must be at least 3 characters'),
   city: zod.string().min(3, 'City must be at least 3 characters'),
@@ -238,42 +239,23 @@ export default function AddPropertyScreen({ navigation }: Props) {
           />
         </View>
 
-        {/* Pricing & Contact */}
-        <View className="flex-row gap-3">
-          <View className="flex-1">
-            <Controller
-              control={control}
-              name="price"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Monthly Rent (₹)"
-                  placeholder="e.g. 7500"
-                  keyboardType="numeric"
-                  onBlur={onBlur}
-                  onChangeText={(text) => onChange(Number(text) || 0)}
-                  value={value ? String(value) : ''}
-                  error={errors.price?.message}
-                />
-              )}
-            />
-          </View>
-          <View className="flex-1">
-            <Controller
-              control={control}
-              name="contactNumber"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Contact Phone Number"
-                  placeholder="e.g. 9876543210"
-                  keyboardType="phone-pad"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors.contactNumber?.message}
-                />
-              )}
-            />
-          </View>
+        {/* Contact Info */}
+        <View className="mb-4">
+          <Controller
+            control={control}
+            name="contactNumber"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Contact Phone Number"
+                placeholder="e.g. 9876543210"
+                keyboardType="phone-pad"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.contactNumber?.message}
+              />
+            )}
+          />
         </View>
 
         {/* Location Details */}

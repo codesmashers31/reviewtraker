@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  Dimensions,
-  Linking,
-  TextInput,
-} from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Linking, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -346,20 +337,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {/* Pricing Info */}
-          <View className="border-t border-b border-slate-100 py-4 mb-6">
-            <Text className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1.5">Pricing Details</Text>
-            <View className="flex-row justify-between items-center">
-              <View className="flex-row items-baseline">
-                <Text className="text-slate-800 text-2xl font-black">₹{property.price.toLocaleString('en-IN')}</Text>
-                <Text className="text-slate-400 text-xs font-semibold ml-1">/ month</Text>
-              </View>
-              
-              <View className="bg-slate-50 px-3 py-1.5 rounded-xl">
-                <Text className="text-slate-600 text-xs font-semibold">Deposit: 1 Month Rent</Text>
-              </View>
-            </View>
-          </View>
+
 
           {/* Reusable Issue Trends Chart */}
           <View className="mb-6">
@@ -533,10 +511,16 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
       {/* Booking and contact bottom drawer */}
       <View className="border-t border-slate-100 bg-white px-5 py-4 flex-row justify-between items-center">
         <View>
-          <Text className="text-slate-400 text-[10px] font-black uppercase tracking-wide">Monthly Rent</Text>
-          <View className="flex-row items-baseline mt-0.5">
-            <Text className="text-slate-800 text-xl font-black">₹{property.price.toLocaleString('en-IN')}</Text>
-            <Text className="text-slate-400 text-xs font-semibold ml-1">/ mo</Text>
+          <Text className="text-slate-400 text-[10px] font-black uppercase tracking-wide">Trust Rating</Text>
+          <View className="flex-row items-center mt-1">
+            <Ionicons name="star" size={16} color="#f59e0b" />
+            <Text className="text-slate-800 text-lg font-black ml-1">
+              {reviews.length > 0
+                ? (reviews.reduce((acc, r) => acc + r.ratings.overall, 0) / reviews.length).toFixed(1)
+                : 'N/A'
+              }
+            </Text>
+            <Text className="text-slate-400 text-[10px] font-bold ml-1.5">({reviews.length} reviews)</Text>
           </View>
         </View>
 

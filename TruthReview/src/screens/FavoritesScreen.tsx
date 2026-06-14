@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -8,7 +9,7 @@ import { MockDb, Property } from '../services/mockDb';
 import PGCard from '../components/PGCard';
 import EmptyState from '../components/EmptyState';
 
-export default function FavoritesScreen() {
+export default function FavoritesScreen({ navigation }: { navigation: any }) {
   const isFocused = useIsFocused();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
   const [properties, setProperties] = useState<Property[]>([]);
@@ -43,7 +44,7 @@ export default function FavoritesScreen() {
         <FlatList
           data={favoritedPGs}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PGCard item={item} />}
+          renderItem={({ item }) => <PGCard item={item} navigation={navigation} />}
           contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
           initialNumToRender={5}
