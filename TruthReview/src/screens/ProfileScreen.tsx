@@ -181,16 +181,16 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
           {/* Admin Dashboard link */}
           {user?.role === 'admin' && (
             <TouchableOpacity
-              className="flex-row justify-between items-center bg-primary-50/20 border border-primary-100/30 p-4 rounded-2xl active:bg-primary-50/40"
+              className="flex-row justify-between items-center bg-teal-50/20 border border-teal-100/30 p-4 rounded-2xl active:bg-teal-50/40"
               onPress={() => navigation.navigate('AdminPanel')}
             >
               <View className="flex-row items-center">
-                <View className="h-9 w-9 bg-primary-50 rounded-xl justify-center items-center">
-                  <Ionicons name="settings-outline" size={18} color="#0ea5e9" />
+                <View className="h-9 w-9 bg-teal-50 rounded-xl justify-center items-center">
+                  <Ionicons name="settings-outline" size={18} color="#14B8A6" />
                 </View>
-                <Text className="text-primary-600 text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
+                <Text className="text-teal-600 text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
               </View>
-              <Ionicons name="chevron-forward" size={14} color="#0ea5e9" />
+              <Ionicons name="chevron-forward" size={14} color="#14B8A6" />
             </TouchableOpacity>
           )}
 

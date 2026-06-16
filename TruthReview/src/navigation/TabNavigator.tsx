@@ -324,16 +324,16 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   activePill: {
-    backgroundColor: '#2563eb', // Royal Blue
+    backgroundColor: '#14B8A6', // Teal
     width: 44,
     height: 44,
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2563eb',
+    shadowColor: '#14B8A6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     elevation: 4,
   },
   activeText: {
@@ -359,13 +359,13 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: '#f97316', // Orange Accent
+    backgroundColor: '#FF6B6B', // Coral Accent
     justifyContent: 'center',
     alignItems: 'center',
     top: -16,
     borderWidth: 4,
     borderColor: '#ffffff',
-    shadowColor: '#f97316',
+    shadowColor: '#FF6B6B',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

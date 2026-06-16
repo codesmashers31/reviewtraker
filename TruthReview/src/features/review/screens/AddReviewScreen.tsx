@@ -165,7 +165,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
         {/* Privacy Note */}
         <View className="bg-slate-50 border border-slate-150 rounded-2xl p-4.5 mb-6">
           <View className="flex-row items-center mb-1">
-            <Ionicons name="shield-checkmark" size={16} color="#0ea5e9" />
+            <Ionicons name="shield-checkmark" size={16} color="#14B8A6" />
             <Text className="text-xs font-extrabold text-slate-700 ml-1.5">Your Privacy is Protected</Text>
           </View>
           <Text className="text-[10px] text-slate-400 font-semibold leading-5 mt-1">

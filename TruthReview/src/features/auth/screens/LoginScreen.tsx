@@ -307,7 +307,7 @@ export default function LoginScreen({ navigation }: Props) {
               className="border border-slate-200 rounded-xl py-3 px-4 flex-row items-center justify-center"
               activeOpacity={0.8}
             >
-              <Ionicons name="flash" size={16} color="#2563eb" />
+              <Ionicons name="flash" size={16} color="#14B8A6" />
               <Text className="text-primary-600 text-sm font-bold ml-2">Instant Demo Login</Text>
             </TouchableOpacity>
 

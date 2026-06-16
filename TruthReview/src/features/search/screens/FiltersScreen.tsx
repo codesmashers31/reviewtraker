@@ -67,7 +67,7 @@ export default function FiltersScreen({ navigation }: Props) {
         }`}
       >
         <View className="flex-row items-center">
-          <Ionicons name={icon as any} size={18} color={value ? '#0ea5e9' : '#475569'} />
+          <Ionicons name={icon as any} size={18} color={value ? '#14B8A6' : '#475569'} />
           <Text className={`text-xs font-bold ml-3.5 ${value ? 'text-primary-700' : 'text-slate-700'}`}>
             {label}
           </Text>
@@ -75,7 +75,7 @@ export default function FiltersScreen({ navigation }: Props) {
         <Ionicons
           name={value ? 'checkbox' : 'square-outline'}
           size={18}
-          color={value ? '#0ea5e9' : '#94a3b8'}
+          color={value ? '#14B8A6' : '#94a3b8'}
         />
       </TouchableOpacity>
     );

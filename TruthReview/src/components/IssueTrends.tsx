@@ -80,8 +80,8 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
         <Svg height={chartHeight} width={chartWidth}>
           <Defs>
             <LinearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.25} />
-              <Stop offset="100%" stopColor="#0ea5e9" stopOpacity={0.0} />
+              <Stop offset="0%" stopColor="#14B8A6" stopOpacity={0.25} />
+              <Stop offset="100%" stopColor="#14B8A6" stopOpacity={0.0} />
             </LinearGradient>
           </Defs>
 
@@ -94,7 +94,7 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
           {areaD ? <Path d={areaD} fill="url(#chartGrad)" /> : null}
 
           {/* Line Path */}
-          {pathD ? <Path d={pathD} fill="none" stroke="#0ea5e9" strokeWidth={3} /> : null}
+          {pathD ? <Path d={pathD} fill="none" stroke="#14B8A6" strokeWidth={3} /> : null}
 
           {/* Data Nodes */}
           {points.map((pt, idx) => (
@@ -103,8 +103,8 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
               cx={pt.x}
               cy={pt.y}
               r={selectedPoint === idx ? 6 : 4}
-              fill={selectedPoint === idx ? '#0284c7' : '#ffffff'}
-              stroke="#0ea5e9"
+              fill={selectedPoint === idx ? '#0d9488' : '#ffffff'}
+              stroke="#14B8A6"
               strokeWidth={selectedPoint === idx ? 3 : 2}
               onPress={() => setSelectedPoint(selectedPoint === idx ? null : idx)}
             />

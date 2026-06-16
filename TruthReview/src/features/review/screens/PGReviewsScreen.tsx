@@ -43,7 +43,7 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-white justify-center items-center">
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#14B8A6" />
         <Text className="text-slate-400 font-bold mt-2">Loading reviews...</Text>
       </SafeAreaView>
     );

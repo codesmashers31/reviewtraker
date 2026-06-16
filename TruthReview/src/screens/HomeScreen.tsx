@@ -53,12 +53,12 @@ const TRENDING_SLIDES = [
 
 // Categories data
 const CATEGORIES = [
-  { id: 'PG', name: 'PG', icon: 'business-outline', gradient: ['#3b82f6', '#1d4ed8'] },
+  { id: 'PG', name: 'PG', icon: 'business-outline', gradient: ['#14b8a6', '#0d9488'] },
   { id: 'Hostel', name: 'Hostel', icon: 'home-outline', gradient: ['#14b8a6', '#0f766e'] },
-  { id: 'Hotel', name: 'Hotel', icon: 'bed-outline', gradient: ['#ec4899', '#be185d'] },
+  { id: 'Hotel', name: 'Hotel', icon: 'bed-outline', gradient: ['#ff6b6b', '#e05252'] },
   { id: 'Co-Living Property', name: 'Co-Living', icon: 'people-outline', gradient: ['#8b5cf6', '#6d28d9'] },
   { id: 'Rental Room', name: 'Rental Room', icon: 'key-outline', gradient: ['#06b6d4', '#0891b2'] },
-  { id: 'Service Apartment', name: 'Service Apt', icon: 'copy-outline', gradient: ['#f43f5e', '#e11d48'] },
+  { id: 'Service Apartment', name: 'Service Apt', icon: 'copy-outline', gradient: ['#ff6b6b', '#e05252'] },
   { id: 'Office', name: 'Workspace', icon: 'briefcase-outline', gradient: ['#64748b', '#475569'] }
 ];
 
@@ -308,7 +308,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               </Text>
             </View>
             {loadingLocation && (
-              <ActivityIndicator size="small" color="#8c1c13" />
+              <ActivityIndicator size="small" color="#14B8A6" />
             )}
           </TouchableOpacity>
         </View>
@@ -331,7 +331,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               className="items-center"
             >
               <View className="w-14 h-14 rounded-full bg-white justify-center items-center shadow-sm border border-slate-200">
-                <Ionicons name="compass-outline" size={24} color="#8c1c13" />
+                <Ionicons name="compass-outline" size={24} color="#14B8A6" />
               </View>
               <Text className="text-[10px] text-slate-700 font-black mt-1.5">Nearby</Text>
             </TouchableOpacity>
@@ -424,7 +424,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               { label: 'Toiletries', icon: 'leaf-outline' }
             ].map((feat, idx) => (
               <View key={idx} className="flex-row items-center bg-primary-50/60 border border-primary-100 px-3.5 py-1.5 rounded-full">
-                <Ionicons name={feat.icon as any} size={11} color="#8c1c13" />
+                <Ionicons name={feat.icon as any} size={11} color="#14B8A6" />
                 <Text className="text-[9px] text-primary-700 font-extrabold uppercase ml-1.5 tracking-wider">{feat.label}</Text>
               </View>
             ))}

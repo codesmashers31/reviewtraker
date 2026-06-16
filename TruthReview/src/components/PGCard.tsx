@@ -68,7 +68,7 @@ export default function PGCard({ item, navigation }: PGCardProps) {
 
   const getTrustBandColor = (score: number) => {
     if (score >= 90) return { text: 'Excellent', color: 'text-emerald-600', bg: 'bg-emerald-500', bgLight: 'bg-emerald-50' };
-    if (score >= 75) return { text: 'Good', color: 'text-blue-600', bg: 'bg-blue-500', bgLight: 'bg-blue-50' };
+    if (score >= 75) return { text: 'Good', color: 'text-teal-600', bg: 'bg-teal-500', bgLight: 'bg-teal-50' };
     if (score >= 50) return { text: 'Average', color: 'text-amber-600', bg: 'bg-amber-500', bgLight: 'bg-amber-50' };
     return { text: 'Poor', color: 'text-rose-600', bg: 'bg-rose-500', bgLight: 'bg-rose-50' };
   };
@@ -125,7 +125,7 @@ export default function PGCard({ item, navigation }: PGCardProps) {
           <Ionicons
             name={isFavorited ? 'heart' : 'heart-outline'}
             size={18}
-            color={isFavorited ? '#ec4899' : '#475569'}
+            color={isFavorited ? '#FF6B6B' : '#475569'}
           />
         </TouchableOpacity>
       </View>

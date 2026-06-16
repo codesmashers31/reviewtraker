@@ -66,7 +66,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
       {/* Top Header */}
       <View className="px-5 pt-6 pb-4 flex-row justify-between items-center bg-white border-b border-slate-100 shadow-sm">
         <View>
-          <Text className="text-[10px] font-black uppercase tracking-widest text-[#2563EB]">Review Workspace</Text>
+          <Text className="text-[10px] font-black uppercase tracking-widest text-primary-500">Review Workspace</Text>
           <Text className="text-xl font-extrabold text-slate-900 mt-0.5">Select a Place to Review</Text>
         </View>
         <TouchableOpacity 
@@ -111,7 +111,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
                 onPress={() => setSelectedCategory(cat.id)}
                 className={`flex-row items-center mr-2.5 px-4 py-2 rounded-full border ${
                   isActive 
-                    ? 'bg-[#2563EB] border-[#2563EB]' 
+                    ? 'bg-primary-500 border-primary-500' 
                     : 'bg-slate-50 border-slate-200'
                 }`}
               >
@@ -149,7 +149,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
             
             <TouchableOpacity
               onPress={handleCreateNewPlace}
-              className="mt-6 bg-[#2563EB] px-5 py-3 rounded-xl flex-row items-center justify-center shadow-md shadow-[#2563EB]/10"
+              className="mt-6 bg-primary-500 px-5 py-3 rounded-xl flex-row items-center justify-center shadow-md shadow-primary-500/10"
             >
               <Ionicons name="add" size={16} color="#fff" />
               <Text className="text-white text-xs font-bold ml-1.5">Add New Place</Text>
@@ -164,7 +164,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
           >
             <View className="flex-row items-center flex-1 mr-3">
               <View className="bg-slate-50 border border-slate-100 w-12 h-12 rounded-xl items-center justify-center">
-                <Ionicons name="business" size={20} color="#2563EB" />
+                <Ionicons name="business" size={20} color="#14B8A6" />
               </View>
               <View className="ml-3.5 flex-1">
                 <Text className="text-xs font-bold text-slate-800 truncate">{item.name}</Text>

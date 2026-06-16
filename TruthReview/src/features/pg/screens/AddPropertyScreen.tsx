@@ -435,7 +435,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   <Ionicons
                     name={isSelected ? 'checkbox' : 'square-outline'}
                     size={16}
-                    color={isSelected ? '#0ea5e9' : '#94a3b8'}
+                    color={isSelected ? '#14B8A6' : '#94a3b8'}
                   />
                   <Text className={`text-xs font-bold ml-2 ${isSelected ? 'text-primary-600' : 'text-slate-600'}`}>
                     {item}

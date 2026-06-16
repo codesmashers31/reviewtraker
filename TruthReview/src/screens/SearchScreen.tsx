@@ -247,12 +247,12 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
               className="flex-row items-center mt-0.5"
               activeOpacity={0.7}
             >
-              <Ionicons name="location" size={12} color="#2563eb" />
+              <Ionicons name="location" size={12} color="#14B8A6" />
               <Text className="text-xs font-black text-slate-800 ml-1 mr-1.5 truncate max-w-[140px]">
                 {locationName}
               </Text>
               {loadingLocation ? (
-                <ActivityIndicator size="small" color="#2563eb" style={{ transform: [{ scale: 0.7 }] }} />
+                <ActivityIndicator size="small" color="#14B8A6" style={{ transform: [{ scale: 0.7 }] }} />
               ) : (
                 <Ionicons name="chevron-down" size={10} color="#64748b" />
               )}
@@ -291,7 +291,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
             onPress={() => navigation.navigate('Filters' as any)}
             className="border-l border-slate-200 pl-3 flex-row items-center"
           >
-            <Ionicons name="funnel-outline" size={16} color={filterCount > 0 ? '#2563eb' : '#475569'} />
+            <Ionicons name="funnel-outline" size={16} color={filterCount > 0 ? '#14B8A6' : '#475569'} />
             {filterCount > 0 && (
               <View className="bg-primary-600 rounded-full h-4 w-4 justify-center items-center ml-1">
                 <Text className="text-white text-[8px] font-black">{filterCount}</Text>
@@ -338,7 +338,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
         {/* Results list */}
         {loading ? (
           <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#2563eb" />
+            <ActivityIndicator size="large" color="#14B8A6" />
           </View>
         ) : (
           <FlatList

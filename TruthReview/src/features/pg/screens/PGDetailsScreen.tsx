@@ -109,7 +109,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
   // Trust score formatting
   const getTrustScoreInfo = (score: number) => {
     if (score >= 90) return { label: 'Excellent', col: 'text-green-600', bg: 'bg-green-50', stroke: '#10b981' };
-    if (score >= 75) return { label: 'Good', col: 'text-blue-600', bg: 'bg-blue-50', stroke: '#3b82f6' };
+    if (score >= 75) return { label: 'Good', col: 'text-teal-600', bg: 'bg-teal-50', stroke: '#14B8A6' };
     if (score >= 50) return { label: 'Average', col: 'text-orange-600', bg: 'bg-orange-50', stroke: '#f59e0b' };
     return { label: 'Poor', col: 'text-red-600', bg: 'bg-red-50', stroke: '#ef4444' };
   };
@@ -208,7 +208,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
           <Ionicons
             name={isFavorited ? 'heart' : 'heart-outline'}
             size={22}
-            color={isFavorited ? '#ec4899' : '#ffffff'}
+            color={isFavorited ? '#FF6B6B' : '#ffffff'}
           />
         </TouchableOpacity>
       </View>
@@ -353,7 +353,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                   key={idx}
                   className="flex-row items-center bg-slate-50 border border-slate-100 px-3 py-2.5 rounded-xl min-w-[46%] m-0.5"
                 >
-                  <Ionicons name={getFacilityIcon(fac)} size={15} color="#0ea5e9" />
+                  <Ionicons name={getFacilityIcon(fac)} size={15} color="#14B8A6" />
                   <Text className="text-slate-700 text-xs font-bold ml-2">{fac}</Text>
                 </View>
               ))}

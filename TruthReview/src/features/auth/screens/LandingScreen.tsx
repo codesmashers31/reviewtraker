@@ -26,7 +26,7 @@ const HERO_BANNERS = [
     title: 'Rental & Stay Verification',
     subtitle: 'Hostels, PGs, Hotels & Service Apartments',
     desc: 'Unbiased reviews on utilities, food, and safety standards.',
-    gradientColors: ['#4f46e5', '#7c3aed'], // Indigo to Violet
+    gradientColors: ['#0d9488', '#14b8a6'], // Teal Dark to Teal
     icon: 'home'
   },
   {
@@ -34,7 +34,7 @@ const HERO_BANNERS = [
     title: 'Dining & Café Truths',
     subtitle: 'Restaurants, Cafes, Lounges & Bakeries',
     desc: 'Genuine community ratings on taste, hygiene, and pricing.',
-    gradientColors: ['#0f766e', '#0d9488'], // Dark Teal to Teal
+    gradientColors: ['#e05252', '#ff6b6b'], // Coral Dark to Coral
     icon: 'cafe'
   },
   {
@@ -42,7 +42,7 @@ const HERO_BANNERS = [
     title: 'Work & Workspace Ratings',
     subtitle: 'Coworking Spaces, Offices & Study Halls',
     desc: 'Honest reviews on internet speeds, comfort, and environment.',
-    gradientColors: ['#ea580c', '#f97316'], // Orange to Amber
+    gradientColors: ['#0f766e', '#0d9488'], // Teal 700 to Teal 600
     icon: 'briefcase'
   }
 ];
@@ -141,10 +141,10 @@ export default function LandingScreen({ navigation }: Props) {
 
   const getIconColor = (type: string) => {
     switch (type.toLowerCase()) {
-      case 'pg': return '#2563eb';
-      case 'hotel': return '#7c3aed';
-      case 'cafe': return '#0d9488';
-      case 'office': return '#ea580c';
+      case 'pg': return '#14B8A6';
+      case 'hotel': return '#FF6B6B';
+      case 'cafe': return '#ff6b6b';
+      case 'office': return '#0d9488';
       default: return '#64748b';
     }
   };
@@ -360,7 +360,7 @@ export default function LandingScreen({ navigation }: Props) {
               </View>
 
               <TouchableOpacity
-                className="w-full bg-[#0F172A] py-3.5 rounded-xl items-center justify-center flex-row shadow-lg"
+                className="w-full bg-primary-500 py-3.5 rounded-xl items-center justify-center flex-row shadow-lg"
                 onPress={handleAuthRedirect}
                 activeOpacity={0.9}
               >

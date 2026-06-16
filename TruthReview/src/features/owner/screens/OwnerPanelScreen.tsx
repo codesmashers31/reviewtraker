@@ -434,7 +434,7 @@ export default function OwnerPanelScreen({ navigation }: Props) {
                                 onPress={() => setReplyingTo(item.id)}
                                 className="flex-row items-center border border-slate-100 bg-slate-50/50 self-start px-3 py-1.5 rounded-lg active:bg-slate-100"
                               >
-                                <Ionicons name="chatbubble-outline" size={12} color="#0ea5e9" />
+                                <Ionicons name="chatbubble-outline" size={12} color="#14B8A6" />
                                 <Text className="text-[10px] font-black text-primary-600 ml-1.5">Reply to Review</Text>
                               </TouchableOpacity>
                             )
