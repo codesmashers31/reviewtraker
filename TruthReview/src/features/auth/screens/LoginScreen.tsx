@@ -63,7 +63,6 @@ export default function LoginScreen({ navigation }: Props) {
     }
   }, [isOtpSent]);
 
-  // ── Countdown timer ─────────────────────────────────────────────────────────
   useEffect(() => {
     if (countdown > 0) {
       const t = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -71,7 +70,6 @@ export default function LoginScreen({ navigation }: Props) {
     }
   }, [countdown]);
 
-  // ── Validation ──────────────────────────────────────────────────────────────
   const validateIdentifier = (text: string) => {
     if (!text.trim()) {
       setIdentifierError('Please enter your email or mobile number');
@@ -94,7 +92,6 @@ export default function LoginScreen({ navigation }: Props) {
     return true;
   };
 
-  // ── OTP digit handlers ──────────────────────────────────────────────────────
   const handleDigitChange = (value: string, index: number) => {
     const digit = value.replace(/[^0-9]/g, '').slice(-1);
     const newDigits = [...digits];
@@ -121,7 +118,7 @@ export default function LoginScreen({ navigation }: Props) {
     }
   };
 
-  // ── Send OTP ────────────────────────────────────────────────────────────────
+
   const handleSendOtp = async () => {
     if (!validateIdentifier(identifier)) return;
     setSendingOtp(true);
@@ -187,6 +184,7 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   // ── Verify OTP & Login ──────────────────────────────────────────────────────
+
   const handleVerifyOtp = async () => {
     if (otpCode.length !== OTP_LENGTH) {
       setOtpError('Please enter all 6 digits');
