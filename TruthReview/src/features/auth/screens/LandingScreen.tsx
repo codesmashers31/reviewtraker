@@ -99,14 +99,14 @@ export default function LandingScreen({ navigation }: Props) {
           <Ionicons
             name="shield-checkmark"
             size={28}
-            color={isDark ? '#3b82f6' : '#0b1a30'}
+            color={isDark ? '#38bdf8' : '#2563eb'}
           />
           <View className="ml-2">
             <View className="flex-row items-center">
               <Text className={`text-lg font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Truth
               </Text>
-              <Text className="text-blue-600 text-lg font-black tracking-tight ml-1">
+              <Text className="text-primary-600 text-lg font-black tracking-tight ml-1">
                 Review
               </Text>
             </View>
@@ -144,11 +144,11 @@ export default function LandingScreen({ navigation }: Props) {
             {/* Verified Badge */}
             <View
               className={`border rounded-full px-2.5 py-1 flex-row items-center self-start mb-3 ${
-                isDark ? 'bg-blue-950/20 border-blue-900/30' : 'bg-blue-50/70 border-blue-100/50'
+                isDark ? 'bg-primary-950/20 border-primary-900/30' : 'bg-primary-50/70 border-primary-100/50'
               }`}
             >
-              <Ionicons name="shield-checkmark" size={11} color="#3b82f6" />
-              <Text className="text-blue-600 font-black text-[9px] ml-1.5 uppercase tracking-wider">
+              <Ionicons name="shield-checkmark" size={11} color={isDark ? '#38bdf8' : '#2563eb'} />
+              <Text className="text-primary-600 font-black text-[9px] ml-1.5 uppercase tracking-wider">
                 Verified by Real Residents
               </Text>
             </View>
@@ -158,7 +158,7 @@ export default function LandingScreen({ navigation }: Props) {
                 isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
-              Find the Truth Before You <Text className="text-blue-600">Stay</Text>
+              Find the Truth Before You <Text className="text-primary-600">Stay</Text>
             </Text>
 
             <Text className="text-slate-400 font-semibold text-xs mt-3 leading-relaxed">
@@ -176,134 +176,9 @@ export default function LandingScreen({ navigation }: Props) {
           </View>
         </View>
 
-        {/* Search Pill UI */}
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handleAuthRedirect}
-          className={`mx-6 mt-6 border rounded-full py-2 pl-5 pr-2 flex-row justify-between items-center ${
-            isDark
-              ? 'bg-slate-900 border-slate-800'
-              : 'bg-white border-slate-100 shadow-md shadow-slate-100'
-          }`}
-        >
-          <View className="flex-row items-center">
-            <Ionicons name="search" size={18} color="#94a3b8" />
-            <Text className="text-slate-400 font-semibold text-[12px] ml-3">
-              Search PGs, Hostels, Hotels...
-            </Text>
-          </View>
-          <View className="bg-blue-600 w-9 h-9 rounded-full items-center justify-center shadow-sm shadow-blue-500/35">
-            <Ionicons name="search" size={15} color="#ffffff" />
-          </View>
-        </TouchableOpacity>
 
-        {/* Categories Row */}
-        <View className="flex-row justify-between px-6 mt-7">
-          {LANDING_CATEGORIES.map((cat) => (
-            <TouchableOpacity
-              key={cat.id}
-              onPress={handleAuthRedirect}
-              className="items-center"
-              activeOpacity={0.8}
-            >
-              <View
-                style={{ backgroundColor: isDark ? cat.bgDark : cat.bg }}
-                className="w-12 h-12 rounded-2xl items-center justify-center border border-slate-100/5 dark:border-slate-800"
-              >
-                <Ionicons name={cat.icon} size={20} color={cat.color} />
-              </View>
-              <Text
-                className={`font-black text-[10px] mt-2 ${
-                  isDark ? 'text-slate-350' : 'text-slate-800'
-                }`}
-              >
-                {cat.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
 
-        {/* Trust Highlights Section */}
-        <View
-          className={`mx-6 mt-8 border rounded-2xl p-4 flex-row justify-between items-center ${
-            isDark
-              ? 'bg-slate-900/40 border-slate-900'
-              : 'bg-slate-50/50 border-slate-100'
-          }`}
-        >
-          {/* Highlight 1 */}
-          <View className="flex-1 flex-row items-center pr-2">
-            <View
-              className={`w-8 h-8 rounded-full items-center justify-center ${
-                isDark ? 'bg-emerald-950/20' : 'bg-emerald-50'
-              }`}
-            >
-              <Ionicons name="shield-checkmark-outline" size={16} color="#10b981" />
-            </View>
-            <View className="ml-2 flex-1">
-              <Text
-                className={`font-extrabold text-[9px] leading-tight ${
-                  isDark ? 'text-white' : 'text-slate-800'
-                }`}
-              >
-                Verified Reviews
-              </Text>
-              <Text className="text-slate-400 font-bold text-[8px] mt-0.5">
-                By Real Residents
-              </Text>
-            </View>
-          </View>
 
-          <View className={`h-6 w-[1px] ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-
-          {/* Highlight 2 */}
-          <View className="flex-1 flex-row items-center px-2">
-            <View
-              className={`w-8 h-8 rounded-full items-center justify-center ${
-                isDark ? 'bg-blue-950/20' : 'bg-blue-50'
-              }`}
-            >
-              <Ionicons name="document-text-outline" size={16} color="#3b82f6" />
-            </View>
-            <View className="ml-2 flex-1">
-              <Text
-                className={`font-extrabold text-[9px] leading-tight ${
-                  isDark ? 'text-white' : 'text-slate-800'
-                }`}
-              >
-                Trust Score
-              </Text>
-              <Text className="text-slate-400 font-bold text-[8px] mt-0.5">
-                0-100 Rating
-              </Text>
-            </View>
-          </View>
-
-          <View className={`h-6 w-[1px] ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-
-          {/* Highlight 3 */}
-          <View className="flex-1 flex-row items-center pl-2">
-            <View
-              className={`w-8 h-8 rounded-full items-center justify-center ${
-                isDark ? 'bg-orange-950/20' : 'bg-orange-50'
-              }`}
-            >
-              <Ionicons name="chatbox-ellipses-outline" size={16} color="#f97316" />
-            </View>
-            <View className="ml-2 flex-1">
-              <Text
-                className={`font-extrabold text-[9px] leading-tight ${
-                  isDark ? 'text-white' : 'text-slate-800'
-                }`}
-              >
-                Complaint Insights
-              </Text>
-              <Text className="text-slate-400 font-bold text-[8px] mt-0.5">
-                See Real Issues
-              </Text>
-            </View>
-          </View>
-        </View>
 
         {/* Recent Reviews Carousel */}
         <View className="mt-6">
@@ -325,22 +200,22 @@ export default function LandingScreen({ navigation }: Props) {
                 <View
                   className={`border rounded-3xl p-5 ${
                     isDark
-                      ? 'bg-slate-900 border-slate-800'
-                      : 'bg-white border-slate-100/80 shadow-sm shadow-slate-100'
+                      ? 'bg-slate-900 border-slate-850 shadow-md shadow-slate-950/40'
+                      : 'bg-white border-slate-100/80 shadow-md shadow-slate-100/40'
                   }`}
                 >
                   {/* Card Top Pill Details */}
-                  <View className="flex-row justify-between items-center mb-3">
+                  <View className="flex-row justify-between items-center mb-3.5">
                     <View
-                      className={`px-2 py-0.5 rounded-full ${
-                        isDark ? 'bg-blue-950/40' : 'bg-blue-50'
+                      className={`px-2.5 py-1 rounded-full ${
+                        isDark ? 'bg-primary-950/40 border border-primary-900/35' : 'bg-primary-50'
                       }`}
                     >
-                      <Text className="text-blue-600 font-black text-[9px] uppercase tracking-wider">
+                      <Text className="text-primary-600 font-black text-[9px] uppercase tracking-wider">
                         Recent Review
                       </Text>
                     </View>
-                    <View className="bg-emerald-500 px-2.5 py-0.5 rounded-full flex-row items-center">
+                    <View className="bg-accent-500 px-2.5 py-1 rounded-full flex-row items-center shadow-sm shadow-accent-500/10">
                       <Text className="text-white font-black text-[9px] mr-0.5">{item.rating}</Text>
                       <Ionicons name="star" size={8} color="#ffffff" />
                     </View>
@@ -362,13 +237,21 @@ export default function LandingScreen({ navigation }: Props) {
                           {item.location}
                         </Text>
                       </View>
-                      <Text
-                        className={`font-bold text-xs italic mt-3 leading-relaxed ${
-                          isDark ? 'text-slate-300' : 'text-slate-600'
+
+                      {/* Premium Left-Bordered Quote Block */}
+                      <View
+                        className={`border-l-2 pl-3 mt-3 ${
+                          isDark ? 'border-primary-500/35' : 'border-primary-500/20'
                         }`}
                       >
-                        "{item.comment}"
-                      </Text>
+                        <Text
+                          className={`font-semibold text-xs italic leading-relaxed ${
+                            isDark ? 'text-slate-350' : 'text-slate-600'
+                          }`}
+                        >
+                          "{item.comment}"
+                        </Text>
+                      </View>
 
                       {/* Verified Resident status row */}
                       <View className="flex-row items-center mt-4 flex-wrap gap-2">
@@ -376,14 +259,12 @@ export default function LandingScreen({ navigation }: Props) {
                           <View
                             className={`border px-2 py-0.5 rounded-full flex-row items-center ${
                               isDark
-                                ? 'bg-emerald-950/20 border-emerald-900/30'
-                                : 'bg-emerald-50 border-emerald-100/50'
+                                ? 'bg-emerald-500/10 border-emerald-500/20'
+                                : 'bg-emerald-50 border-emerald-200/50'
                             }`}
                           >
-                            <View className="bg-emerald-500 w-3 h-3 rounded-full items-center justify-center mr-1">
-                              <Ionicons name="checkmark" size={7} color="#ffffff" />
-                            </View>
-                            <Text className="text-emerald-600 font-black text-[8px] uppercase tracking-wider">
+                            <Ionicons name="checkmark-circle" size={10} color="#10b981" />
+                            <Text className="text-emerald-700 font-black text-[8px] uppercase tracking-wider ml-1">
                               Verified Resident
                             </Text>
                           </View>
@@ -396,7 +277,9 @@ export default function LandingScreen({ navigation }: Props) {
 
                     <Image
                       source={{ uri: item.image }}
-                      className="w-24 h-24 rounded-2xl"
+                      className={`w-24 h-24 rounded-2xl border ${
+                        isDark ? 'border-slate-800' : 'border-slate-100'
+                      }`}
                     />
                   </View>
                 </View>
@@ -414,8 +297,8 @@ export default function LandingScreen({ navigation }: Props) {
                 key={idx}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   isActive
-                    ? 'w-4 bg-blue-600'
-                    : `w-1.5 ${isDark ? 'bg-slate-800' : 'bg-slate-350'}`
+                    ? 'w-4 bg-primary-600'
+                    : `w-1.5 ${isDark ? 'bg-slate-850' : 'bg-slate-300'}`
                 }`}
               />
             );
@@ -426,7 +309,7 @@ export default function LandingScreen({ navigation }: Props) {
         <View
           className={`mx-6 mt-8 flex-row justify-between items-center py-4 border-t border-b ${
             isDark
-              ? 'border-slate-900 bg-slate-950/20'
+              ? 'border-slate-900 bg-slate-950/10'
               : 'border-slate-100 bg-white'
           } px-2`}
         >
@@ -434,10 +317,10 @@ export default function LandingScreen({ navigation }: Props) {
           <View className="flex-1 items-center px-1">
             <View
               className={`w-10 h-10 rounded-full items-center justify-center mb-2 ${
-                isDark ? 'bg-blue-950/20' : 'bg-blue-50'
+                isDark ? 'bg-primary-950/20' : 'bg-primary-50'
               }`}
             >
-              <Ionicons name="chatbubble-ellipses-outline" size={18} color="#3b82f6" />
+              <Ionicons name="chatbubble-ellipses-outline" size={18} color={isDark ? '#38bdf8' : '#2563eb'} />
             </View>
             <Text
               className={`font-black text-xs leading-none ${
@@ -451,7 +334,7 @@ export default function LandingScreen({ navigation }: Props) {
             </Text>
           </View>
 
-          <View className={`h-8 w-[1px] ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+          <View className={`h-8 w-[1px] ${isDark ? 'bg-slate-850' : 'bg-slate-200'}`} />
 
           {/* Stat 2 */}
           <View className="flex-1 items-center px-1">
@@ -474,16 +357,16 @@ export default function LandingScreen({ navigation }: Props) {
             </Text>
           </View>
 
-          <View className={`h-8 w-[1px] ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+          <View className={`h-8 w-[1px] ${isDark ? 'bg-slate-850' : 'bg-slate-200'}`} />
 
           {/* Stat 3 */}
           <View className="flex-1 items-center px-1">
             <View
               className={`w-10 h-10 rounded-full items-center justify-center mb-2 ${
-                isDark ? 'bg-amber-950/20' : 'bg-amber-50'
+                isDark ? 'bg-accent-950/20' : 'bg-accent-50'
               }`}
             >
-              <Ionicons name="people-outline" size={18} color="#eab308" />
+              <Ionicons name="people-outline" size={18} color={isDark ? '#38bdf8' : '#2563eb'} />
             </View>
             <Text
               className={`font-black text-xs leading-none ${
@@ -502,17 +385,17 @@ export default function LandingScreen({ navigation }: Props) {
         <View
           className={`mx-6 mt-6 border rounded-2xl p-4 flex-row items-center ${
             isDark
-              ? 'bg-emerald-950/20 border-emerald-900/30'
-              : 'bg-emerald-50/70 border-emerald-100/50'
+              ? 'bg-emerald-950/10 border-emerald-900/20'
+              : 'bg-emerald-50/50 border-emerald-100/40'
           }`}
         >
-          <View className="bg-emerald-550 w-8 h-8 rounded-full items-center justify-center mr-3 bg-emerald-500">
+          <View className="bg-emerald-500 w-8 h-8 rounded-full items-center justify-center mr-3">
             <Ionicons name="shield-checkmark" size={16} color="#ffffff" />
           </View>
           <View className="flex-1">
             <Text
               className={`font-semibold text-[10px] leading-relaxed ${
-                isDark ? 'text-slate-300' : 'text-slate-650'
+                isDark ? 'text-slate-350' : 'text-slate-650'
               }`}
             >
               No fake reviews. No paid promotions. {'\n'}
@@ -529,7 +412,7 @@ export default function LandingScreen({ navigation }: Props) {
           activeOpacity={0.9}
           className={`mx-6 mt-6 py-4 rounded-2xl items-center justify-center flex-row shadow-lg ${
             isDark
-              ? 'bg-blue-600 shadow-blue-500/20'
+              ? 'bg-primary-600 shadow-primary-950/20'
               : 'bg-[#081325] shadow-slate-950/15'
           }`}
         >
