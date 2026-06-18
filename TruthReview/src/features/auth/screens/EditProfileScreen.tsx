@@ -69,16 +69,16 @@ export default function EditProfileScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       {/* Header */}
-      <View className="flex-row items-center px-4 py-4 border-b border-slate-50">
+      <View className="flex-row items-center px-4 py-4 bg-surface border-b border-borderSubtle">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="h-10 w-10 bg-slate-50 border border-slate-100 rounded-full justify-center items-center active:bg-slate-100"
+          className="h-10 w-10 bg-card border border-borderSubtle rounded-full justify-center items-center active:opacity-80"
         >
-          <Ionicons name="arrow-back" size={20} color="#475569" />
+          <Ionicons name="arrow-back" size={20} color="#D4A5A5" />
         </TouchableOpacity>
-        <Text className="text-xl font-extrabold text-slate-800 ml-3">Edit Profile</Text>
+        <Text className="text-xl font-extrabold text-text ml-3">Edit Profile</Text>
       </View>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
@@ -122,7 +122,7 @@ export default function EditProfileScreen({ navigation }: Props) {
               value={user?.email || ''}
               editable={false}
               containerStyle="opacity-65"
-              inputStyle="bg-slate-100/50 text-slate-400"
+              inputStyle="bg-card/45 text-textMuted border-borderSubtle"
             />
           </View>
 

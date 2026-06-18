@@ -83,7 +83,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         {/* User Card */}
         <View className="items-center mt-8 mb-6 px-6">
@@ -92,51 +92,51 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
               source={{
                 uri: user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
               }}
-              className="h-20 w-20 rounded-full bg-slate-100"
+              className="h-20 w-20 rounded-full bg-surface border border-borderSubtle"
             />
-            <View className="absolute bottom-0 right-0 bg-primary-500 border-2 border-white px-2 py-0.5 rounded-full shadow-sm">
-              <Text className="text-[9px] text-white font-extrabold uppercase">{user?.role || 'Guest'}</Text>
+            <View className="absolute bottom-0 right-0 bg-accent-500 border-2 border-background px-2 py-0.5 rounded-full shadow-premium-sm">
+              <Text className="text-[9px] text-background font-extrabold uppercase">{user?.role || 'Guest'}</Text>
             </View>
           </View>
 
-          <Text className="text-lg font-extrabold text-slate-800 mt-3">{user?.name || 'Guest User'}</Text>
-          <Text className="text-xs text-slate-400 font-semibold mt-0.5">{user?.email || 'email@example.com'}</Text>
+          <Text className="text-lg font-extrabold text-text mt-3">{user?.name || 'Guest User'}</Text>
+          <Text className="text-xs text-textMuted font-semibold mt-0.5">{user?.email || 'email@example.com'}</Text>
         </View>
 
         {/* Developer Quick Switch Panel */}
         <View className="px-6 mb-6">
-          <View className="bg-slate-50 border border-slate-150 rounded-3xl p-4.5">
-            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-3">
+          <View className="bg-card border border-borderSubtle rounded-4xl p-5 shadow-premium">
+            <Text className="text-[10px] font-black text-textMuted uppercase tracking-widest text-center mb-3">
               🧪 Tester Role Switcher
             </Text>
             <View className="flex-row gap-2">
               <TouchableOpacity
                 onPress={() => handleToggleRole('user')}
                 className={`flex-1 py-2 rounded-xl border ${
-                  user?.role === 'user' ? 'bg-primary-500 border-primary-500' : 'bg-white border-slate-200'
+                  user?.role === 'user' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
-                <Text className={`text-[10px] font-black text-center ${user?.role === 'user' ? 'text-white' : 'text-slate-600'}`}>
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'user' ? 'text-white' : 'text-textMuted'}`}>
                   USER
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleToggleRole('owner')}
                 className={`flex-1 py-2 rounded-xl border ${
-                  user?.role === 'owner' ? 'bg-primary-500 border-primary-500' : 'bg-white border-slate-200'
+                  user?.role === 'owner' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
-                <Text className={`text-[10px] font-black text-center ${user?.role === 'owner' ? 'text-white' : 'text-slate-600'}`}>
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'owner' ? 'text-white' : 'text-textMuted'}`}>
                   OWNER
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleToggleRole('admin')}
                 className={`flex-1 py-2 rounded-xl border ${
-                  user?.role === 'admin' ? 'bg-primary-500 border-primary-500' : 'bg-white border-slate-200'
+                  user?.role === 'admin' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
-                <Text className={`text-[10px] font-black text-center ${user?.role === 'admin' ? 'text-white' : 'text-slate-600'}`}>
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'admin' ? 'text-white' : 'text-textMuted'}`}>
                   ADMIN
                 </Text>
               </TouchableOpacity>
@@ -146,101 +146,101 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
 
         {/* Dynamic Dashboards & Navigation */}
         <View className="px-6 space-y-3 gap-3">
-          <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Navigation Menu</Text>
+          <Text className="text-xs font-black text-textMuted uppercase tracking-widest mb-1">Navigation Menu</Text>
 
           {/* Suggest Property */}
           <TouchableOpacity
-            className="flex-row justify-between items-center bg-slate-50 border border-slate-150 p-4 rounded-2xl active:bg-slate-100"
+            className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
             onPress={() => navigation.navigate('AddProperty')}
           >
             <View className="flex-row items-center">
-              <View className="h-9 w-9 bg-slate-200/50 rounded-xl justify-center items-center">
-                <Ionicons name="add" size={18} color="#475569" />
+              <View className="h-9 w-9 bg-surface rounded-xl justify-center items-center border border-borderSubtle">
+                <Ionicons name="add" size={18} color="#D4A5A5" />
               </View>
-              <Text className="text-slate-800 text-xs font-bold ml-3.5">Suggest New Property</Text>
+              <Text className="text-textBody text-xs font-bold ml-3.5">Suggest New Property</Text>
             </View>
-            <Ionicons name="chevron-forward" size={14} color="#cbd5e1" />
+            <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
           </TouchableOpacity>
 
           {/* Owner Dashboard link */}
           {user?.role === 'owner' && (
             <TouchableOpacity
-              className="flex-row justify-between items-center bg-indigo-50/20 border border-indigo-100/30 p-4 rounded-2xl active:bg-indigo-50/40"
+              className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
               onPress={() => navigation.navigate('OwnerPanel')}
             >
               <View className="flex-row items-center">
-                <View className="h-9 w-9 bg-indigo-50 rounded-xl justify-center items-center">
-                  <Ionicons name="business" size={18} color="#4f46e5" />
+                <View className="h-9 w-9 bg-surface rounded-xl justify-center items-center border border-borderSubtle">
+                  <Ionicons name="business" size={18} color="#D4A5A5" />
                 </View>
-                <Text className="text-indigo-700 text-xs font-bold ml-3.5">Owner Control Panel</Text>
+                <Text className="text-textBody text-xs font-bold ml-3.5">Owner Control Panel</Text>
               </View>
-              <Ionicons name="chevron-forward" size={14} color="#4f46e5" />
+              <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
             </TouchableOpacity>
           )}
 
           {/* Admin Dashboard link */}
           {user?.role === 'admin' && (
             <TouchableOpacity
-              className="flex-row justify-between items-center bg-primary-50/20 border border-primary-100/30 p-4 rounded-2xl active:bg-primary-50/40"
+              className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
               onPress={() => navigation.navigate('AdminPanel')}
             >
               <View className="flex-row items-center">
-                <View className="h-9 w-9 bg-primary-50 rounded-xl justify-center items-center">
-                  <Ionicons name="settings-outline" size={18} color="#0ea5e9" />
+                <View className="h-9 w-9 bg-surface rounded-xl justify-center items-center border border-borderSubtle">
+                  <Ionicons name="settings-outline" size={18} color="#D4A5A5" />
                 </View>
-                <Text className="text-primary-600 text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
+                <Text className="text-textBody text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
               </View>
-              <Ionicons name="chevron-forward" size={14} color="#0ea5e9" />
+              <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
             </TouchableOpacity>
           )}
 
           {/* Logout Button */}
           <TouchableOpacity
-            className="flex-row justify-between items-center bg-red-50/25 border border-red-100/30 p-4 rounded-2xl active:bg-red-50/50"
+            className="flex-row justify-between items-center bg-red-950/20 border border-red-900/35 p-4 rounded-3xl shadow-premium active:opacity-90"
             onPress={handleLogout}
           >
             <View className="flex-row items-center">
-              <View className="h-9 w-9 bg-red-50 rounded-xl justify-center items-center">
+              <View className="h-9 w-9 bg-red-950/40 rounded-xl justify-center items-center border border-red-900/25">
                 <Ionicons name="log-out-outline" size={18} color="#ef4444" />
               </View>
-              <Text className="text-red-500 text-xs font-bold ml-3.5">Sign Out</Text>
+              <Text className="text-red-400 text-xs font-bold ml-3.5">Sign Out</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         {/* User own Review History */}
         <View className="px-6 mt-8 mb-10">
-          <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">My Submitted Reviews ({myReviews.length})</Text>
+          <Text className="text-xs font-black text-textMuted uppercase tracking-widest mb-4">My Submitted Reviews ({myReviews.length})</Text>
           {myReviews.length === 0 ? (
-            <View className="bg-slate-50 border border-slate-100 p-6 rounded-2xl items-center">
-              <Ionicons name="star-outline" size={32} color="#cbd5e1" />
-              <Text className="text-slate-400 text-xs font-bold mt-2">You haven't written any reviews yet.</Text>
+            <View className="bg-card border border-borderSubtle p-6 rounded-3xl items-center shadow-premium">
+              <Ionicons name="star-outline" size={32} color="#94A3B8" />
+              <Text className="text-textMuted text-xs font-bold mt-2">You haven't written any reviews yet.</Text>
             </View>
           ) : (
             myReviews.map((item) => (
-              <View key={item.id} className="bg-slate-50 border border-slate-150 p-4 rounded-2xl mb-3">
+              <View key={item.id} className="bg-card border border-borderSubtle p-5 rounded-3xl mb-4 shadow-premium">
                 <View className="flex-row justify-between items-center mb-2">
-                  <Text className="text-slate-800 font-extrabold text-xs flex-1 mr-2" numberOfLines={1}>
+                  <Text className="text-text font-extrabold text-xs flex-1 mr-2" numberOfLines={1}>
                     {getPropName(item.propertyId)}
                   </Text>
                   
                   <View className="flex-row items-center">
                     {item.verified ? (
-                      <View className="bg-green-50 px-2 py-0.5 rounded-md border border-green-100 mr-2">
-                        <Text className="text-[8px] text-green-600 font-black uppercase">Verified Stay</Text>
+                      <View className="bg-accent-500/10 px-2 py-0.5 rounded-md border border-accent-500/20 mr-2">
+                        <Text className="text-[8px] text-accent-500 font-black uppercase">Verified Stay</Text>
                       </View>
                     ) : (
-                      <View className="bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100 mr-2">
-                        <Text className="text-[8px] text-amber-600 font-black uppercase">Pending Stay Verify</Text>
+                      <View className="bg-amber-950/20 px-2 py-0.5 rounded-md border border-amber-900/20 mr-2">
+                        <Text className="text-[8px] text-amber-400 font-black uppercase">Pending Stay Verify</Text>
                       </View>
                     )}
-                    <Ionicons name="star" size={10} color="#f59e0b" />
-                    <Text className="text-[10px] font-black text-slate-700 ml-1">{item.ratings.overall}/5</Text>
+                    <Ionicons name="star" size={10} color="#D4A5A5" />
+                    <Text className="text-[10px] font-black text-text ml-1">{item.ratings.overall}/5</Text>
                   </View>
                 </View>
 
-                <Text className="text-slate-500 text-xs font-semibold leading-5">"{item.comment}"</Text>
-                <Text className="text-slate-400 text-[9px] font-bold mt-2 text-right">Written: {item.date}</Text>
+                <Text className="text-textBody text-xs font-semibold leading-5">"{item.comment}"</Text>
+                <Text className="text-textMuted text-[9px] font-bold mt-2 text-right">Written: {item.date}</Text>
               </View>
             ))
           )}
@@ -248,4 +248,5 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
       </ScrollView>
     </SafeAreaView>
   );
+}
 }

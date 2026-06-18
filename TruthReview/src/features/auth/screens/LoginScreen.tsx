@@ -190,15 +190,15 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="flex-1 justify-between px-6 py-8">
           
           <View>
             {/* Header / Title */}
             <View className="mt-8 mb-8">
-              <Text className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign In</Text>
-              <Text className="text-sm text-slate-500 mt-2 font-medium">
+              <Text className="text-3xl font-extrabold text-text tracking-tight">Sign In</Text>
+              <Text className="text-sm text-textMuted mt-2 font-medium">
                 Access verified reviews for Hotels & PGs.
               </Text>
             </View>
@@ -228,10 +228,10 @@ export default function LoginScreen({ navigation }: Props) {
               </View>
             ) : (
               <View>
-                <View className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-5 flex-row justify-between items-center">
+                <View className="bg-card p-4 rounded-xl border border-borderSubtle mb-5 flex-row justify-between items-center">
                   <View className="flex-1">
-                    <Text className="text-xs text-slate-400 font-bold uppercase">Sending to</Text>
-                    <Text className="text-sm font-semibold text-slate-800 mt-0.5">{email}</Text>
+                    <Text className="text-xs text-textMuted font-bold uppercase">Sending to</Text>
+                    <Text className="text-sm font-semibold text-text mt-0.5">{email}</Text>
                   </View>
                   <TouchableOpacity 
                     onPress={() => {
@@ -239,9 +239,9 @@ export default function LoginScreen({ navigation }: Props) {
                       setOtpCode('');
                       setOtpError('');
                     }}
-                    className="bg-slate-200/60 px-3 py-1.5 rounded-lg"
+                    className="bg-surface border border-borderSubtle px-3 py-1.5 rounded-lg"
                   >
-                    <Text className="text-xs font-bold text-slate-600">Change</Text>
+                    <Text className="text-xs font-bold text-textMuted">Change</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -268,12 +268,12 @@ export default function LoginScreen({ navigation }: Props) {
                 {/* Resend Timer */}
                 <View className="items-center mt-5">
                   {countdown > 0 ? (
-                    <Text className="text-xs text-slate-400 font-semibold">
+                    <Text className="text-xs text-textMuted font-semibold">
                       Resend code in {countdown}s
                     </Text>
                   ) : (
                     <TouchableOpacity onPress={handleSendOtp}>
-                      <Text className="text-xs font-bold text-primary-600">
+                      <Text className="text-xs font-bold text-accent-500">
                         Resend verification code
                       </Text>
                     </TouchableOpacity>
@@ -284,37 +284,37 @@ export default function LoginScreen({ navigation }: Props) {
 
             {/* Divider */}
             <View className="flex-row items-center my-8">
-              <View className="flex-1 h-[1px] bg-slate-100" />
-              <Text className="text-xs font-bold text-slate-450 uppercase px-4">or</Text>
-              <View className="flex-1 h-[1px] bg-slate-100" />
+              <View className="flex-1 h-[1px] bg-borderSubtle" />
+              <Text className="text-xs font-bold text-textMuted uppercase px-4">or</Text>
+              <View className="flex-1 h-[1px] bg-borderSubtle" />
             </View>
 
             {/* Google Login Action */}
             <TouchableOpacity
               onPress={handleGoogleLogin}
               style={styles.googleButton}
-              className="border border-slate-200 rounded-xl py-3 px-4 flex-row items-center justify-center mb-4"
+              className="border border-borderSubtle rounded-xl py-3 px-4 flex-row items-center justify-center mb-4"
               activeOpacity={0.8}
             >
               <Ionicons name="logo-google" size={16} color="#DB4437" />
-              <Text className="text-slate-800 text-sm font-bold ml-2">Continue with Google</Text>
+              <Text className="text-text text-sm font-bold ml-2">Continue with Google</Text>
             </TouchableOpacity>
 
             {/* Demo Account Bypass Button */}
             <TouchableOpacity
               onPress={handleDemoLogin}
               style={styles.demoButton}
-              className="border border-slate-200 rounded-xl py-3 px-4 flex-row items-center justify-center"
+              className="border border-borderSubtle rounded-xl py-3 px-4 flex-row items-center justify-center"
               activeOpacity={0.8}
             >
-              <Ionicons name="flash" size={16} color="#2563eb" />
-              <Text className="text-primary-600 text-sm font-bold ml-2">Instant Demo Login</Text>
+              <Ionicons name="flash" size={16} color="#D4A5A5" />
+              <Text className="text-accent-500 text-sm font-bold ml-2">Instant Demo Login</Text>
             </TouchableOpacity>
 
           </View>
 
           {/* Footer Text */}
-          <Text className="text-center text-xs text-slate-400 font-medium leading-4 px-6 mt-8">
+          <Text className="text-center text-xs text-textMuted font-medium leading-4 px-6 mt-8">
             By continuing, you agree to the Terms of Service and Privacy Policy of Truth Review.
           </Text>
 
@@ -326,10 +326,10 @@ export default function LoginScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   googleButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#2D3654',
   },
   demoButton: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#23283B',
     borderStyle: 'dashed',
   }
 });

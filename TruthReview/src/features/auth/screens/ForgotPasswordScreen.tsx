@@ -59,13 +59,13 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="flex-1 justify-between px-6 py-8">
           <View>
             <View className="mt-8 mb-10">
-              <Text className="text-3xl font-extrabold text-slate-800">Forgot Password?</Text>
-              <Text className="text-sm text-slate-500 mt-2 font-medium">
+              <Text className="text-3xl font-extrabold text-text">Forgot Password?</Text>
+              <Text className="text-sm text-textMuted mt-2 font-medium">
                 Enter your email address and we'll send you instructions to reset your password.
               </Text>
             </View>

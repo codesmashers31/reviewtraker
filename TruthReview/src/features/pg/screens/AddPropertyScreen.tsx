@@ -132,28 +132,28 @@ export default function AddPropertyScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       {/* Header */}
-      <View className="flex-row items-center px-4 py-4 border-b border-slate-50">
+      <View className="flex-row items-center px-4 py-4 bg-surface border-b border-borderSubtle">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="h-10 w-10 bg-slate-50 border border-slate-100 rounded-full justify-center items-center active:bg-slate-100"
+          className="h-10 w-10 bg-card border border-borderSubtle rounded-full justify-center items-center active:opacity-80"
         >
-          <Ionicons name="arrow-back" size={20} color="#475569" />
+          <Ionicons name="arrow-back" size={20} color="#D4A5A5" />
         </TouchableOpacity>
-        <Text className="text-xl font-extrabold text-slate-800 ml-3">Add New Accommodation</Text>
+        <Text className="text-xl font-extrabold text-text ml-3">Add New Accommodation</Text>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
         {/* Helper Note */}
-        <View className="bg-primary-50 border border-primary-100/50 p-4 rounded-2xl mb-6">
-          <Text className="text-xs font-bold text-primary-700 leading-5">
+        <View className="bg-card border border-borderSubtle p-4 rounded-2xl mb-6">
+          <Text className="text-xs font-bold text-[#D4A5A5] leading-5">
             💡 Propose any verified PG, hostel, or rental space. Duplicate listings are automatically prevented using Name, Address, and Coordinates (latitude/longitude).
           </Text>
         </View>
 
         {/* Basic Information */}
-        <Text className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Basic Information</Text>
+        <Text className="text-sm font-black text-textMuted uppercase tracking-widest mb-4">Basic Information</Text>
 
         <Controller
           control={control}
@@ -172,7 +172,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
 
         {/* Property Type Grid */}
         <View className="mb-4">
-          <Text className="text-slate-600 font-bold text-xs mb-2">Property Type</Text>
+          <Text className="text-textBody font-bold text-xs mb-2">Property Type</Text>
           <Controller
             control={control}
             name="type"
@@ -184,13 +184,13 @@ export default function AddPropertyScreen({ navigation }: Props) {
                     onPress={() => onChange(t)}
                     className={`px-3 py-2.5 rounded-xl border ${
                       value === t
-                        ? 'bg-primary-500 border-primary-500'
-                        : 'bg-slate-50 border-slate-200'
+                        ? 'bg-secondary-500 border-secondary-500'
+                        : 'bg-card border-borderSubtle'
                     } flex-grow m-0.5`}
                   >
                     <Text
                       className={`text-xs font-extrabold text-center ${
-                        value === t ? 'text-white' : 'text-slate-600'
+                        value === t ? 'text-white' : 'text-textBody'
                       }`}
                     >
                       {t}
@@ -204,7 +204,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
 
         {/* Gender Sharing Category */}
         <View className="mb-4">
-          <Text className="text-slate-600 font-bold text-xs mb-2">Gender Category</Text>
+          <Text className="text-textBody font-bold text-xs mb-2">Gender Category</Text>
           <Controller
             control={control}
             name="genderType"
@@ -221,13 +221,13 @@ export default function AddPropertyScreen({ navigation }: Props) {
                     onPress={() => onChange(g.val as GenderType)}
                     className={`px-3.5 py-2.5 rounded-xl border ${
                       value === g.val
-                        ? 'bg-primary-500 border-primary-500'
-                        : 'bg-slate-50 border-slate-200'
+                        ? 'bg-secondary-500 border-secondary-500'
+                        : 'bg-card border-borderSubtle'
                     } flex-grow m-0.5`}
                   >
                     <Text
                       className={`text-xs font-extrabold text-center ${
-                        value === g.val ? 'text-white' : 'text-slate-600'
+                        value === g.val ? 'text-white' : 'text-textBody'
                       }`}
                     >
                       {g.label}
@@ -259,7 +259,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
         </View>
 
         {/* Location Details */}
-        <Text className="text-sm font-black text-slate-400 uppercase tracking-widest mt-4 mb-4">Location Details</Text>
+        <Text className="text-sm font-black text-textMuted uppercase tracking-widest mt-4 mb-4">Location Details</Text>
 
         <Controller
           control={control}
@@ -328,29 +328,29 @@ export default function AddPropertyScreen({ navigation }: Props) {
 
         {/* Map Coordinates Simulation */}
         <View className="mb-4">
-          <Text className="text-slate-700 font-extrabold text-sm mb-2">Latitude & Longitude Coordinates</Text>
-          <Text className="text-[11px] font-semibold text-slate-400 mb-3">
+          <Text className="text-text font-extrabold text-sm mb-2">Latitude & Longitude Coordinates</Text>
+          <Text className="text-[11px] font-semibold text-textMuted mb-3">
             Precise coordinates are required to enforce duplicate prevention. Select a test area to simulate coordinate mapping:
           </Text>
           
           <View className="flex-row flex-wrap gap-2 mb-4">
             <TouchableOpacity 
               onPress={() => applyPresetCoords(13.0067, 80.2578, 'Adyar')} 
-              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+              className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
             >
-              <Text className="text-xs font-bold text-slate-700">📍 Seed Adyar PG</Text>
+              <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Adyar PG</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => applyPresetCoords(12.9801, 80.2224, 'Velachery')} 
-              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+              className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
             >
-              <Text className="text-xs font-bold text-slate-700">📍 Seed Stanza Velachery</Text>
+              <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Stanza Velachery</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => applyPresetCoords(13.0418, 80.2341, 'T. Nagar')} 
-              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+              className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
             >
-              <Text className="text-xs font-bold text-slate-700">📍 Seed Serene T. Nagar</Text>
+              <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Serene T. Nagar</Text>
             </TouchableOpacity>
           </View>
 
@@ -394,16 +394,17 @@ export default function AddPropertyScreen({ navigation }: Props) {
 
         {/* Description */}
         <View className="mb-4">
-          <Text className="text-slate-600 font-bold text-xs mb-2">Description</Text>
+          <Text className="text-textBody font-bold text-xs mb-2">Description</Text>
           <Controller
             control={control}
             name="description"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                className={`w-full bg-slate-50 border ${
-                  errors.description ? 'border-red-500' : 'border-slate-200'
-                } px-4 py-3 rounded-2xl text-slate-800 text-sm font-medium h-28`}
+                className={`w-full bg-surface border ${
+                  errors.description ? 'border-red-500' : 'border-borderSubtle'
+                } px-4 py-3 rounded-2xl text-text text-sm font-medium h-28`}
                 placeholder="Describe the rooms, occupancy details, environment, deposit rules, etc."
+                placeholderTextColor="#94A3B8"
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
@@ -414,13 +415,13 @@ export default function AddPropertyScreen({ navigation }: Props) {
             )}
           />
           {errors.description && (
-            <Text className="text-red-500 text-xs font-bold mt-1">{errors.description.message}</Text>
+            <Text className="text-red-400 text-xs font-bold mt-1">{errors.description.message}</Text>
           )}
         </View>
 
         {/* Amenities Checklist */}
         <View className="mb-8">
-          <Text className="text-slate-700 font-extrabold text-sm mb-3">Amenities Provided</Text>
+          <Text className="text-text font-extrabold text-sm mb-3">Amenities Provided</Text>
           <View className="flex-row flex-wrap gap-2">
             {amenities.map((item) => {
               const isSelected = selectedFacilities.includes(item);
@@ -429,15 +430,15 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   key={item}
                   onPress={() => toggleFacility(item)}
                   className={`flex-row items-center border ${
-                    isSelected ? 'bg-primary-50 border-primary-300' : 'bg-slate-55 border-slate-200'
+                    isSelected ? 'bg-surface border-accent-500/30' : 'bg-card border-borderSubtle'
                   } px-3.5 py-2.5 rounded-xl m-0.5`}
                 >
                   <Ionicons
                     name={isSelected ? 'checkbox' : 'square-outline'}
                     size={16}
-                    color={isSelected ? '#0ea5e9' : '#94a3b8'}
+                    color={isSelected ? '#D4A5A5' : '#94a3b8'}
                   />
-                  <Text className={`text-xs font-bold ml-2 ${isSelected ? 'text-primary-600' : 'text-slate-600'}`}>
+                  <Text className={`text-xs font-bold ml-2 ${isSelected ? 'text-accent-500' : 'text-textBody'}`}>
                     {item}
                   </Text>
                 </TouchableOpacity>

@@ -9,45 +9,36 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#fff5f5',
-          100: '#ffe3e3',
-          200: '#ffc9c9',
-          300: '#ffa3a3',
-          400: '#ff7373',
-          500: '#bf4342', // Terracotta Red
-          600: '#8c1c13', // Deep Rust Red brand primary
-          700: '#74150e',
-          800: '#5f100a',
-          900: '#4a0b06',
+          500: '#2563EB', // Primary Brand Color (Royal Blue)
         },
         secondary: {
-          50: '#fdf6f6',
-          100: '#fbebeb',
-          200: '#f7d2d2',
-          300: '#f0abab',
-          400: '#e57c7b',
-          500: '#bf4342', // Terracotta secondary
-          600: '#a73433',
-          700: '#8c2626',
-          800: '#732020',
-          900: '#601b1b',
+          500: '#60A5FA', // Secondary Accent
         },
         accent: {
-          50: '#fff7ed',
-          100: '#ffeed6',
-          200: '#ffd8ad',
-          300: '#ffbd7a',
-          400: '#ffa047',
-          500: '#ff8811', // Pumpkin Orange brand accent
-          600: '#e06e00',
-          700: '#b85300',
-          800: '#913f00',
-          900: '#733100',
+          500: '#F59E0B', // Amber Accent
         },
+        roseGold: '#D4A5A5', // Kept for compatibility if used specifically
+        background: '#F8FAFC', // Main Background (Slate 50)
+        surface: '#FFFFFF', // Surface Background
+        card: '#FFFFFF', // Card Background
+        text: '#0F172A', // Headings (Slate 900)
+        textBody: '#334155', // Body (Slate 700)
+        textMuted: '#64748B', // Captions/Muted (Slate 500)
+        borderSubtle: '#E2E8F0', // Slate 200
         success: {
-          500: '#22c55e', // Success Green
+          500: '#22c55e',
         }
       },
+      boxShadow: {
+        'premium': '0px 10px 30px rgba(0, 0, 0, 0.05)',
+        'premium-sm': '0px 4px 10px rgba(0, 0, 0, 0.03)',
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.05)',
+        'glow': '0px 0px 20px rgba(37, 99, 235, 0.15)',
+      },
+      borderRadius: {
+        '4xl': '24px',
+        '5xl': '32px',
+      }
     },
   },
   plugins: [],

@@ -177,7 +177,7 @@ function TabBarItem({
         <Ionicons 
           name={iconName as any} 
           size={20} 
-          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#64748b'} 
+          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#114DA8'} 
         />
       </Animated.View>
     </TouchableOpacity>
@@ -234,8 +234,8 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       style={[
         styles.floatingContainer,
         {
-          backgroundColor: isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.92)',
-          borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
+          backgroundColor: isDark ? 'rgba(4, 28, 74, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+          borderColor: isDark ? 'rgba(79, 195, 247, 0.15)' : 'rgba(17, 77, 168, 0.08)'
         }
       ]}
     >
@@ -324,16 +324,16 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   activePill: {
-    backgroundColor: '#2563eb', // Royal Blue
+    backgroundColor: '#114DA8', // Royal Ocean
     width: 44,
     height: 44,
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2563eb',
+    shadowColor: '#1E88E5',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     elevation: 4,
   },
   activeText: {
@@ -359,16 +359,16 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: '#f97316', // Orange Accent
+    backgroundColor: '#1E88E5', // Aqua Blue
     justifyContent: 'center',
     alignItems: 'center',
     top: -16,
     borderWidth: 4,
-    borderColor: '#ffffff',
-    shadowColor: '#f97316',
+    borderColor: '#F5FAFF',
+    shadowColor: '#4FC3F7',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowOpacity: 0.45,
+    shadowRadius: 14,
+    elevation: 8,
   }
 });

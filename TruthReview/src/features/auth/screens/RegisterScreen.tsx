@@ -72,13 +72,13 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="flex-1 justify-between px-6 py-6">
           <View>
             <View className="mt-4 mb-8">
-              <Text className="text-3xl font-extrabold text-slate-800">Create Account</Text>
-              <Text className="text-sm text-slate-500 mt-2 font-medium">
+              <Text className="text-3xl font-extrabold text-text">Create Account</Text>
+              <Text className="text-sm text-textMuted mt-2 font-medium">
                 Register to start reviewing PGs.
               </Text>
             </View>
@@ -175,9 +175,9 @@ export default function RegisterScreen({ navigation }: Props) {
           </View>
 
           <View className="flex-row justify-center items-center mt-8 mb-4">
-            <Text className="text-slate-500 text-sm font-medium">Already have an account? </Text>
+            <Text className="text-textMuted text-sm font-medium">Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text className="text-primary-500 text-sm font-bold">Sign In</Text>
+              <Text className="text-accent-500 text-sm font-bold">Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>

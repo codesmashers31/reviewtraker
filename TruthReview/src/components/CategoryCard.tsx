@@ -17,14 +17,16 @@ export default function CategoryCard({
   return (
     <Pressable
       onPress={onPress}
-      className={`flex-1 min-w-[48%] bg-white border ${
-        selected ? 'border-primary-500 bg-primary-50/10 shadow-sm' : 'border-slate-100 shadow-sm'
-      } p-5 rounded-2xl items-center justify-center m-1 active:opacity-90`}
+      className={`flex-1 min-w-[48%] bg-card border ${
+        selected ? 'border-accent-500 bg-surface' : 'border-borderSubtle shadow-premium'
+      } p-5 rounded-3xl items-center justify-center m-1 active:opacity-90`}
     >
-      <View className="h-12 w-12 bg-slate-50 rounded-full justify-center items-center mb-3">
+      <View className={`h-12 w-12 rounded-full justify-center items-center mb-3 ${
+        selected ? 'bg-accent-500/15 border border-accent-500/30' : 'bg-surface border border-borderSubtle'
+      }`}>
         <Text className="text-2xl">{icon}</Text>
       </View>
-      <Text className={`text-sm font-bold ${selected ? 'text-primary-600' : 'text-slate-700'}`}>
+      <Text className={`text-sm font-bold ${selected ? 'text-accent-500' : 'text-textBody'}`}>
         {title}
       </Text>
     </Pressable>

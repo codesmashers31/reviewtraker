@@ -31,14 +31,14 @@ export default function FavoritesScreen({ navigation }: { navigation: any }) {
   const favoritedPGs = properties.filter((pg) => wishlistItems.includes(pg.id));
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="px-4 pt-6 pb-2 border-b border-slate-50">
-        <Text className="text-2xl font-black text-slate-800 mb-2">My Favorites</Text>
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="px-4 pt-6 pb-2 border-b border-borderSubtle">
+        <Text className="text-2xl font-black text-text mb-2">My Favorites</Text>
       </View>
 
       {loading ? (
         <View className="flex-grow justify-center items-center">
-          <Text className="text-slate-400 font-bold">Loading favorites...</Text>
+          <Text className="text-textMuted font-bold">Loading favorites...</Text>
         </View>
       ) : (
         <FlatList

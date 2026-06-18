@@ -62,27 +62,27 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView className="flex-1 bg-background">
       {/* Top Header */}
-      <View className="px-5 pt-6 pb-4 flex-row justify-between items-center bg-white border-b border-slate-100 shadow-sm">
+      <View className="px-5 pt-6 pb-4 flex-row justify-between items-center bg-surface border-b border-borderSubtle shadow-premium-sm">
         <View>
-          <Text className="text-[10px] font-black uppercase tracking-widest text-[#2563EB]">Review Workspace</Text>
-          <Text className="text-xl font-extrabold text-slate-900 mt-0.5">Select a Place to Review</Text>
+          <Text className="text-[10px] font-black uppercase tracking-widest text-accent-500">Review Workspace</Text>
+          <Text className="text-xl font-extrabold text-text mt-0.5">Select a Place to Review</Text>
         </View>
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
-          className="p-2 rounded-full bg-slate-100"
+          className="p-2 rounded-full bg-card border border-borderSubtle"
         >
-          <Ionicons name="close" size={20} color="#475569" />
+          <Ionicons name="close" size={20} color="#D4A5A5" />
         </TouchableOpacity>
       </View>
 
       {/* Search Input */}
-      <View className="px-5 py-4 bg-white border-b border-slate-150">
-        <View className="flex-row items-center bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-2xl">
-          <Ionicons name="search" size={18} color="#64748b" />
+      <View className="px-5 py-4 bg-surface border-b border-borderSubtle">
+        <View className="flex-row items-center bg-card border border-borderSubtle px-3.5 py-2.5 rounded-2xl">
+          <Ionicons name="search" size={18} color="#D4A5A5" />
           <TextInput
-            className="flex-1 text-slate-800 text-xs ml-2 font-medium"
+            className="flex-1 text-textBody text-xs ml-2 font-medium"
             placeholder="Search place name, location or type..."
             placeholderTextColor="#94a3b8"
             value={searchQuery}
@@ -90,14 +90,14 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={16} color="#64748b" />
+              <Ionicons name="close-circle" size={16} color="#94a3b8" />
             </TouchableOpacity>
           )}
         </View>
       </View>
 
       {/* Categories chips horizontal selector */}
-      <View className="bg-white py-3 border-b border-slate-100">
+      <View className="bg-surface py-3 border-b border-borderSubtle">
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -111,17 +111,17 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
                 onPress={() => setSelectedCategory(cat.id)}
                 className={`flex-row items-center mr-2.5 px-4 py-2 rounded-full border ${
                   isActive 
-                    ? 'bg-[#2563EB] border-[#2563EB]' 
-                    : 'bg-slate-50 border-slate-200'
+                    ? 'bg-primary-500 border-accent-500' 
+                    : 'bg-card border-borderSubtle'
                 }`}
               >
                 <Ionicons 
                   name={cat.icon as any} 
                   size={14} 
-                  color={isActive ? '#ffffff' : '#475569'} 
+                  color={isActive ? '#ffffff' : '#D1D5DB'} 
                 />
                 <Text className={`text-xs font-bold ml-1.5 ${
-                  isActive ? 'text-white' : 'text-slate-700'
+                  isActive ? 'text-text' : 'text-textBody'
                 }`}>
                   {cat.name}
                 </Text>
@@ -139,17 +139,17 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View className="items-center justify-center py-12 px-6">
-            <View className="bg-slate-100 p-4 rounded-full mb-4">
-              <Ionicons name="business-outline" size={32} color="#94a3b8" />
+            <View className="bg-card p-4 rounded-full mb-4 border border-borderSubtle">
+              <Ionicons name="business-outline" size={32} color="#D4A5A5" />
             </View>
-            <Text className="text-sm font-bold text-slate-700 text-center">No matching places found</Text>
-            <Text className="text-xs text-slate-500 text-center mt-2 leading-4">
+            <Text className="text-sm font-bold text-text text-center">No matching places found</Text>
+            <Text className="text-xs text-textMuted text-center mt-2 leading-4">
               Try searching for another place, or add this place to our community-listed directory.
             </Text>
             
             <TouchableOpacity
               onPress={handleCreateNewPlace}
-              className="mt-6 bg-[#2563EB] px-5 py-3 rounded-xl flex-row items-center justify-center shadow-md shadow-[#2563EB]/10"
+              className="mt-6 bg-primary-500 px-5 py-3 rounded-xl flex-row items-center justify-center shadow-premium border border-accent-500/20"
             >
               <Ionicons name="add" size={16} color="#fff" />
               <Text className="text-white text-xs font-bold ml-1.5">Add New Place</Text>
@@ -160,29 +160,29 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
           <TouchableOpacity
             onPress={() => handleSelectProperty(item.id)}
             activeOpacity={0.7}
-            className="bg-white border border-slate-100 rounded-2xl p-4 mb-3 flex-row items-center justify-between shadow-sm shadow-slate-100/5"
+            className="bg-card border border-borderSubtle rounded-2xl p-4 mb-3 flex-row items-center justify-between shadow-premium-sm"
           >
             <View className="flex-row items-center flex-1 mr-3">
-              <View className="bg-slate-50 border border-slate-100 w-12 h-12 rounded-xl items-center justify-center">
-                <Ionicons name="business" size={20} color="#2563EB" />
+              <View className="bg-surface border border-borderSubtle w-12 h-12 rounded-xl items-center justify-center">
+                <Ionicons name="business" size={20} color="#D4A5A5" />
               </View>
               <View className="ml-3.5 flex-1">
-                <Text className="text-xs font-bold text-slate-800 truncate">{item.name}</Text>
-                <Text className="text-[10px] text-slate-500 mt-0.5 truncate">{item.location}</Text>
+                <Text className="text-xs font-bold text-text truncate">{item.name}</Text>
+                <Text className="text-[10px] text-textMuted mt-0.5 truncate">{item.location}</Text>
                 <View className="flex-row items-center mt-1.5 space-x-2">
-                  <View className="bg-slate-100 px-2 py-0.5 rounded-md">
-                    <Text className="text-[9px] font-bold text-slate-600 uppercase">{item.type}</Text>
+                  <View className="bg-surface px-2 py-0.5 rounded-md border border-borderSubtle">
+                    <Text className="text-[9px] font-bold text-textBody uppercase">{item.type}</Text>
                   </View>
                   <View className="flex-row items-center ml-2">
-                    <Ionicons name="shield-checkmark" size={10} color="#10B981" />
-                    <Text className="text-secondary-500 text-[9px] font-bold ml-0.5">Score: {item.trustScore}%</Text>
+                    <Ionicons name="shield-checkmark" size={10} color="#22c55e" />
+                    <Text className="text-accent-500 text-[9px] font-bold ml-0.5">Score: {item.trustScore}%</Text>
                   </View>
                 </View>
               </View>
             </View>
 
-            <View className="bg-slate-50 p-2.5 rounded-full border border-slate-100">
-              <Ionicons name="chevron-forward" size={16} color="#64748b" />
+            <View className="bg-surface p-2.5 rounded-full border border-borderSubtle">
+              <Ionicons name="chevron-forward" size={16} color="#D4A5A5" />
             </View>
           </TouchableOpacity>
         )}

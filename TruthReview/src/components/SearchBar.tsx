@@ -12,20 +12,21 @@ export default function SearchBar({ onFilterPress, onPress, ...props }: SearchBa
     return (
       <Pressable
         onPress={onPress}
-        className="flex-row items-center bg-slate-50 border border-slate-200 px-4 py-3.5 rounded-xl active:bg-slate-100"
+        className="flex-row items-center bg-surface shadow-premium border border-borderSubtle px-4 py-3.5 rounded-2xl active:opacity-80"
       >
-        <Ionicons name="search" size={20} color="#94a3b8" />
+        <Ionicons name="search" size={20} color="#D4A5A5" />
         <View className="flex-1 ml-3">
           <TextInput
             placeholder="Search city, locality, or PG name..."
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#94A3B8"
             editable={false}
             pointerEvents="none"
+            style={{ color: '#FFFFFF' }}
           />
         </View>
         {onFilterPress && (
           <Pressable onPress={onFilterPress} className="p-1 active:opacity-75">
-            <Ionicons name="options-outline" size={20} color="#64748b" />
+            <Ionicons name="options-outline" size={20} color="#FFFFFF" />
           </Pressable>
         )}
       </Pressable>
@@ -33,17 +34,17 @@ export default function SearchBar({ onFilterPress, onPress, ...props }: SearchBa
   }
 
   return (
-    <View className="flex-row items-center bg-slate-50 border border-slate-200 px-4 py-3.5 rounded-xl focus-within:border-primary-500">
-      <Ionicons name="search" size={20} color="#94a3b8" />
+    <View className="flex-row items-center bg-surface shadow-premium border border-borderSubtle px-4 py-3.5 rounded-2xl">
+      <Ionicons name="search" size={20} color="#D4A5A5" />
       <TextInput
-        className="flex-1 ml-3 text-slate-800 text-sm font-medium"
+        className="flex-1 ml-3 text-text text-sm font-medium"
         placeholder="Search city, locality, or PG name..."
-        placeholderTextColor="#94a3b8"
+        placeholderTextColor="#94A3B8"
         {...props}
       />
       {onFilterPress && (
         <Pressable onPress={onFilterPress} className="p-1 ml-2 active:opacity-75">
-          <Ionicons name="options-outline" size={20} color="#64748b" />
+          <Ionicons name="options-outline" size={20} color="#FFFFFF" />
         </Pressable>
       )}
     </View>

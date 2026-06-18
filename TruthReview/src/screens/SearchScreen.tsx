@@ -232,15 +232,15 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   const filterCount = Object.values(activeFilters).filter(val => val !== undefined && val !== null && val !== false && val !== 'All').length;
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50/50" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right']}>
       {/* Top Header with Location Fetching */}
-      <View className="px-5 pt-4 pb-3 flex-row justify-between items-center bg-white border-b border-slate-100">
+      <View className="px-5 pt-4 pb-3 flex-row justify-between items-center bg-surface border-b border-borderSubtle shadow-premium">
         <View className="flex-row items-center flex-1">
-          <View className="bg-primary-600 p-2 rounded-xl flex-row items-center justify-center">
-            <Ionicons name="compass-outline" size={18} color="#ffffff" />
+          <View className="bg-card p-2 rounded-xl flex-row items-center justify-center border border-borderSubtle">
+            <Ionicons name="compass-outline" size={18} color="#D4A5A5" />
           </View>
           <View className="ml-3 flex-1 justify-center">
-            <Text className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Search Location</Text>
+            <Text className="text-[10px] font-black uppercase text-textMuted tracking-wider">Search Location</Text>
             
             <TouchableOpacity 
               onPress={() => fetchLocation(false)} 
@@ -248,13 +248,13 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
               activeOpacity={0.7}
             >
               <Ionicons name="location" size={12} color="#2563eb" />
-              <Text className="text-xs font-black text-slate-800 ml-1 mr-1.5 truncate max-w-[140px]">
+              <Text className="text-xs font-black text-text ml-1 mr-1.5 truncate max-w-[140px]">
                 {locationName}
               </Text>
               {loadingLocation ? (
                 <ActivityIndicator size="small" color="#2563eb" style={{ transform: [{ scale: 0.7 }] }} />
               ) : (
-                <Ionicons name="chevron-down" size={10} color="#64748b" />
+                <Ionicons name="chevron-down" size={10} color="#94A3B8" />
               )}
             </TouchableOpacity>
           </View>
@@ -263,9 +263,9 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
         <View className="flex-row items-center space-x-2.5">
           <TouchableOpacity 
             onPress={() => Toast.show({ type: 'info', text1: 'Notifications dashboard mock.' })}
-            className="p-2.5 bg-slate-50 border border-slate-100 rounded-full"
+            className="p-2.5 bg-card border border-borderSubtle rounded-full"
           >
-            <Ionicons name="notifications-outline" size={16} color="#475569" />
+            <Ionicons name="notifications-outline" size={16} color="#D4A5A5" />
           </TouchableOpacity>
         </View>
       </View>
@@ -273,28 +273,28 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
       {/* Main Content Area */}
       <View className="flex-1 px-5 pt-4">
         {/* Search Input Bar */}
-        <View className="flex-row items-center bg-white border border-slate-200 rounded-2xl px-4 py-1.5 mb-4 shadow-sm shadow-slate-100/5">
-          <Ionicons name="search-outline" size={18} color="#94a3b8" />
+        <View className="flex-row items-center bg-card border border-borderSubtle rounded-2xl px-4 py-1.5 mb-4 shadow-premium-sm">
+          <Ionicons name="search-outline" size={18} color="#94A3B8" />
           <TextInput
-            className="flex-1 ml-2 text-slate-800 text-xs font-semibold h-10"
+            className="flex-1 ml-2 text-text text-xs font-semibold h-10"
             placeholder="Search by name, area, city..."
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#94A3B8"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery ? (
             <TouchableOpacity onPress={() => setSearchQuery('')} className="mr-2">
-              <Ionicons name="close-circle" size={18} color="#cbd5e1" />
+              <Ionicons name="close-circle" size={18} color="#94A3B8" />
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity 
             onPress={() => navigation.navigate('Filters' as any)}
-            className="border-l border-slate-200 pl-3 flex-row items-center"
+            className="border-l border-borderSubtle pl-3 flex-row items-center"
           >
-            <Ionicons name="funnel-outline" size={16} color={filterCount > 0 ? '#2563eb' : '#475569'} />
+            <Ionicons name="funnel-outline" size={16} color={filterCount > 0 ? '#D4A5A5' : '#D1D5DB'} />
             {filterCount > 0 && (
-              <View className="bg-primary-600 rounded-full h-4 w-4 justify-center items-center ml-1">
-                <Text className="text-white text-[8px] font-black">{filterCount}</Text>
+              <View className="bg-accent-500 rounded-full h-4 w-4 justify-center items-center ml-1">
+                <Text className="text-[#1A1D29] text-[8px] font-black">{filterCount}</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -310,10 +310,10 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
                   key={type}
                   onPress={() => setSelectedType(type)}
                   className={`px-4 py-2 rounded-full border ${
-                    active ? 'bg-primary-600 border-primary-600' : 'bg-white border-slate-200'
+                    active ? 'bg-secondary-500 border-secondary-500' : 'bg-card border-borderSubtle'
                   }`}
                 >
-                  <Text className={`text-[10px] font-black uppercase tracking-wider ${active ? 'text-white' : 'text-slate-500'}`}>{type}</Text>
+                  <Text className={`text-[10px] font-black uppercase tracking-wider ${active ? 'text-white' : 'text-textMuted'}`}>{type}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -322,16 +322,16 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
 
         {/* Sorting controls */}
         <View className="flex-row justify-between items-center mt-2 mb-3.5 px-1">
-          <Text className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">
+          <Text className="text-[10px] text-textMuted font-extrabold uppercase tracking-wider">
             Showing {filteredAndSortedProperties.length} results
           </Text>
           
           <TouchableOpacity
             onPress={cycleSort}
-            className="flex-row items-center border border-slate-200 bg-white px-3.5 py-1.5 rounded-full shadow-sm shadow-slate-100/5"
+            className="flex-row items-center border border-borderSubtle bg-card px-3.5 py-1.5 rounded-full shadow-premium-sm"
           >
-            <Ionicons name="swap-vertical" size={12} color="#475569" />
-            <Text className="text-slate-600 text-[10px] font-black ml-1.5">{getSortLabel()}</Text>
+            <Ionicons name="swap-vertical" size={12} color="#D4A5A5" />
+            <Text className="text-textBody text-[10px] font-black ml-1.5">{getSortLabel()}</Text>
           </TouchableOpacity>
         </View>
 

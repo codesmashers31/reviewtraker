@@ -61,18 +61,18 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
   const areaD = pathD ? `${pathD} L ${points[points.length - 1].x} ${chartHeight - padding} L ${points[0].x} ${chartHeight - padding} Z` : '';
 
   const currentStats = [
-    { name: 'Food', count: data?.food || 0, color: 'bg-amber-500', textCol: 'text-amber-700', bgCol: 'bg-amber-50' },
-    { name: 'Water', count: data?.water || 0, color: 'bg-blue-500', textCol: 'text-blue-700', bgCol: 'bg-blue-50' },
-    { name: 'Safety', count: data?.safety || 0, color: 'bg-rose-500', textCol: 'text-rose-700', bgCol: 'bg-rose-50' },
-    { name: 'Deposit', count: data?.deposit || 0, color: 'bg-orange-500', textCol: 'text-orange-700', bgCol: 'bg-orange-50' },
-    { name: 'Maintenance', count: data?.maintenance || 0, color: 'bg-purple-500', textCol: 'text-purple-700', bgCol: 'bg-purple-50' },
+    { name: 'Food', count: data?.food || 0, color: 'bg-amber-500', textCol: 'text-amber-300', bgCol: 'bg-amber-950/25 border border-amber-500/20' },
+    { name: 'Water', count: data?.water || 0, color: 'bg-blue-500', textCol: 'text-blue-300', bgCol: 'bg-blue-950/25 border border-blue-500/20' },
+    { name: 'Safety', count: data?.safety || 0, color: 'bg-rose-500', textCol: 'text-rose-300', bgCol: 'bg-rose-950/25 border border-rose-500/20' },
+    { name: 'Deposit', count: data?.deposit || 0, color: 'bg-orange-500', textCol: 'text-orange-300', bgCol: 'bg-orange-950/25 border border-orange-500/20' },
+    { name: 'Maintenance', count: data?.maintenance || 0, color: 'bg-purple-500', textCol: 'text-purple-300', bgCol: 'bg-purple-950/25 border border-purple-500/20' },
   ];
 
   return (
-    <View className="bg-slate-50 border border-slate-100 rounded-3xl p-5 shadow-sm">
+    <View className="bg-card border border-borderSubtle rounded-4xl p-5 shadow-premium mb-4">
       <View className="mb-4">
-        <Text className="text-base font-extrabold text-slate-800">Verified Complaint Trends</Text>
-        <Text className="text-xs font-semibold text-slate-400 mt-0.5">Overall platform tracking for the last 6 months</Text>
+        <Text className="text-base font-extrabold text-text">Verified Complaint Trends</Text>
+        <Text className="text-xs font-semibold text-textMuted mt-0.5">Overall platform tracking for the last 6 months</Text>
       </View>
 
       {/* SVG Chart */}
@@ -80,21 +80,21 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
         <Svg height={chartHeight} width={chartWidth}>
           <Defs>
             <LinearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.25} />
-              <Stop offset="100%" stopColor="#0ea5e9" stopOpacity={0.0} />
+              <Stop offset="0%" stopColor="#2563EB" stopOpacity={0.4} />
+              <Stop offset="100%" stopColor="#2563EB" stopOpacity={0.0} />
             </LinearGradient>
           </Defs>
 
           {/* Grid Lines */}
-          <Line x1={padding} y1={chartHeight - padding} x2={chartWidth - padding} y2={chartHeight - padding} stroke="#cbd5e1" strokeWidth={1} />
-          <Line x1={padding} y1={padding} x2={chartWidth - padding} y2={padding} stroke="#f1f5f9" strokeWidth={1} />
-          <Line x1={padding} y1={(chartHeight - padding) / 2} x2={chartWidth - padding} y2={(chartHeight - padding) / 2} stroke="#f8fafc" strokeWidth={1} />
+          <Line x1={padding} y1={chartHeight - padding} x2={chartWidth - padding} y2={chartHeight - padding} stroke="rgba(255,255,255,0.08)" strokeWidth={1} />
+          <Line x1={padding} y1={padding} x2={chartWidth - padding} y2={padding} stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
+          <Line x1={padding} y1={(chartHeight - padding) / 2} x2={chartWidth - padding} y2={(chartHeight - padding) / 2} stroke="rgba(255,255,255,0.05)" strokeWidth={1} />
 
           {/* Area Fill */}
           {areaD ? <Path d={areaD} fill="url(#chartGrad)" /> : null}
 
           {/* Line Path */}
-          {pathD ? <Path d={pathD} fill="none" stroke="#0ea5e9" strokeWidth={3} /> : null}
+          {pathD ? <Path d={pathD} fill="none" stroke="#2563EB" strokeWidth={3} /> : null}
 
           {/* Data Nodes */}
           {points.map((pt, idx) => (
@@ -103,8 +103,8 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
               cx={pt.x}
               cy={pt.y}
               r={selectedPoint === idx ? 6 : 4}
-              fill={selectedPoint === idx ? '#0284c7' : '#ffffff'}
-              stroke="#0ea5e9"
+              fill={selectedPoint === idx ? '#D4A5A5' : '#23283B'}
+              stroke="#D4A5A5"
               strokeWidth={selectedPoint === idx ? 3 : 2}
               onPress={() => setSelectedPoint(selectedPoint === idx ? null : idx)}
             />
@@ -115,7 +115,7 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
         <View className="flex-row justify-between w-full px-4 mt-1">
           {monthlyData.map((d, index) => (
             <TouchableOpacity key={index} onPress={() => setSelectedPoint(index)}>
-              <Text className={`text-[10px] font-bold ${selectedPoint === index ? 'text-primary-600' : 'text-slate-400'}`}>
+              <Text className={`text-[10px] font-bold ${selectedPoint === index ? 'text-accent-500' : 'text-textMuted'}`}>
                 {d.month}
               </Text>
             </TouchableOpacity>
@@ -124,8 +124,8 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
 
         {/* Info tooltips on click */}
         {selectedPoint !== null && (
-          <View className="absolute top-1 bg-slate-800 px-3 py-1 rounded-xl shadow-lg border border-slate-700">
-            <Text className="text-[10px] text-white font-extrabold text-center">
+          <View className="absolute top-1 bg-surface px-3 py-1 rounded-xl shadow-lg border border-borderSubtle">
+            <Text className="text-[10px] text-text font-extrabold text-center">
               {monthlyData[selectedPoint].month}: {totals[selectedPoint]} complaints
             </Text>
           </View>
@@ -134,16 +134,16 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
 
       {/* Category complaints distribution */}
       <View className="space-y-2.5 gap-2">
-        <Text className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Current Issue Distribution</Text>
+        <Text className="text-xs font-bold text-textMuted uppercase tracking-widest mb-1">Current Issue Distribution</Text>
         {currentStats.map((item) => (
           <View key={item.name} className="flex-row items-center justify-between">
             <View className="flex-row items-center w-28">
               <View className={`h-2.5 w-2.5 rounded-full ${item.color} mr-2`} />
-              <Text className="text-xs text-slate-600 font-bold">{item.name}</Text>
+              <Text className="text-xs text-textBody font-bold">{item.name}</Text>
             </View>
 
             {/* Percentage Bar */}
-            <View className="flex-1 h-2 bg-slate-100 rounded-full mx-2 overflow-hidden">
+            <View className="flex-1 h-2 bg-surface rounded-full mx-2 overflow-hidden border border-borderSubtle">
               <View 
                 className={`h-full ${item.color} rounded-full`}
                 style={{ width: `${Math.min((item.count / (maxTotal || 1)) * 100, 100)}%` }}
