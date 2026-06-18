@@ -49,9 +49,9 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
     pathD = `M ${points[0].x} ${points[0].y}`;
     for (let i = 1; i < points.length; i++) {
       // Smooth curve calculation
-      const cpX1 = points[i-1].x + (points[i].x - points[i-1].x) / 2;
-      const cpY1 = points[i-1].y;
-      const cpX2 = points[i-1].x + (points[i].x - points[i-1].x) / 2;
+      const cpX1 = points[i - 1].x + (points[i].x - points[i - 1].x) / 2;
+      const cpY1 = points[i - 1].y;
+      const cpX2 = points[i - 1].x + (points[i].x - points[i - 1].x) / 2;
       const cpY2 = points[i].y;
       pathD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${points[i].x} ${points[i].y}`;
     }
@@ -144,7 +144,7 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
 
             {/* Percentage Bar */}
             <View className="flex-1 h-2 bg-slate-100 rounded-full mx-2 overflow-hidden">
-              <View 
+              <View
                 className={`h-full ${item.color} rounded-full`}
                 style={{ width: `${Math.min((item.count / (maxTotal || 1)) * 100, 100)}%` }}
               />

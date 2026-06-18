@@ -11,18 +11,11 @@ import { AuthStackParamList } from '../../../navigation/types';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-const registerSchema = zod
-  .object({
-    name: zod.string().min(2, 'Name must be at least 2 characters'),
-    email: zod.string().email('Please enter a valid email address'),
-    phoneNumber: zod.string().min(10, 'Please enter a valid phone number'),
-    password: zod.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: zod.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
+const registerSchema = zod.object({
+  name: zod.string().min(2, 'Name must be at least 2 characters'),
+  email: zod.string().email('Please enter a valid email address'),
+  phoneNumber: zod.string().min(10, 'Please enter a valid phone number'),
+});
 
 type FormData = zod.infer<typeof registerSchema>;
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
@@ -40,8 +33,6 @@ export default function RegisterScreen({ navigation }: Props) {
       name: '',
       email: '',
       phoneNumber: '',
-      password: '',
-      confirmPassword: '',
     },
   });
 
@@ -128,40 +119,6 @@ export default function RegisterScreen({ navigation }: Props) {
                   onChangeText={onChange}
                   value={value}
                   error={errors.phoneNumber?.message}
-                />
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Password"
-                  placeholder="••••••••"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors.password?.message}
-                />
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Confirm Password"
-                  placeholder="••••••••"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors.confirmPassword?.message}
                 />
               )}
             />

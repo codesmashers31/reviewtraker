@@ -34,7 +34,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'AddProperty'>;
 export default function AddPropertyScreen({ navigation }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
-  
+
   const {
     control,
     handleSubmit,
@@ -182,16 +182,14 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   <TouchableOpacity
                     key={t}
                     onPress={() => onChange(t)}
-                    className={`px-3 py-2.5 rounded-xl border ${
-                      value === t
+                    className={`px-3 py-2.5 rounded-xl border ${value === t
                         ? 'bg-primary-500 border-primary-500'
                         : 'bg-slate-50 border-slate-200'
-                    } flex-grow m-0.5`}
+                      } flex-grow m-0.5`}
                   >
                     <Text
-                      className={`text-xs font-extrabold text-center ${
-                        value === t ? 'text-white' : 'text-slate-600'
-                      }`}
+                      className={`text-xs font-extrabold text-center ${value === t ? 'text-white' : 'text-slate-600'
+                        }`}
                     >
                       {t}
                     </Text>
@@ -219,16 +217,14 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   <TouchableOpacity
                     key={g.val}
                     onPress={() => onChange(g.val as GenderType)}
-                    className={`px-3.5 py-2.5 rounded-xl border ${
-                      value === g.val
+                    className={`px-3.5 py-2.5 rounded-xl border ${value === g.val
                         ? 'bg-primary-500 border-primary-500'
                         : 'bg-slate-50 border-slate-200'
-                    } flex-grow m-0.5`}
+                      } flex-grow m-0.5`}
                   >
                     <Text
-                      className={`text-xs font-extrabold text-center ${
-                        value === g.val ? 'text-white' : 'text-slate-600'
-                      }`}
+                      className={`text-xs font-extrabold text-center ${value === g.val ? 'text-white' : 'text-slate-600'
+                        }`}
                     >
                       {g.label}
                     </Text>
@@ -332,22 +328,22 @@ export default function AddPropertyScreen({ navigation }: Props) {
           <Text className="text-[11px] font-semibold text-slate-400 mb-3">
             Precise coordinates are required to enforce duplicate prevention. Select a test area to simulate coordinate mapping:
           </Text>
-          
+
           <View className="flex-row flex-wrap gap-2 mb-4">
-            <TouchableOpacity 
-              onPress={() => applyPresetCoords(13.0067, 80.2578, 'Adyar')} 
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(13.0067, 80.2578, 'Adyar')}
               className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
             >
               <Text className="text-xs font-bold text-slate-700">📍 Seed Adyar PG</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={() => applyPresetCoords(12.9801, 80.2224, 'Velachery')} 
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(12.9801, 80.2224, 'Velachery')}
               className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
             >
               <Text className="text-xs font-bold text-slate-700">📍 Seed Stanza Velachery</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={() => applyPresetCoords(13.0418, 80.2341, 'T. Nagar')} 
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(13.0418, 80.2341, 'T. Nagar')}
               className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
             >
               <Text className="text-xs font-bold text-slate-700">📍 Seed Serene T. Nagar</Text>
@@ -400,9 +396,8 @@ export default function AddPropertyScreen({ navigation }: Props) {
             name="description"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                className={`w-full bg-slate-50 border ${
-                  errors.description ? 'border-red-500' : 'border-slate-200'
-                } px-4 py-3 rounded-2xl text-slate-800 text-sm font-medium h-28`}
+                className={`w-full bg-slate-50 border ${errors.description ? 'border-red-500' : 'border-slate-200'
+                  } px-4 py-3 rounded-2xl text-slate-800 text-sm font-medium h-28`}
                 placeholder="Describe the rooms, occupancy details, environment, deposit rules, etc."
                 multiline
                 numberOfLines={4}
@@ -428,9 +423,8 @@ export default function AddPropertyScreen({ navigation }: Props) {
                 <TouchableOpacity
                   key={item}
                   onPress={() => toggleFacility(item)}
-                  className={`flex-row items-center border ${
-                    isSelected ? 'bg-primary-50 border-primary-300' : 'bg-slate-55 border-slate-200'
-                  } px-3.5 py-2.5 rounded-xl m-0.5`}
+                  className={`flex-row items-center border ${isSelected ? 'bg-primary-50 border-primary-300' : 'bg-slate-55 border-slate-200'
+                    } px-3.5 py-2.5 rounded-xl m-0.5`}
                 >
                   <Ionicons
                     name={isSelected ? 'checkbox' : 'square-outline'}

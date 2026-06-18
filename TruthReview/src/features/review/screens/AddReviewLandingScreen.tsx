@@ -37,12 +37,12 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
 
   // Filter properties based on search query and selected category
   const filteredProperties = properties.filter((item) => {
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.location.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = selectedCategory === 'all' || 
-                            item.type.toLowerCase().includes(selectedCategory.toLowerCase());
-                            
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory = selectedCategory === 'all' ||
+      item.type.toLowerCase().includes(selectedCategory.toLowerCase());
+
     return matchesSearch && matchesCategory;
   });
 
@@ -69,7 +69,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
           <Text className="text-[10px] font-black uppercase tracking-widest text-primary-500">Review Workspace</Text>
           <Text className="text-xl font-extrabold text-slate-900 mt-0.5">Select a Place to Review</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
           className="p-2 rounded-full bg-slate-100"
         >
@@ -109,20 +109,18 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
               <TouchableOpacity
                 key={cat.id}
                 onPress={() => setSelectedCategory(cat.id)}
-                className={`flex-row items-center mr-2.5 px-4 py-2 rounded-full border ${
-                  isActive 
-                    ? 'bg-primary-500 border-primary-500' 
+                className={`flex-row items-center mr-2.5 px-4 py-2 rounded-full border ${isActive
+                    ? 'bg-primary-500 border-primary-500'
                     : 'bg-slate-50 border-slate-200'
-                }`}
+                  }`}
               >
-                <Ionicons 
-                  name={cat.icon as any} 
-                  size={14} 
-                  color={isActive ? '#ffffff' : '#475569'} 
+                <Ionicons
+                  name={cat.icon as any}
+                  size={14}
+                  color={isActive ? '#ffffff' : '#475569'}
                 />
-                <Text className={`text-xs font-bold ml-1.5 ${
-                  isActive ? 'text-white' : 'text-slate-700'
-                }`}>
+                <Text className={`text-xs font-bold ml-1.5 ${isActive ? 'text-white' : 'text-slate-700'
+                  }`}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
@@ -146,7 +144,7 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
             <Text className="text-xs text-slate-500 text-center mt-2 leading-4">
               Try searching for another place, or add this place to our community-listed directory.
             </Text>
-            
+
             <TouchableOpacity
               onPress={handleCreateNewPlace}
               className="mt-6 bg-primary-500 px-5 py-3 rounded-xl flex-row items-center justify-center shadow-md shadow-primary-500/10"

@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50:  '#f0fdfa',  // Teal 50
+          50: '#f0fdfa',  // Teal 50
           100: '#ccfbf1',  // Teal 100
           200: '#99f6e4',  // Teal 200
           300: '#5eead4',  // Teal 300
@@ -21,7 +21,7 @@ module.exports = {
           900: '#134e4a',  // Teal 900
         },
         secondary: {
-          50:  '#fff5f5',
+          50: '#fff5f5',
           100: '#ffe0e0',
           200: '#ffc5c5',
           300: '#ff9d9d',
@@ -33,7 +33,7 @@ module.exports = {
           900: '#862424',
         },
         accent: {
-          50:  '#fff5f5',
+          50: '#fff5f5',
           100: '#ffe0e0',
           200: '#ffc5c5',
           300: '#ff9d9d',

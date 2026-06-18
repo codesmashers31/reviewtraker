@@ -18,7 +18,7 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
   const { pgId } = route.params;
   const isFocused = useIsFocused();
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [property, setProperty] = useState<Property | null>(null);
   const [reviewsList, setReviewsList] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,10 +72,10 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
         data={reviewsList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ReviewCard 
-            review={item} 
-            currentUserRole={user?.role} 
-            currentUserId={user?.id} 
+          <ReviewCard
+            review={item}
+            currentUserRole={user?.role}
+            currentUserId={user?.id}
           />
         )}
         contentContainerStyle={{ padding: 16, paddingBottom: 120, flexGrow: 1 }}

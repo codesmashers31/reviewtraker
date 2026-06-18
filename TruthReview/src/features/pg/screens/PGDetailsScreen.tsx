@@ -244,9 +244,8 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               {property.images.map((_, idx) => (
                 <View
                   key={idx}
-                  className={`h-2 w-2 rounded-full ${
-                    idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'
-                  }`}
+                  className={`h-2 w-2 rounded-full ${idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'
+                    }`}
                 />
               ))}
             </View>
@@ -270,7 +269,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
             <Text className="text-2xl font-black text-slate-800 flex-1 mr-3 leading-8">
               {property.name}
             </Text>
-            
+
             {/* Verified Badge */}
             {(property.claimedBy !== null || property.trustScore >= 80) && (
               <View className="bg-green-500 rounded-full px-2.5 py-1 flex-row items-center mt-1">
@@ -395,8 +394,8 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               <Text className="text-base font-extrabold text-slate-800">
                 Resident Experiences ({reviews.length})
               </Text>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 onPress={() => navigation.navigate('AddReview', { pgId })}
                 className="bg-primary-50 px-3 py-1.5 rounded-xl"
               >
@@ -412,7 +411,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
             ) : (
               reviews.map((item) => (
                 <View key={item.id} className="border-b border-slate-50 py-5">
-                  
+
                   {/* Anonymous reviewer metadata */}
                   <View className="flex-row justify-between items-center mb-3">
                     <View className="flex-row items-center">
@@ -439,7 +438,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       <Ionicons name="star" size={12} color="#f59e0b" />
                       <Text className="text-slate-700 text-xs font-black ml-1.5">Overall rating: {item.ratings.overall}/5</Text>
                     </View>
-                    
+
                     <TouchableOpacity onPress={() => setReportingReviewId(item.id)} className="p-1">
                       <Ionicons name="flag-outline" size={13} color="#ef4444" />
                     </TouchableOpacity>
@@ -545,9 +544,8 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               <TouchableOpacity
                 key={t}
                 onPress={() => setReportType(t)}
-                className={`py-3 px-4 rounded-xl border mb-2 flex-row justify-between items-center ${
-                  reportType === t ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
-                }`}
+                className={`py-3 px-4 rounded-xl border mb-2 flex-row justify-between items-center ${reportType === t ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
+                  }`}
               >
                 <Text className={`text-xs font-bold ${reportType === t ? 'text-red-700' : 'text-slate-700'}`}>{t}</Text>
                 {reportType === t && <Ionicons name="checkmark" size={14} color="#ef4444" />}

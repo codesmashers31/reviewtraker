@@ -18,6 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import * as Location from 'expo-location';
+import { useTheme } from '../features/theme/ThemeContext';
 
 import { MockDb, Property, Review } from '../services/mockDb';
 import { HomeStackParamList } from '../navigation/types';
@@ -63,7 +64,8 @@ const CATEGORIES = [
 ];
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
-  
+  const { isDark } = useTheme();
+
   // Data State
   const [properties, setProperties] = useState<Property[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -136,7 +138,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           accuracy: Location.Accuracy.Balanced,
         });
       }
-      
+
       const geocode = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -147,7 +149,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         const city = address.city || address.subregion || 'Chennai';
         const neighborhood = address.district || address.name || 'Nearby';
         setLocationName(`${neighborhood}, ${city}`);
-        
+
         if (!isInitial) {
           Toast.show({
             type: 'success',
@@ -202,8 +204,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
     // Search query matches property name, location, or description
     if (searchQuery.trim().length > 0) {
-      list = list.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.type.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -211,7 +213,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
     // Filter by selected City/Area from the header circular list
     if (selectedCity) {
-      list = list.filter(p => 
+      list = list.filter(p =>
         p.area.toLowerCase() === selectedCity.toLowerCase() ||
         p.city.toLowerCase() === selectedCity.toLowerCase() ||
         p.location.toLowerCase().includes(selectedCity.toLowerCase())
@@ -248,42 +250,42 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50/50" edges={['left', 'right', 'bottom']}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-slate-50/50'}`} edges={['left', 'right', 'bottom']}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} translucent backgroundColor="transparent" />
 
       {/* Background Decorative Blur Gradients */}
-      <View className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-blue-100/30 via-indigo-50/15 to-transparent" style={{ pointerEvents: 'none' }} />
+      <View className={`absolute top-0 left-0 right-0 h-96 bg-gradient-to-b ${isDark ? 'from-blue-950/10 via-indigo-950/5' : 'from-blue-100/30 via-indigo-50/15'} to-transparent`} style={{ pointerEvents: 'none' }} />
 
       {/* Main Scroll Content */}
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 110 }}
       >
         {/* OYO-STYLE VIBRANT ROSE HEADER BLOCK (SOLID ROSE FOR SEARCH BLOCK ONLY) */}
-        <View className="bg-primary-600 px-5 pt-12 pb-7 rounded-b-[32px] shadow-md shadow-primary-600/10">
+        <View className={`px-5 pt-12 pb-7 rounded-b-[32px] shadow-md ${isDark ? 'bg-slate-900 border-b border-slate-800' : 'bg-primary-600 shadow-primary-600/10'}`}>
           {/* Top Row: Menu, Brand, Profile */}
           <View className="flex-row justify-between items-center mb-5">
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => Toast.show({ type: 'info', text1: 'Menu opened' })}
               className="p-1"
             >
               <Ionicons name="menu-outline" size={24} color="#ffffff" />
             </TouchableOpacity>
-            
+
             <View className="flex-row items-center">
               <Ionicons name="shield-checkmark" size={20} color="#ffffff" />
               <Text className="text-lg font-black text-white ml-1.5 uppercase tracking-wider">Truth Review</Text>
             </View>
-            
+
             <View className="flex-row items-center space-x-2.5">
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => Toast.show({ type: 'info', text1: 'Notifications dashboard mock.' })}
                 className="p-2 bg-white/10 rounded-full"
               >
                 <Ionicons name="notifications-outline" size={16} color="#ffffff" />
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => navigation.navigate('ProfileStack', { screen: 'Profile' })}
                 className="p-2 bg-white/10 rounded-full"
               >
@@ -293,7 +295,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </View>
 
           {/* Rounded Search Pill */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handleSearchNavigation}
             activeOpacity={0.95}
             className="flex-row items-center bg-white px-5 py-3.5 rounded-2xl shadow-md"
@@ -316,14 +318,14 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         {/* Scrollable Cities & Features (Outside/Below the Gradient Header) */}
         <View className="px-5 pt-5 pb-2">
           {/* Scrollable Chennai Localities (locations) */}
-          <ScrollView 
-            horizontal 
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 12 }}
             className="mb-5"
           >
             {/* Nearby GPS Locator */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => {
                 setSelectedCity(null);
                 fetchLocation(false);
@@ -333,88 +335,88 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               <View className="w-14 h-14 rounded-full bg-white justify-center items-center shadow-sm border border-slate-200">
                 <Ionicons name="compass-outline" size={24} color="#14B8A6" />
               </View>
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">Nearby</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Nearby</Text>
             </TouchableOpacity>
 
             {/* Adyar */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('Adyar')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Adyar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">Adyar</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Adyar</Text>
             </TouchableOpacity>
 
             {/* Velachery */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('Velachery')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Velachery' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">Velachery</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Velachery</Text>
             </TouchableOpacity>
 
             {/* T. Nagar */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('T. Nagar')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'T. Nagar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">T. Nagar</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>T. Nagar</Text>
             </TouchableOpacity>
 
             {/* OMR */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('Perungudi')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Perungudi' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">OMR</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>OMR</Text>
             </TouchableOpacity>
 
             {/* Tambaram */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('Tambaram')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Tambaram' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">Tambaram</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Tambaram</Text>
             </TouchableOpacity>
 
             {/* Anna Nagar */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedCity('Anna Nagar')}
               className="items-center"
             >
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=150&q=80' }} 
+              <Image
+                source={{ uri: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=150&q=80' }}
                 className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Anna Nagar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
               />
-              <Text className="text-[10px] text-slate-700 font-black mt-1.5">Anna Nagar</Text>
+              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Anna Nagar</Text>
             </TouchableOpacity>
           </ScrollView>
 
           {/* Stays Features Row */}
-          <ScrollView 
-            horizontal 
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 12 }}
-            className="border-t border-slate-100 pt-4"
+            className={`border-t pt-4 ${isDark ? 'border-slate-800' : 'border-slate-100'}`}
           >
             {[
               { label: 'Clean Rooms', icon: 'sparkles-outline' },
@@ -423,9 +425,9 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               { label: 'Free Wi-Fi', icon: 'wifi-outline' },
               { label: 'Toiletries', icon: 'leaf-outline' }
             ].map((feat, idx) => (
-              <View key={idx} className="flex-row items-center bg-primary-50/60 border border-primary-100 px-3.5 py-1.5 rounded-full">
-                <Ionicons name={feat.icon as any} size={11} color="#14B8A6" />
-                <Text className="text-[9px] text-primary-700 font-extrabold uppercase ml-1.5 tracking-wider">{feat.label}</Text>
+              <View key={idx} className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${isDark ? 'bg-slate-900 border-slate-850' : 'bg-primary-50/60 border-primary-100'}`}>
+                <Ionicons name={feat.icon as any} size={11} color={isDark ? '#3b82f6' : '#14B8A6'} />
+                <Text className={`text-[9px] font-extrabold uppercase ml-1.5 tracking-wider ${isDark ? 'text-slate-200' : 'text-primary-700'}`}>{feat.label}</Text>
               </View>
             ))}
           </ScrollView>
@@ -453,7 +455,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             }}
             renderItem={({ item }) => (
               <View style={{ width: width, paddingHorizontal: 20 }}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   activeOpacity={0.95}
                   onPress={handleSearchNavigation}
                   className="w-full h-48 rounded-3xl overflow-hidden relative shadow-md shadow-slate-200/5"
@@ -481,9 +483,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               return (
                 <View
                   key={idx}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    isActive ? 'w-4 bg-primary-600' : 'w-1.5 bg-slate-300'
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${isActive ? 'w-4 bg-primary-600' : 'w-1.5 bg-slate-300'
+                    }`}
                 />
               );
             })}
@@ -511,13 +512,13 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 }}
                 className="mr-3 flex-row items-center px-4 py-2 border rounded-full shadow-sm shadow-slate-100/30"
               >
-                <View 
-                  className="p-1.5 rounded-full" 
+                <View
+                  className="p-1.5 rounded-full"
                   style={{ backgroundColor: `${cat.gradient[0]}15` }}
                 >
                   <Ionicons name={cat.icon as any} size={13} color={cat.gradient[0]} />
                 </View>
-                <Text className="text-[11px] font-black text-slate-800 ml-2.5">
+                <Text className={`text-[11px] font-black ml-2.5 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
@@ -530,7 +531,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           <View className="px-5 mb-3 flex-row justify-between items-center">
             <Text className="text-xs font-black uppercase tracking-wider text-slate-400">Browse Verified Stays</Text>
           </View>
-          
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -543,15 +544,13 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 <TouchableOpacity
                   key={chip}
                   onPress={() => setActiveFilter(chip)}
-                  className={`mr-2 px-4 py-2 rounded-full border ${
-                    isActive 
-                      ? 'bg-primary-600 border-primary-600' 
-                      : 'bg-white border-slate-200'
-                  }`}
+                  className={`mr-2 px-4 py-2 rounded-full border ${isActive
+                      ? 'bg-primary-600 border-primary-600'
+                      : isDark ? 'bg-slate-900 border-slate-850' : 'bg-white border-slate-200'
+                    }`}
                 >
-                  <Text className={`text-[10px] font-bold ${
-                    isActive ? 'text-white' : 'text-slate-600'
-                  }`}>
+                  <Text className={`text-[10px] font-bold ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}>
                     {chip}
                   </Text>
                 </TouchableOpacity>
@@ -565,28 +564,28 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           {getFilteredProperties().map((prop) => {
             const propReviews = getPropertyReviews(prop.id);
             const latestReview = propReviews.length > 0 ? propReviews[0] : null;
-            
+
             return (
               <TouchableOpacity
                 key={prop.id}
                 activeOpacity={0.95}
                 onPress={() => navigation.navigate('PGDetails', { pgId: prop.id })}
-                className="bg-white border border-slate-100 rounded-[24px] overflow-hidden shadow-sm shadow-slate-100/50 mb-4"
+                className={`border rounded-[24px] overflow-hidden shadow-sm mb-4 ${isDark ? 'bg-slate-900 border-slate-850 shadow-slate-950/20' : 'bg-white border-slate-100 shadow-slate-100/50'}`}
               >
                 {/* Large Property Image */}
                 <View className="h-48 w-full relative">
-                  <Image 
-                    source={{ uri: prop.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80' }} 
+                  <Image
+                    source={{ uri: prop.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80' }}
                     className="w-full h-full object-cover"
                   />
                   <View className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  
+
                   {/* Category Pill Tag */}
                   <View className="absolute top-4 left-4 bg-black/60 px-3 py-1 rounded-full flex-row items-center">
-                    <Ionicons 
-                      name={prop.type === 'Hotel' || prop.type === 'Service Apartment' ? 'bed-outline' : 'business-outline'} 
-                      size={10} 
-                      color="#ffffff" 
+                    <Ionicons
+                      name={prop.type === 'Hotel' || prop.type === 'Service Apartment' ? 'bed-outline' : 'business-outline'}
+                      size={10}
+                      color="#ffffff"
                     />
                     <Text className="text-white text-[8px] font-black uppercase ml-1 tracking-wider">{prop.type}</Text>
                   </View>
@@ -605,40 +604,40 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 <View className="p-5">
                   <View className="flex-row justify-between items-start">
                     <View className="flex-1">
-                      <Text className="text-md font-black text-slate-800 leading-5" numberOfLines={1}>
+                      <Text className={`text-md font-black leading-5 ${isDark ? 'text-white' : 'text-slate-800'}`} numberOfLines={1}>
                         {prop.name}
                       </Text>
                       <View className="flex-row items-center mt-1">
                         <Ionicons name="location-outline" size={11} color="#64748b" />
-                        <Text className="text-[10px] text-slate-500 ml-0.5 truncate">{prop.location}</Text>
+                        <Text className={`text-[10px] ml-0.5 truncate ${isDark ? 'text-slate-450' : 'text-slate-500'}`}>{prop.location}</Text>
                       </View>
                     </View>
                   </View>
 
                   {/* Trust Score & Ratings summary */}
-                  <View className="flex-row justify-between items-center mt-4 bg-slate-50/80 border border-slate-100 p-3 rounded-2xl">
+                  <View className={`flex-row justify-between items-center mt-4 p-3 rounded-2xl border ${isDark ? 'bg-slate-850 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
                     <View className="flex-row items-center flex-1">
                       <Ionicons name="ribbon-outline" size={16} color="#10B981" />
                       <View className="ml-2 flex-1 pr-3">
                         <View className="flex-row justify-between items-center mb-0.5">
-                          <Text className="text-[9px] font-bold text-slate-500 uppercase">Trust Score</Text>
+                          <Text className={`text-[9px] font-bold uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Trust Score</Text>
                           <Text className="text-[10px] font-black text-emerald-600">{prop.trustScore}%</Text>
                         </View>
-                        <View className="h-1 bg-slate-200 rounded-full w-full">
-                          <View 
-                            className="h-full bg-emerald-500 rounded-full" 
-                            style={{ width: `${prop.trustScore}%` }} 
+                        <View className={`h-1 rounded-full w-full ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
+                          <View
+                            className="h-full bg-emerald-500 rounded-full"
+                            style={{ width: `${prop.trustScore}%` }}
                           />
                         </View>
                       </View>
                     </View>
 
-                    <View className="h-6 w-[1px] bg-slate-200/80 mx-1" />
+                    <View className={`h-6 w-[1px] mx-1 ${isDark ? 'bg-slate-700' : 'bg-slate-200/80'}`} />
 
                     <View className="flex-row items-center pl-3">
                       <Ionicons name="star" size={12} color="#f59e0b" />
-                      <Text className="text-xs font-black text-slate-800 ml-1">
-                        {propReviews.length > 0 
+                      <Text className={`text-xs font-black ml-1 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                        {propReviews.length > 0
                           ? (propReviews.reduce((acc, r) => acc + r.ratings.overall, 0) / propReviews.length).toFixed(1)
                           : 'N/A'
                         }
@@ -649,7 +648,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
                   {/* Quote Section showing Latest Review Snippet */}
                   {latestReview ? (
-                    <View className="mt-4 bg-slate-50/40 border-l-2 border-slate-300 p-3 rounded-r-xl">
+                    <View className={`mt-4 border-l-2 p-3 rounded-r-xl ${isDark ? 'bg-slate-850/40 border-slate-700' : 'bg-slate-50/40 border-slate-300'}`}>
                       <View className="flex-row justify-between items-center">
                         <Text className="text-[9px] font-black text-slate-400 uppercase">
                           Latest Resident Review
@@ -661,12 +660,12 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                           </View>
                         )}
                       </View>
-                      <Text className="text-xs text-slate-600 italic mt-1.5 leading-4" numberOfLines={2}>
+                      <Text className={`text-xs italic mt-1.5 leading-4 ${isDark ? 'text-slate-350' : 'text-slate-600'}`} numberOfLines={2}>
                         "{latestReview.comment}"
                       </Text>
                     </View>
                   ) : (
-                    <View className="mt-4 bg-slate-50/40 border-l-2 border-slate-200 p-3 rounded-r-xl">
+                    <View className={`mt-4 border-l-2 p-3 rounded-r-xl ${isDark ? 'bg-slate-850/40 border-slate-800' : 'bg-slate-50/40 border-slate-200'}`}>
                       <Text className="text-xs text-slate-400 italic">No reviews posted yet. Be the first to share your experience!</Text>
                     </View>
                   )}

@@ -17,11 +17,11 @@ type Props = NativeStackScreenProps<ProfileStackParamList, 'OwnerPanel'>;
 
 export default function OwnerPanelScreen({ navigation }: Props) {
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [properties, setProperties] = useState<Property[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  
+
   const [replyText, setReplyText] = useState<{ [reviewId: string]: string }>({});
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [submittingReply, setSubmittingReply] = useState(false);
@@ -36,11 +36,11 @@ export default function OwnerPanelScreen({ navigation }: Props) {
     const props = await MockDb.getProperties();
     const ownerProps = props.filter((p) => p.claimedBy === user?.id);
     setProperties(ownerProps);
-    
+
     if (ownerProps.length > 0) {
       const active = selectedProperty ? ownerProps.find(p => p.id === selectedProperty.id) || ownerProps[0] : ownerProps[0];
       setSelectedProperty(active);
-      
+
       const revs = await MockDb.getReviews();
       const activeRevs = revs.filter((r) => r.propertyId === active.id);
       setReviews(activeRevs);
@@ -135,7 +135,7 @@ export default function OwnerPanelScreen({ navigation }: Props) {
   const getAnalyticsSVG = () => {
     if (!selectedProperty) return null;
     const complaints = MockDb.getComplaintsStats(reviews);
-    
+
     const maxVal = Math.max(complaints.food, complaints.water, complaints.safety, complaints.deposit, complaints.maintenance, 3);
     const data = [
       { label: 'Food', val: complaints.food },
@@ -227,9 +227,9 @@ export default function OwnerPanelScreen({ navigation }: Props) {
           </TouchableOpacity>
           <Text className="text-xl font-extrabold text-slate-800 ml-3">Owner Panel</Text>
         </View>
-        
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('MyReviews')} 
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MyReviews')}
           className="bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg"
         >
           <Text className="text-xs font-bold text-slate-600">My Reviews</Text>
@@ -266,9 +266,8 @@ export default function OwnerPanelScreen({ navigation }: Props) {
                 return (
                   <TouchableOpacity
                     onPress={() => handleSelectProperty(item)}
-                    className={`px-4 py-3 rounded-2xl border ${
-                      isActive ? 'bg-primary-500 border-primary-500' : 'bg-slate-50 border-slate-200'
-                    } mr-2`}
+                    className={`px-4 py-3 rounded-2xl border ${isActive ? 'bg-primary-500 border-primary-500' : 'bg-slate-50 border-slate-200'
+                      } mr-2`}
                   >
                     <Text className={`text-xs font-extrabold ${isActive ? 'text-white' : 'text-slate-800'}`}>
                       {item.name}
@@ -307,7 +306,7 @@ export default function OwnerPanelScreen({ navigation }: Props) {
                   <View className="flex-row justify-between items-center mb-4">
                     <Text className="text-base font-extrabold text-slate-800">Manage Property Info</Text>
                     {!editingProperty ? (
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         onPress={() => handleStartEditing(selectedProperty)}
                         className="bg-primary-50 px-3 py-1.5 rounded-lg"
                       >
@@ -315,13 +314,13 @@ export default function OwnerPanelScreen({ navigation }: Props) {
                       </TouchableOpacity>
                     ) : (
                       <View className="flex-row gap-2">
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           onPress={handleSavePropertyDetails}
                           className="bg-green-50 px-3 py-1.5 rounded-lg"
                         >
                           <Text className="text-xs font-bold text-green-600">Save</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           onPress={() => setEditingProperty(null)}
                           className="bg-slate-100 px-3 py-1.5 rounded-lg"
                         >
@@ -370,7 +369,7 @@ export default function OwnerPanelScreen({ navigation }: Props) {
                 {/* Review Replies Management Section */}
                 <View className="bg-white border border-slate-100 rounded-3xl p-5 mb-10 shadow-sm">
                   <Text className="text-base font-extrabold text-slate-800 mb-4">Resident Reviews & Responses</Text>
-                  
+
                   {reviews.length === 0 ? (
                     <Text className="text-center text-slate-400 font-bold text-xs py-4">No reviews posted for this property yet.</Text>
                   ) : (

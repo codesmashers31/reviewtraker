@@ -11,15 +11,17 @@ import { MockDb, Property } from '../services/mockDb';
 import PGCard from '../components/PGCard';
 import EmptyState from '../components/EmptyState';
 import { SearchStackParamList } from '../navigation/types';
+import { useTheme } from '../features/theme/ThemeContext';
 
 type NavigationProp = NativeStackNavigationProp<SearchStackParamList, 'Search'>;
 
 type SortOption = 'default' | 'trustDesc' | 'reviewsDesc';
 
 export default function SearchScreen({ navigation }: { navigation: any }) {
+  const { isDark } = useTheme();
   const route = useRoute<any>();
   const isFocused = useIsFocused();
-  
+
   const [properties, setProperties] = useState<Property[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>('All');
@@ -85,7 +87,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           accuracy: Location.Accuracy.Balanced,
         });
       }
-      
+
       const geocode = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -96,7 +98,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
         const city = address.city || address.subregion || 'Chennai';
         const neighborhood = address.district || address.name || 'Nearby';
         setLocationName(`${neighborhood}, ${city}`);
-        
+
         if (!isInitial) {
           Toast.show({
             type: 'success',
@@ -127,7 +129,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
     if (isFocused) {
       loadProperties();
       fetchLocation(true); // Silently fetch location on focus
-      
+
       // If a search query was passed as parameter (e.g. from popular areas chip)
       if (route.params?.query) {
         setSearchQuery(route.params.query);
@@ -232,23 +234,23 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   const filterCount = Object.values(activeFilters).filter(val => val !== undefined && val !== null && val !== false && val !== 'All').length;
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50/50" edges={['top', 'left', 'right']}>
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-slate-50/50'}`} edges={['top', 'left', 'right']}>
       {/* Top Header with Location Fetching */}
-      <View className="px-5 pt-4 pb-3 flex-row justify-between items-center bg-white border-b border-slate-100">
+      <View className={`px-5 pt-4 pb-3 flex-row justify-between items-center border-b ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
         <View className="flex-row items-center flex-1">
           <View className="bg-primary-600 p-2 rounded-xl flex-row items-center justify-center">
             <Ionicons name="compass-outline" size={18} color="#ffffff" />
           </View>
           <View className="ml-3 flex-1 justify-center">
             <Text className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Search Location</Text>
-            
-            <TouchableOpacity 
-              onPress={() => fetchLocation(false)} 
+
+            <TouchableOpacity
+              onPress={() => fetchLocation(false)}
               className="flex-row items-center mt-0.5"
               activeOpacity={0.7}
             >
-              <Ionicons name="location" size={12} color="#14B8A6" />
-              <Text className="text-xs font-black text-slate-800 ml-1 mr-1.5 truncate max-w-[140px]">
+              <Ionicons name="location" size={12} color={isDark ? '#3b82f6' : '#14B8A6'} />
+              <Text className={`text-xs font-black ml-1 mr-1.5 truncate max-w-[140px] ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                 {locationName}
               </Text>
               {loadingLocation ? (
@@ -261,7 +263,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
         </View>
 
         <View className="flex-row items-center space-x-2.5">
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => Toast.show({ type: 'info', text1: 'Notifications dashboard mock.' })}
             className="p-2.5 bg-slate-50 border border-slate-100 rounded-full"
           >
@@ -273,10 +275,10 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
       {/* Main Content Area */}
       <View className="flex-1 px-5 pt-4">
         {/* Search Input Bar */}
-        <View className="flex-row items-center bg-white border border-slate-200 rounded-2xl px-4 py-1.5 mb-4 shadow-sm shadow-slate-100/5">
+        <View className={`flex-row items-center border rounded-2xl px-4 py-1.5 mb-4 shadow-sm ${isDark ? 'bg-slate-900 border-slate-800 shadow-slate-950/20' : 'bg-white border-slate-200 shadow-slate-100/5'}`}>
           <Ionicons name="search-outline" size={18} color="#94a3b8" />
           <TextInput
-            className="flex-1 ml-2 text-slate-800 text-xs font-semibold h-10"
+            className={`flex-1 ml-2 text-xs font-semibold h-10 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}
             placeholder="Search by name, area, city..."
             placeholderTextColor="#94a3b8"
             value={searchQuery}
@@ -287,7 +289,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
               <Ionicons name="close-circle" size={18} color="#cbd5e1" />
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => navigation.navigate('Filters' as any)}
             className="border-l border-slate-200 pl-3 flex-row items-center"
           >
@@ -309,11 +311,12 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
                 <TouchableOpacity
                   key={type}
                   onPress={() => setSelectedType(type)}
-                  className={`px-4 py-2 rounded-full border ${
-                    active ? 'bg-primary-600 border-primary-600' : 'bg-white border-slate-200'
-                  }`}
+                  className={`px-4 py-2 rounded-full border ${active
+                      ? 'bg-primary-600 border-primary-600'
+                      : isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                    }`}
                 >
-                  <Text className={`text-[10px] font-black uppercase tracking-wider ${active ? 'text-white' : 'text-slate-500'}`}>{type}</Text>
+                  <Text className={`text-[10px] font-black uppercase tracking-wider ${active ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-500'}`}>{type}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -325,13 +328,13 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           <Text className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">
             Showing {filteredAndSortedProperties.length} results
           </Text>
-          
+
           <TouchableOpacity
             onPress={cycleSort}
-            className="flex-row items-center border border-slate-200 bg-white px-3.5 py-1.5 rounded-full shadow-sm shadow-slate-100/5"
+            className={`flex-row items-center border px-3.5 py-1.5 rounded-full shadow-sm ${isDark ? 'bg-slate-900 border-slate-800 shadow-slate-950/20' : 'border-slate-200 bg-white shadow-slate-100/5'}`}
           >
-            <Ionicons name="swap-vertical" size={12} color="#475569" />
-            <Text className="text-slate-600 text-[10px] font-black ml-1.5">{getSortLabel()}</Text>
+            <Ionicons name="swap-vertical" size={12} color={isDark ? '#94a3b8' : '#475569'} />
+            <Text className={`text-[10px] font-black ml-1.5 ${isDark ? 'text-slate-350' : 'text-slate-600'}`}>{getSortLabel()}</Text>
           </TouchableOpacity>
         </View>
 

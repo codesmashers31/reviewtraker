@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTheme } from '../features/theme/ThemeContext';
 
 interface EmptyStateProps {
   title: string;
@@ -13,12 +14,13 @@ export default function EmptyState({
   description,
   icon = 'search-outline',
 }: EmptyStateProps) {
+  const { isDark } = useTheme();
   return (
     <View className="flex-1 items-center justify-center py-12 px-6">
-      <View className="h-20 w-20 bg-slate-50 rounded-full justify-center items-center mb-4">
-        <Ionicons name={icon} size={40} color="#94a3b8" />
+      <View className={`h-20 w-20 rounded-full justify-center items-center mb-4 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+        <Ionicons name={icon} size={40} color={isDark ? '#475569' : '#94a3b8'} />
       </View>
-      <Text className="text-lg font-bold text-slate-800 text-center mb-1.5">{title}</Text>
+      <Text className={`text-lg font-bold text-center mb-1.5 ${isDark ? 'text-white' : 'text-slate-800'}`}>{title}</Text>
       <Text className="text-sm text-slate-400 text-center max-w-[250px] font-medium leading-5">
         {description}
       </Text>

@@ -17,7 +17,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'AddReview'>;
 export default function AddReviewScreen({ route, navigation }: Props) {
   const { pgId } = route.params;
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState('');
   const [stayMonths, setStayMonths] = useState('8');
@@ -55,7 +55,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
       washroom: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=300&q=80',
       building: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=300&q=80',
     };
-    
+
     setPhotos(prev => ({ ...prev, [category]: urls[category] }));
     Toast.show({
       type: 'success',
@@ -161,7 +161,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
-        
+
         {/* Privacy Note */}
         <View className="bg-slate-50 border border-slate-150 rounded-2xl p-4.5 mb-6">
           <View className="flex-row items-center mb-1">

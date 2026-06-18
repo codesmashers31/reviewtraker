@@ -3,17 +3,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  useColorScheme, 
-  Platform, 
-  StyleSheet, 
-  Dimensions, 
-  Animated 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+  Dimensions,
+  Animated
 } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useTheme } from '../features/theme/ThemeContext';
 
 import {
   MainTabParamList,
@@ -108,11 +108,11 @@ function ProfileNavigator() {
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
       <ProfileStack.Screen name="MyReviews" component={MyReviewsScreen} />
       <ProfileStack.Screen name="AddProperty" component={AddPropertyScreen} />
-      
+
       {isOwner && (
         <ProfileStack.Screen name="OwnerPanel" component={OwnerPanelScreen} />
       )}
-      
+
       {isAdmin && (
         <>
           <ProfileStack.Screen name="AdminPanel" component={AdminPanelScreen} />
@@ -128,15 +128,15 @@ function ProfileNavigator() {
 }
 
 // Interactive Tab Item with Scale Animations
-function TabBarItem({ 
-  route, 
-  isFocused, 
-  onPress, 
-  isDark 
-}: { 
-  route: any; 
-  isFocused: boolean; 
-  onPress: () => void; 
+function TabBarItem({
+  route,
+  isFocused,
+  onPress,
+  isDark
+}: {
+  route: any;
+  isFocused: boolean;
+  onPress: () => void;
   isDark: boolean;
 }) {
   const scaleValue = useRef(new Animated.Value(isFocused ? 1.05 : 1)).current;
@@ -168,16 +168,16 @@ function TabBarItem({
       activeOpacity={0.8}
       style={styles.tabItem}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           isFocused ? styles.activePill : styles.inactivePill,
           { transform: [{ scale: scaleValue }] }
         ]}
       >
-        <Ionicons 
-          name={iconName as any} 
-          size={20} 
-          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#64748b'} 
+        <Ionicons
+          name={iconName as any}
+          size={20}
+          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#64748b'}
         />
       </Animated.View>
     </TouchableOpacity>
@@ -212,7 +212,7 @@ function CenterActionButton({ onPress }: { onPress: () => void }) {
       activeOpacity={0.9}
       style={styles.centerButtonWrapper}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           styles.centerButton,
           { transform: [{ scale: pulseAnim }] }
@@ -226,11 +226,10 @@ function CenterActionButton({ onPress }: { onPress: () => void }) {
 
 // Custom Floating Tab Bar
 function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const systemScheme = useColorScheme();
-  const isDark = systemScheme === 'dark';
+  const { isDark } = useTheme();
 
   return (
-    <View 
+    <View
       style={[
         styles.floatingContainer,
         {
@@ -256,7 +255,7 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
         if (route.name === 'AddReviewTab') {
           return (
-            <CenterActionButton 
+            <CenterActionButton
               key={route.key}
               onPress={onPress}
             />
@@ -286,7 +285,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen name="HomeStack" component={HomeNavigator} />
       <Tab.Screen name="SearchStack" component={SearchNavigator} />
-      
+
       {/* Center highlighted Add Review Tab */}
       <Tab.Screen name="AddReviewTab" component={AddReviewLandingScreen} />
 
