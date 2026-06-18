@@ -11,6 +11,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -146,6 +147,43 @@ export default function LoginScreen({ navigation }: Props) {
     }
   };
 
+  // ── Google Sign-In ──────────────────────────────────────────────────────────
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const googleUser = {
+        id: `google_${Math.random().toString(36).substr(2, 9)}`,
+        name: 'Google User',
+        email: 'user@gmail.com',
+        role: 'user' as const,
+        phoneNumber: '',
+      };
+      const token = 'mock_google_jwt_token';
+      await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      await storage.setItem(STORAGE_KEYS.USER_INFO, googleUser);
+      dispatch(setCredentials({ user: googleUser, token }));
+      Toast.show({
+        type: 'success',
+        text1: 'Signed in with Google!',
+        text2: `Welcome, ${googleUser.name}`,
+        position: 'bottom',
+      });
+    } catch {
+      Toast.show({
+        type: 'error',
+        text1: 'Google Sign-In Failed',
+        text2: 'Something went wrong. Please try again.',
+        position: 'bottom',
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  // ── Verify OTP & Login ──────────────────────────────────────────────────────
 
   const handleVerifyOtp = async () => {
     if (otpCode.length !== OTP_LENGTH) {
@@ -320,6 +358,29 @@ export default function LoginScreen({ navigation }: Props) {
                 </View>
               )}
             </TouchableOpacity>
+
+            {/* ── Divider ── */}
+            <View style={styles.dividerRow}>
+              <View style={[styles.dividerLine, { backgroundColor: border }]} />
+              <Text style={[styles.dividerText, { color: textMuted }]}>or continue with</Text>
+              <View style={[styles.dividerLine, { backgroundColor: border }]} />
+            </View>
+
+            {/* ── Google Sign-In (icon only) ── */}
+            <View style={styles.socialRow}>
+              <TouchableOpacity
+                onPress={handleGoogleSignIn}
+                style={[styles.googleIconBtn, { backgroundColor: card, borderColor: border }]}
+                activeOpacity={0.8}
+                disabled={googleLoading}
+              >
+                {googleLoading ? (
+                  <ActivityIndicator size="small" color="#4285F4" />
+                ) : (
+                  <Text style={styles.googleG}>G</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Building illustration + footer */}
@@ -497,6 +558,16 @@ const styles = StyleSheet.create({
   ctaButton: { backgroundColor: '#2563eb', paddingVertical: 16, borderRadius: 16, alignItems: 'center', justifyContent: 'center', shadowColor: '#2563eb', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.25, shadowRadius: 8, elevation: 4 },
   ctaRow: { flexDirection: 'row', alignItems: 'center' },
   ctaText: { color: '#ffffff', fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
+
+  // Divider
+  dividerRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 18 },
+  dividerLine: { flex: 1, height: 1 },
+  dividerText: { marginHorizontal: 12, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.6 },
+
+  // Google icon-only button
+  socialRow: { alignItems: 'center' },
+  googleIconBtn: { width: 56, height: 56, borderRadius: 28, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3 },
+  googleG: { fontSize: 26, fontWeight: '900', color: '#4285F4', lineHeight: 30 },
 
   // Illustration
   illustrationBlock: { marginTop: 32, alignItems: 'center' },
