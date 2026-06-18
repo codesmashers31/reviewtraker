@@ -3,17 +3,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  useColorScheme, 
-  Platform, 
-  StyleSheet, 
-  Dimensions, 
-  Animated 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+  Dimensions,
+  Animated
 } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useTheme } from '../features/theme/ThemeContext';
 
 import {
   MainTabParamList,
@@ -108,11 +108,11 @@ function ProfileNavigator() {
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
       <ProfileStack.Screen name="MyReviews" component={MyReviewsScreen} />
       <ProfileStack.Screen name="AddProperty" component={AddPropertyScreen} />
-      
+
       {isOwner && (
         <ProfileStack.Screen name="OwnerPanel" component={OwnerPanelScreen} />
       )}
-      
+
       {isAdmin && (
         <>
           <ProfileStack.Screen name="AdminPanel" component={AdminPanelScreen} />
@@ -128,15 +128,15 @@ function ProfileNavigator() {
 }
 
 // Interactive Tab Item with Scale Animations
-function TabBarItem({ 
-  route, 
-  isFocused, 
-  onPress, 
-  isDark 
-}: { 
-  route: any; 
-  isFocused: boolean; 
-  onPress: () => void; 
+function TabBarItem({
+  route,
+  isFocused,
+  onPress,
+  isDark
+}: {
+  route: any;
+  isFocused: boolean;
+  onPress: () => void;
   isDark: boolean;
 }) {
   const scaleValue = useRef(new Animated.Value(isFocused ? 1.05 : 1)).current;
@@ -168,16 +168,23 @@ function TabBarItem({
       activeOpacity={0.8}
       style={styles.tabItem}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           isFocused ? styles.activePill : styles.inactivePill,
           { transform: [{ scale: scaleValue }] }
         ]}
       >
+<<<<<<< HEAD
         <Ionicons 
           name={iconName as any} 
           size={20} 
           color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#114DA8'} 
+=======
+        <Ionicons
+          name={iconName as any}
+          size={20}
+          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#64748b'}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
         />
       </Animated.View>
     </TouchableOpacity>
@@ -212,7 +219,7 @@ function CenterActionButton({ onPress }: { onPress: () => void }) {
       activeOpacity={0.9}
       style={styles.centerButtonWrapper}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           styles.centerButton,
           { transform: [{ scale: pulseAnim }] }
@@ -226,11 +233,10 @@ function CenterActionButton({ onPress }: { onPress: () => void }) {
 
 // Custom Floating Tab Bar
 function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const systemScheme = useColorScheme();
-  const isDark = systemScheme === 'dark';
+  const { isDark } = useTheme();
 
   return (
-    <View 
+    <View
       style={[
         styles.floatingContainer,
         {
@@ -256,7 +262,7 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
         if (route.name === 'AddReviewTab') {
           return (
-            <CenterActionButton 
+            <CenterActionButton
               key={route.key}
               onPress={onPress}
             />
@@ -286,7 +292,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen name="HomeStack" component={HomeNavigator} />
       <Tab.Screen name="SearchStack" component={SearchNavigator} />
-      
+
       {/* Center highlighted Add Review Tab */}
       <Tab.Screen name="AddReviewTab" component={AddReviewLandingScreen} />
 
@@ -324,13 +330,21 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   activePill: {
+<<<<<<< HEAD
     backgroundColor: '#114DA8', // Royal Ocean
+=======
+    backgroundColor: '#14B8A6', // Teal
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
     width: 44,
     height: 44,
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     shadowColor: '#1E88E5',
+=======
+    shadowColor: '#14B8A6',
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -359,13 +373,22 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
+<<<<<<< HEAD
     backgroundColor: '#1E88E5', // Aqua Blue
+=======
+    backgroundColor: '#FF6B6B', // Coral Accent
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
     justifyContent: 'center',
     alignItems: 'center',
     top: -16,
     borderWidth: 4,
+<<<<<<< HEAD
     borderColor: '#F5FAFF',
     shadowColor: '#4FC3F7',
+=======
+    borderColor: '#ffffff',
+    shadowColor: '#FF6B6B',
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.45,
     shadowRadius: 14,

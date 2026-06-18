@@ -18,7 +18,7 @@ export default function FiltersScreen({ navigation }: Props) {
   const [foodIncluded, setFoodIncluded] = useState(false);
   const [maleHostel, setMaleHostel] = useState(false);
   const [femaleHostel, setFemaleHostel] = useState(false);
-  
+
   const [propertyType, setPropertyType] = useState<string | null>(null);
 
   const typesList = [
@@ -62,12 +62,11 @@ export default function FiltersScreen({ navigation }: Props) {
     return (
       <TouchableOpacity
         onPress={() => setValue(!value)}
-        className={`flex-row justify-between items-center border p-4.5 rounded-2xl mb-2.5 active:opacity-90 ${
-          value ? 'bg-primary-50/20 border-primary-300' : 'bg-slate-50 border-slate-200'
-        }`}
+        className={`flex-row justify-between items-center border p-4.5 rounded-2xl mb-2.5 active:opacity-90 ${value ? 'bg-primary-50/20 border-primary-300' : 'bg-slate-50 border-slate-200'
+          }`}
       >
         <View className="flex-row items-center">
-          <Ionicons name={icon as any} size={18} color={value ? '#0ea5e9' : '#475569'} />
+          <Ionicons name={icon as any} size={18} color={value ? '#14B8A6' : '#475569'} />
           <Text className={`text-xs font-bold ml-3.5 ${value ? 'text-primary-700' : 'text-slate-700'}`}>
             {label}
           </Text>
@@ -75,7 +74,7 @@ export default function FiltersScreen({ navigation }: Props) {
         <Ionicons
           name={value ? 'checkbox' : 'square-outline'}
           size={18}
-          color={value ? '#0ea5e9' : '#94a3b8'}
+          color={value ? '#14B8A6' : '#94a3b8'}
         />
       </TouchableOpacity>
     );
@@ -100,7 +99,7 @@ export default function FiltersScreen({ navigation }: Props) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
-        
+
         {/* Verification & Trust */}
         <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Verification & Trust</Text>
         {renderToggle('Verified Property Listings Only', verifiedOnly, setVerifiedOnly, 'checkmark-circle-outline')}
@@ -124,16 +123,14 @@ export default function FiltersScreen({ navigation }: Props) {
             <TouchableOpacity
               key={t}
               onPress={() => setPropertyType(propertyType === t ? null : t)}
-              className={`px-3.5 py-2.5 rounded-xl border ${
-                propertyType === t
+              className={`px-3.5 py-2.5 rounded-xl border ${propertyType === t
                   ? 'bg-primary-500 border-primary-500'
                   : 'bg-slate-50 border-slate-200'
-              } flex-grow m-0.5`}
+                } flex-grow m-0.5`}
             >
               <Text
-                className={`text-xs font-extrabold text-center ${
-                  propertyType === t ? 'text-white' : 'text-slate-600'
-                }`}
+                className={`text-xs font-extrabold text-center ${propertyType === t ? 'text-white' : 'text-slate-600'
+                  }`}
               >
                 {t}
               </Text>

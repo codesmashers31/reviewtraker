@@ -8,8 +8,10 @@ import { RootState } from '../store';
 import { MockDb, Property } from '../services/mockDb';
 import PGCard from '../components/PGCard';
 import EmptyState from '../components/EmptyState';
+import { useTheme } from '../features/theme/ThemeContext';
 
 export default function FavoritesScreen({ navigation }: { navigation: any }) {
+  const { isDark } = useTheme();
   const isFocused = useIsFocused();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
   const [properties, setProperties] = useState<Property[]>([]);
@@ -31,9 +33,15 @@ export default function FavoritesScreen({ navigation }: { navigation: any }) {
   const favoritedPGs = properties.filter((pg) => wishlistItems.includes(pg.id));
 
   return (
+<<<<<<< HEAD
     <SafeAreaView className="flex-1 bg-background">
       <View className="px-4 pt-6 pb-2 border-b border-borderSubtle">
         <Text className="text-2xl font-black text-text mb-2">My Favorites</Text>
+=======
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
+      <View className={`px-4 pt-6 pb-2 border-b ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-50'}`}>
+        <Text className={`text-2xl font-black mb-2 ${isDark ? 'text-white' : 'text-slate-800'}`}>My Favorites</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
       </View>
 
       {loading ? (

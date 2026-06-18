@@ -49,9 +49,9 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
     pathD = `M ${points[0].x} ${points[0].y}`;
     for (let i = 1; i < points.length; i++) {
       // Smooth curve calculation
-      const cpX1 = points[i-1].x + (points[i].x - points[i-1].x) / 2;
-      const cpY1 = points[i-1].y;
-      const cpX2 = points[i-1].x + (points[i].x - points[i-1].x) / 2;
+      const cpX1 = points[i - 1].x + (points[i].x - points[i - 1].x) / 2;
+      const cpY1 = points[i - 1].y;
+      const cpX2 = points[i - 1].x + (points[i].x - points[i - 1].x) / 2;
       const cpY2 = points[i].y;
       pathD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${points[i].x} ${points[i].y}`;
     }
@@ -80,8 +80,13 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
         <Svg height={chartHeight} width={chartWidth}>
           <Defs>
             <LinearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+<<<<<<< HEAD
               <Stop offset="0%" stopColor="#2563EB" stopOpacity={0.4} />
               <Stop offset="100%" stopColor="#2563EB" stopOpacity={0.0} />
+=======
+              <Stop offset="0%" stopColor="#14B8A6" stopOpacity={0.25} />
+              <Stop offset="100%" stopColor="#14B8A6" stopOpacity={0.0} />
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             </LinearGradient>
           </Defs>
 
@@ -94,7 +99,11 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
           {areaD ? <Path d={areaD} fill="url(#chartGrad)" /> : null}
 
           {/* Line Path */}
+<<<<<<< HEAD
           {pathD ? <Path d={pathD} fill="none" stroke="#2563EB" strokeWidth={3} /> : null}
+=======
+          {pathD ? <Path d={pathD} fill="none" stroke="#14B8A6" strokeWidth={3} /> : null}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
 
           {/* Data Nodes */}
           {points.map((pt, idx) => (
@@ -103,8 +112,13 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
               cx={pt.x}
               cy={pt.y}
               r={selectedPoint === idx ? 6 : 4}
+<<<<<<< HEAD
               fill={selectedPoint === idx ? '#D4A5A5' : '#23283B'}
               stroke="#D4A5A5"
+=======
+              fill={selectedPoint === idx ? '#0d9488' : '#ffffff'}
+              stroke="#14B8A6"
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
               strokeWidth={selectedPoint === idx ? 3 : 2}
               onPress={() => setSelectedPoint(selectedPoint === idx ? null : idx)}
             />
@@ -143,8 +157,13 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
             </View>
 
             {/* Percentage Bar */}
+<<<<<<< HEAD
             <View className="flex-1 h-2 bg-surface rounded-full mx-2 overflow-hidden border border-borderSubtle">
               <View 
+=======
+            <View className="flex-1 h-2 bg-slate-100 rounded-full mx-2 overflow-hidden">
+              <View
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                 className={`h-full ${item.color} rounded-full`}
                 style={{ width: `${Math.min((item.count / (maxTotal || 1)) * 100, 100)}%` }}
               />

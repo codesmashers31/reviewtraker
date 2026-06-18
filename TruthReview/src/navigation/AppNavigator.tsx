@@ -43,7 +43,7 @@ export default function AppNavigator() {
   if (initializing) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#14B8A6" />
       </View>
     );
   }

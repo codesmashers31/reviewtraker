@@ -17,7 +17,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'AddReview'>;
 export default function AddReviewScreen({ route, navigation }: Props) {
   const { pgId } = route.params;
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState('');
   const [stayMonths, setStayMonths] = useState('8');
@@ -55,7 +55,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
       washroom: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=300&q=80',
       building: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=300&q=80',
     };
-    
+
     setPhotos(prev => ({ ...prev, [category]: urls[category] }));
     Toast.show({
       type: 'success',
@@ -161,12 +161,17 @@ export default function AddReviewScreen({ route, navigation }: Props) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
-        
+
         {/* Privacy Note */}
         <View className="bg-card border border-borderSubtle rounded-2xl p-4.5 mb-6">
           <View className="flex-row items-center mb-1">
+<<<<<<< HEAD
             <Ionicons name="shield-checkmark" size={16} color="#D4A5A5" />
             <Text className="text-xs font-extrabold text-text ml-1.5">Your Privacy is Protected</Text>
+=======
+            <Ionicons name="shield-checkmark" size={16} color="#14B8A6" />
+            <Text className="text-xs font-extrabold text-slate-700 ml-1.5">Your Privacy is Protected</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
           </View>
           <Text className="text-[10px] text-textMuted font-semibold leading-5 mt-1">
             We mask all reviewer identities. The public will never see your Name, Email, or Address. Your review will only show "Verified Resident" or "Resident" along with your length of stay.

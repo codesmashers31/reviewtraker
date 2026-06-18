@@ -34,7 +34,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'AddProperty'>;
 export default function AddPropertyScreen({ navigation }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
-  
+
   const {
     control,
     handleSubmit,
@@ -182,6 +182,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   <TouchableOpacity
                     key={t}
                     onPress={() => onChange(t)}
+<<<<<<< HEAD
                     className={`px-3 py-2.5 rounded-xl border ${
                       value === t
                         ? 'bg-secondary-500 border-secondary-500'
@@ -192,6 +193,16 @@ export default function AddPropertyScreen({ navigation }: Props) {
                       className={`text-xs font-extrabold text-center ${
                         value === t ? 'text-white' : 'text-textBody'
                       }`}
+=======
+                    className={`px-3 py-2.5 rounded-xl border ${value === t
+                        ? 'bg-primary-500 border-primary-500'
+                        : 'bg-slate-50 border-slate-200'
+                      } flex-grow m-0.5`}
+                  >
+                    <Text
+                      className={`text-xs font-extrabold text-center ${value === t ? 'text-white' : 'text-slate-600'
+                        }`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                     >
                       {t}
                     </Text>
@@ -219,6 +230,7 @@ export default function AddPropertyScreen({ navigation }: Props) {
                   <TouchableOpacity
                     key={g.val}
                     onPress={() => onChange(g.val as GenderType)}
+<<<<<<< HEAD
                     className={`px-3.5 py-2.5 rounded-xl border ${
                       value === g.val
                         ? 'bg-secondary-500 border-secondary-500'
@@ -229,6 +241,16 @@ export default function AddPropertyScreen({ navigation }: Props) {
                       className={`text-xs font-extrabold text-center ${
                         value === g.val ? 'text-white' : 'text-textBody'
                       }`}
+=======
+                    className={`px-3.5 py-2.5 rounded-xl border ${value === g.val
+                        ? 'bg-primary-500 border-primary-500'
+                        : 'bg-slate-50 border-slate-200'
+                      } flex-grow m-0.5`}
+                  >
+                    <Text
+                      className={`text-xs font-extrabold text-center ${value === g.val ? 'text-white' : 'text-slate-600'
+                        }`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                     >
                       {g.label}
                     </Text>
@@ -332,23 +354,41 @@ export default function AddPropertyScreen({ navigation }: Props) {
           <Text className="text-[11px] font-semibold text-textMuted mb-3">
             Precise coordinates are required to enforce duplicate prevention. Select a test area to simulate coordinate mapping:
           </Text>
-          
+
           <View className="flex-row flex-wrap gap-2 mb-4">
+<<<<<<< HEAD
             <TouchableOpacity 
               onPress={() => applyPresetCoords(13.0067, 80.2578, 'Adyar')} 
               className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
+=======
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(13.0067, 80.2578, 'Adyar')}
+              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             >
               <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Adyar PG</Text>
             </TouchableOpacity>
+<<<<<<< HEAD
             <TouchableOpacity 
               onPress={() => applyPresetCoords(12.9801, 80.2224, 'Velachery')} 
               className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
+=======
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(12.9801, 80.2224, 'Velachery')}
+              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             >
               <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Stanza Velachery</Text>
             </TouchableOpacity>
+<<<<<<< HEAD
             <TouchableOpacity 
               onPress={() => applyPresetCoords(13.0418, 80.2341, 'T. Nagar')} 
               className="bg-card border border-borderSubtle px-3 py-2 rounded-xl"
+=======
+            <TouchableOpacity
+              onPress={() => applyPresetCoords(13.0418, 80.2341, 'T. Nagar')}
+              className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl"
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             >
               <Text className="text-xs font-bold text-[#D4A5A5]">📍 Seed Serene T. Nagar</Text>
             </TouchableOpacity>
@@ -400,9 +440,14 @@ export default function AddPropertyScreen({ navigation }: Props) {
             name="description"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+<<<<<<< HEAD
                 className={`w-full bg-surface border ${
                   errors.description ? 'border-red-500' : 'border-borderSubtle'
                 } px-4 py-3 rounded-2xl text-text text-sm font-medium h-28`}
+=======
+                className={`w-full bg-slate-50 border ${errors.description ? 'border-red-500' : 'border-slate-200'
+                  } px-4 py-3 rounded-2xl text-slate-800 text-sm font-medium h-28`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                 placeholder="Describe the rooms, occupancy details, environment, deposit rules, etc."
                 placeholderTextColor="#94A3B8"
                 multiline
@@ -429,14 +474,23 @@ export default function AddPropertyScreen({ navigation }: Props) {
                 <TouchableOpacity
                   key={item}
                   onPress={() => toggleFacility(item)}
+<<<<<<< HEAD
                   className={`flex-row items-center border ${
                     isSelected ? 'bg-surface border-accent-500/30' : 'bg-card border-borderSubtle'
                   } px-3.5 py-2.5 rounded-xl m-0.5`}
+=======
+                  className={`flex-row items-center border ${isSelected ? 'bg-primary-50 border-primary-300' : 'bg-slate-55 border-slate-200'
+                    } px-3.5 py-2.5 rounded-xl m-0.5`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                 >
                   <Ionicons
                     name={isSelected ? 'checkbox' : 'square-outline'}
                     size={16}
+<<<<<<< HEAD
                     color={isSelected ? '#D4A5A5' : '#94a3b8'}
+=======
+                    color={isSelected ? '#14B8A6' : '#94a3b8'}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                   />
                   <Text className={`text-xs font-bold ml-2 ${isSelected ? 'text-accent-500' : 'text-textBody'}`}>
                     {item}

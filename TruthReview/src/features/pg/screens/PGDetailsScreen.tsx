@@ -109,10 +109,17 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
 
   // Trust score formatting
   const getTrustScoreInfo = (score: number) => {
+<<<<<<< HEAD
     if (score >= 90) return { label: 'Excellent', col: 'text-green-400', bg: 'bg-green-950/35 border border-green-500/20', stroke: '#10b981' };
     if (score >= 75) return { label: 'Good', col: 'text-secondary-500', bg: 'bg-secondary-950/35 border border-secondary-500/20', stroke: '#2563eb' };
     if (score >= 50) return { label: 'Average', col: 'text-orange-400', bg: 'bg-orange-950/35 border border-orange-500/20', stroke: '#f59e0b' };
     return { label: 'Poor', col: 'text-rose-400', bg: 'bg-rose-950/35 border border-rose-500/20', stroke: '#ef4444' };
+=======
+    if (score >= 90) return { label: 'Excellent', col: 'text-green-600', bg: 'bg-green-50', stroke: '#10b981' };
+    if (score >= 75) return { label: 'Good', col: 'text-teal-600', bg: 'bg-teal-50', stroke: '#14B8A6' };
+    if (score >= 50) return { label: 'Average', col: 'text-orange-600', bg: 'bg-orange-50', stroke: '#f59e0b' };
+    return { label: 'Poor', col: 'text-red-600', bg: 'bg-red-50', stroke: '#ef4444' };
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
   };
 
   const trustInfo = getTrustScoreInfo(property.trustScore);
@@ -209,7 +216,11 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
           <Ionicons
             name={isFavorited ? 'heart' : 'heart-outline'}
             size={22}
+<<<<<<< HEAD
             color={isFavorited ? '#D4A5A5' : '#ffffff'}
+=======
+            color={isFavorited ? '#FF6B6B' : '#ffffff'}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
           />
         </TouchableOpacity>
       </View>
@@ -245,9 +256,8 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               {property.images.map((_, idx) => (
                 <View
                   key={idx}
-                  className={`h-2 w-2 rounded-full ${
-                    idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'
-                  }`}
+                  className={`h-2 w-2 rounded-full ${idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'
+                    }`}
                 />
               ))}
             </View>
@@ -271,7 +281,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
             <Text className="text-2xl font-black text-text flex-1 mr-3 leading-8">
               {property.name}
             </Text>
-            
+
             {/* Verified Badge */}
             {(property.claimedBy !== null || property.trustScore >= 80) && (
               <View className="bg-accent-500 rounded-full px-2.5 py-1 flex-row items-center mt-1 shadow-md">
@@ -352,8 +362,13 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                   key={idx}
                   className="flex-row items-center bg-card border border-borderSubtle px-3 py-2.5 rounded-xl min-w-[46%] m-0.5"
                 >
+<<<<<<< HEAD
                   <Ionicons name={getFacilityIcon(fac)} size={15} color="#D4A5A5" />
                   <Text className="text-textBody text-xs font-bold ml-2">{fac}</Text>
+=======
+                  <Ionicons name={getFacilityIcon(fac)} size={15} color="#14B8A6" />
+                  <Text className="text-slate-700 text-xs font-bold ml-2">{fac}</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                 </View>
               ))}
             </View>
@@ -394,8 +409,8 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               <Text className="text-base font-extrabold text-text">
                 Resident Experiences ({reviews.length})
               </Text>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 onPress={() => navigation.navigate('AddReview', { pgId })}
                 className="bg-card border border-borderSubtle px-3 py-1.5 rounded-xl"
               >
@@ -410,8 +425,13 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               </View>
             ) : (
               reviews.map((item) => (
+<<<<<<< HEAD
                 <View key={item.id} className="border-b border-borderSubtle py-5">
                   
+=======
+                <View key={item.id} className="border-b border-slate-50 py-5">
+
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                   {/* Anonymous reviewer metadata */}
                   <View className="flex-row justify-between items-center mb-3">
                     <View className="flex-row items-center">
@@ -438,7 +458,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       <Ionicons name="star" size={12} color="#D4A5A5" />
                       <Text className="text-textBody text-xs font-black ml-1.5">Overall rating: {item.ratings.overall}/5</Text>
                     </View>
-                    
+
                     <TouchableOpacity onPress={() => setReportingReviewId(item.id)} className="p-1">
                       <Ionicons name="flag-outline" size={13} color="#ef4444" />
                     </TouchableOpacity>
@@ -552,9 +572,14 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
               <TouchableOpacity
                 key={t}
                 onPress={() => setReportType(t)}
+<<<<<<< HEAD
                 className={`py-3 px-4 rounded-xl border mb-2 flex-row justify-between items-center ${
                   reportType === t ? 'bg-red-950/20 border-red-500/30' : 'bg-surface border-borderSubtle'
                 }`}
+=======
+                className={`py-3 px-4 rounded-xl border mb-2 flex-row justify-between items-center ${reportType === t ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
+                  }`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
               >
                 <Text className={`text-xs font-bold ${reportType === t ? 'text-red-400' : 'text-textMuted'}`}>{t}</Text>
                 {reportType === t && <Ionicons name="checkmark" size={14} color="#ef4444" />}

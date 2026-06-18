@@ -18,7 +18,7 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
   const { pgId } = route.params;
   const isFocused = useIsFocused();
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [property, setProperty] = useState<Property | null>(null);
   const [reviewsList, setReviewsList] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-white justify-center items-center">
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#14B8A6" />
         <Text className="text-slate-400 font-bold mt-2">Loading reviews...</Text>
       </SafeAreaView>
     );
@@ -72,10 +72,10 @@ export default function PGReviewsScreen({ route, navigation }: Props) {
         data={reviewsList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ReviewCard 
-            review={item} 
-            currentUserRole={user?.role} 
-            currentUserId={user?.id} 
+          <ReviewCard
+            review={item}
+            currentUserRole={user?.role}
+            currentUserId={user?.id}
           />
         )}
         contentContainerStyle={{ padding: 16, paddingBottom: 120, flexGrow: 1 }}

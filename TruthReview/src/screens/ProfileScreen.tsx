@@ -12,15 +12,17 @@ import { logout, setCredentials } from '../features/auth/authSlice';
 import { storage, STORAGE_KEYS } from '../services/storage';
 import { ProfileStackParamList } from '../navigation/types';
 import { MockDb, Review, Property } from '../services/mockDb';
+import { useTheme } from '../features/theme/ThemeContext';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'Profile'>;
 
 export default function ProfileScreen({ navigation }: { navigation: any }) {
+  const { isDark } = useTheme();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  
+
   const { user } = useSelector((state: RootState) => state.auth);
-  
+
   const [myReviews, setMyReviews] = useState<Review[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
 
@@ -58,7 +60,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
   // Developer/Evaluation quick switcher
   const handleToggleRole = async (targetRole: 'user' | 'owner' | 'admin') => {
     if (!user) return;
-    
+
     // Simulate updating user profile
     const updatedUser = {
       ...user,
@@ -69,7 +71,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
 
     await storage.setItem(STORAGE_KEYS.USER_INFO, updatedUser);
     dispatch(setCredentials({ user: updatedUser, token: 'mock_jwt_token' }));
-    
+
     Toast.show({
       type: 'success',
       text1: 'Role Switched',
@@ -83,7 +85,11 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
   };
 
   return (
+<<<<<<< HEAD
     <SafeAreaView className="flex-1 bg-background">
+=======
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         {/* User Card */}
         <View className="items-center mt-8 mb-6 px-6">
@@ -99,44 +105,75 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
             </View>
           </View>
 
+<<<<<<< HEAD
           <Text className="text-lg font-extrabold text-text mt-3">{user?.name || 'Guest User'}</Text>
           <Text className="text-xs text-textMuted font-semibold mt-0.5">{user?.email || 'email@example.com'}</Text>
+=======
+          <Text className={`text-lg font-extrabold mt-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>{user?.name || 'Guest User'}</Text>
+          <Text className="text-xs text-slate-405 font-semibold mt-0.5">{user?.email || 'email@example.com'}</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
         </View>
 
         {/* Developer Quick Switch Panel */}
         <View className="px-6 mb-6">
+<<<<<<< HEAD
           <View className="bg-card border border-borderSubtle rounded-4xl p-5 shadow-premium">
             <Text className="text-[10px] font-black text-textMuted uppercase tracking-widest text-center mb-3">
+=======
+          <View className={`border rounded-3xl p-4.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-150'}`}>
+            <Text className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-3">
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
               🧪 Tester Role Switcher
             </Text>
             <View className="flex-row gap-2">
               <TouchableOpacity
                 onPress={() => handleToggleRole('user')}
+<<<<<<< HEAD
                 className={`flex-1 py-2 rounded-xl border ${
                   user?.role === 'user' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
                 <Text className={`text-[10px] font-black text-center ${user?.role === 'user' ? 'text-white' : 'text-textMuted'}`}>
+=======
+                className={`flex-1 py-2 rounded-xl border ${user?.role === 'user' ? 'bg-primary-500 border-primary-500' : isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
+                  }`}
+              >
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'user' ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                   USER
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleToggleRole('owner')}
+<<<<<<< HEAD
                 className={`flex-1 py-2 rounded-xl border ${
                   user?.role === 'owner' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
                 <Text className={`text-[10px] font-black text-center ${user?.role === 'owner' ? 'text-white' : 'text-textMuted'}`}>
+=======
+                className={`flex-1 py-2 rounded-xl border ${user?.role === 'owner' ? 'bg-primary-500 border-primary-500' : isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
+                  }`}
+              >
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'owner' ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                   OWNER
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleToggleRole('admin')}
+<<<<<<< HEAD
                 className={`flex-1 py-2 rounded-xl border ${
                   user?.role === 'admin' ? 'bg-secondary-500 border-secondary-500' : 'bg-surface border-borderSubtle'
                 }`}
               >
                 <Text className={`text-[10px] font-black text-center ${user?.role === 'admin' ? 'text-white' : 'text-textMuted'}`}>
+=======
+                className={`flex-1 py-2 rounded-xl border ${user?.role === 'admin' ? 'bg-primary-500 border-primary-500' : isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
+                  }`}
+              >
+                <Text className={`text-[10px] font-black text-center ${user?.role === 'admin' ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                   ADMIN
                 </Text>
               </TouchableOpacity>
@@ -150,6 +187,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
 
           {/* Suggest Property */}
           <TouchableOpacity
+<<<<<<< HEAD
             className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
             onPress={() => navigation.navigate('AddProperty')}
           >
@@ -158,6 +196,16 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
                 <Ionicons name="add" size={18} color="#D4A5A5" />
               </View>
               <Text className="text-textBody text-xs font-bold ml-3.5">Suggest New Property</Text>
+=======
+            className={`flex-row justify-between items-center p-4 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800 active:bg-slate-800' : 'bg-slate-50 border-slate-150 active:bg-slate-100'}`}
+            onPress={() => navigation.navigate('AddProperty')}
+          >
+            <View className="flex-row items-center">
+              <View className={`h-9 w-9 rounded-xl justify-center items-center ${isDark ? 'bg-slate-800' : 'bg-slate-200/50'}`}>
+                <Ionicons name="add" size={18} color={isDark ? '#3b82f6' : '#475569'} />
+              </View>
+              <Text className={`text-xs font-bold ml-3.5 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>Suggest New Property</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             </View>
             <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
           </TouchableOpacity>
@@ -165,7 +213,11 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
           {/* Owner Dashboard link */}
           {user?.role === 'owner' && (
             <TouchableOpacity
+<<<<<<< HEAD
               className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
+=======
+              className={`flex-row justify-between items-center p-4 rounded-2xl border ${isDark ? 'bg-indigo-950/20 border-indigo-900/30 active:bg-indigo-900/40' : 'bg-indigo-50/20 border-indigo-100/30 active:bg-indigo-50/40'}`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
               onPress={() => navigation.navigate('OwnerPanel')}
             >
               <View className="flex-row items-center">
@@ -181,6 +233,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
           {/* Admin Dashboard link */}
           {user?.role === 'admin' && (
             <TouchableOpacity
+<<<<<<< HEAD
               className="flex-row justify-between items-center bg-card border border-borderSubtle p-4 rounded-3xl shadow-premium active:opacity-90"
               onPress={() => navigation.navigate('AdminPanel')}
             >
@@ -191,12 +244,28 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
                 <Text className="text-textBody text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
               </View>
               <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
+=======
+              className={`flex-row justify-between items-center p-4 rounded-2xl border ${isDark ? 'bg-teal-950/25 border-teal-900/30 active:bg-teal-900/40' : 'bg-teal-50/20 border-teal-100/30 active:bg-teal-50/40'}`}
+              onPress={() => navigation.navigate('AdminPanel')}
+            >
+              <View className="flex-row items-center">
+                <View className="h-9 w-9 bg-teal-50 rounded-xl justify-center items-center">
+                  <Ionicons name="settings-outline" size={18} color="#14B8A6" />
+                </View>
+                <Text className="text-teal-600 text-xs font-bold ml-3.5">Admin Moderation Dashboard</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={14} color="#14B8A6" />
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             </TouchableOpacity>
           )}
 
           {/* Logout Button */}
           <TouchableOpacity
+<<<<<<< HEAD
             className="flex-row justify-between items-center bg-red-950/20 border border-red-900/35 p-4 rounded-3xl shadow-premium active:opacity-90"
+=======
+            className={`flex-row justify-between items-center p-4 rounded-2xl border ${isDark ? 'bg-red-950/25 border-red-900/30 active:bg-red-900/50' : 'bg-red-50/25 border-red-100/30 active:bg-red-50/50'}`}
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
             onPress={handleLogout}
           >
             <View className="flex-row items-center">
@@ -212,6 +281,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
         <View className="px-6 mt-8 mb-10">
           <Text className="text-xs font-black text-textMuted uppercase tracking-widest mb-4">My Submitted Reviews ({myReviews.length})</Text>
           {myReviews.length === 0 ? (
+<<<<<<< HEAD
             <View className="bg-card border border-borderSubtle p-6 rounded-3xl items-center shadow-premium">
               <Ionicons name="star-outline" size={32} color="#94A3B8" />
               <Text className="text-textMuted text-xs font-bold mt-2">You haven't written any reviews yet.</Text>
@@ -221,9 +291,20 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
               <View key={item.id} className="bg-card border border-borderSubtle p-5 rounded-3xl mb-4 shadow-premium">
                 <View className="flex-row justify-between items-center mb-2">
                   <Text className="text-text font-extrabold text-xs flex-1 mr-2" numberOfLines={1}>
+=======
+            <View className={`border p-6 rounded-2xl items-center ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+              <Ionicons name="star-outline" size={32} color="#cbd5e1" />
+              <Text className="text-slate-400 text-xs font-bold mt-2">You haven't written any reviews yet.</Text>
+            </View>
+          ) : (
+            myReviews.map((item) => (
+              <View key={item.id} className={`p-4 rounded-2xl mb-3 border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-150'}`}>
+                <View className="flex-row justify-between items-center mb-2">
+                  <Text className={`font-extrabold text-xs flex-1 mr-2 ${isDark ? 'text-slate-200' : 'text-slate-800'}`} numberOfLines={1}>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
                     {getPropName(item.propertyId)}
                   </Text>
-                  
+
                   <View className="flex-row items-center">
                     {item.verified ? (
                       <View className="bg-accent-500/10 px-2 py-0.5 rounded-md border border-accent-500/20 mr-2">
@@ -234,6 +315,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
                         <Text className="text-[8px] text-amber-400 font-black uppercase">Pending Stay Verify</Text>
                       </View>
                     )}
+<<<<<<< HEAD
                     <Ionicons name="star" size={10} color="#D4A5A5" />
                     <Text className="text-[10px] font-black text-text ml-1">{item.ratings.overall}/5</Text>
                   </View>
@@ -241,6 +323,15 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
 
                 <Text className="text-textBody text-xs font-semibold leading-5">"{item.comment}"</Text>
                 <Text className="text-textMuted text-[9px] font-bold mt-2 text-right">Written: {item.date}</Text>
+=======
+                    <Ionicons name="star" size={10} color="#f59e0b" />
+                    <Text className={`text-[10px] font-black ml-1 ${isDark ? 'text-slate-350' : 'text-slate-700'}`}>{item.ratings.overall}/5</Text>
+                  </View>
+                </View>
+
+                <Text className={`text-xs font-semibold leading-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>"{item.comment}"</Text>
+                <Text className="text-slate-400 text-[9px] font-bold mt-2 text-right">Written: {item.date}</Text>
+>>>>>>> 101f518c270c77ed69e9979751ccb43938f2c0cf
               </View>
             ))
           )}

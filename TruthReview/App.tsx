@@ -6,6 +6,7 @@ import Toast from "react-native-toast-message";
 
 import AppNavigator from "./src/navigation/AppNavigator";
 import { store, persistor } from "./src/store";
+import { ThemeProvider } from "./src/features/theme/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,8 +23,10 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
-          <AppNavigator />
-          <Toast />
+          <ThemeProvider>
+            <AppNavigator />
+            <Toast />
+          </ThemeProvider>
         </QueryClientProvider>
       </PersistGate>
     </Provider>
