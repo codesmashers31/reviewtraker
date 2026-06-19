@@ -127,7 +127,7 @@ function ProfileNavigator() {
   );
 }
 
-// Interactive Tab Item with Scale Animations
+// Interactive Tab Item
 function TabBarItem({
   route,
   isFocused,
@@ -139,28 +139,24 @@ function TabBarItem({
   onPress: () => void;
   isDark: boolean;
 }) {
-  const scaleValue = useRef(new Animated.Value(isFocused ? 1.05 : 1)).current;
-
-  useEffect(() => {
-    Animated.spring(scaleValue, {
-      toValue: isFocused ? 1.05 : 1,
-      friction: 5,
-      tension: 40,
-      useNativeDriver: true
-    }).start();
-  }, [isFocused]);
-
   let iconName = 'home-outline';
+  let label = 'Home';
 
   if (route.name === 'HomeStack') {
     iconName = isFocused ? 'home' : 'home-outline';
+    label = 'Home';
   } else if (route.name === 'SearchStack') {
-    iconName = isFocused ? 'compass' : 'compass-outline';
+    iconName = isFocused ? 'search' : 'search-outline';
+    label = 'Explore';
   } else if (route.name === 'FavoritesStack') {
-    iconName = isFocused ? 'bookmark' : 'bookmark-outline';
+    iconName = isFocused ? 'heart' : 'heart-outline';
+    label = 'Saved';
   } else if (route.name === 'ProfileStack') {
     iconName = isFocused ? 'person' : 'person-outline';
+    label = 'Profile';
   }
+
+  const color = isFocused ? '#2563eb' : isDark ? '#94a3b8' : '#64748b'; // blue-600 when focused
 
   return (
     <TouchableOpacity
@@ -168,73 +164,47 @@ function TabBarItem({
       activeOpacity={0.8}
       style={styles.tabItem}
     >
-      <Animated.View
-        style={[
-          isFocused ? styles.activePill : styles.inactivePill,
-          { transform: [{ scale: scaleValue }] }
-        ]}
-      >
-        <Ionicons
-          name={iconName as any}
-          size={20}
-          color={isFocused ? '#ffffff' : isDark ? '#94a3b8' : '#64748b'}
-        />
-      </Animated.View>
+      <Ionicons
+        name={iconName as any}
+        size={24}
+        color={color}
+      />
+      <Text style={[styles.tabLabel, { color, fontWeight: isFocused ? '700' : '500' }]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }
 
 // Center Action Button for Adding Review
-function CenterActionButton({ onPress }: { onPress: () => void }) {
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-
-  const handlePressIn = () => {
-    Animated.spring(pulseAnim, {
-      toValue: 0.9,
-      useNativeDriver: true
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(pulseAnim, {
-      toValue: 1,
-      friction: 3,
-      tension: 40,
-      useNativeDriver: true
-    }).start();
-  };
-
+function CenterActionButton({ onPress, isFocused, isDark }: { onPress: () => void, isFocused: boolean, isDark: boolean }) {
   return (
     <TouchableOpacity
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
       onPress={onPress}
       activeOpacity={0.9}
-      style={styles.centerButtonWrapper}
+      style={styles.tabItem}
     >
-      <Animated.View
-        style={[
-          styles.centerButton,
-          { transform: [{ scale: pulseAnim }] }
-        ]}
-      >
-        <Ionicons name="add" size={28} color="#ffffff" />
-      </Animated.View>
+      <View style={styles.centerButton}>
+        <Ionicons name="add" size={24} color="#ffffff" />
+      </View>
+      <Text style={[styles.tabLabel, { color: isDark ? '#f8fafc' : '#0f172a', fontWeight: '700', marginTop: 4 }]}>
+        Add Review
+      </Text>
     </TouchableOpacity>
   );
 }
 
-// Custom Floating Tab Bar
-function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+// Custom Flat Tab Bar
+function FlatTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { isDark } = useTheme();
 
   return (
     <View
       style={[
-        styles.floatingContainer,
+        styles.tabContainer,
         {
-          backgroundColor: isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.92)',
-          borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
+          backgroundColor: isDark ? '#0f172a' : '#ffffff',
+          borderTopColor: isDark ? '#1e293b' : '#e2e8f0',
         }
       ]}
     >
@@ -258,6 +228,8 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             <CenterActionButton
               key={route.key}
               onPress={onPress}
+              isFocused={isFocused}
+              isDark={isDark}
             />
           );
         }
@@ -280,13 +252,13 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      tabBar={(props) => <FloatingTabBar {...props} />}
+      tabBar={(props) => <FlatTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="HomeStack" component={HomeNavigator} />
       <Tab.Screen name="SearchStack" component={SearchNavigator} />
 
-      {/* Center highlighted Add Review Tab */}
+      {/* Center Add Review Tab */}
       <Tab.Screen name="AddReviewTab" component={AddReviewLandingScreen} />
 
       <Tab.Screen name="FavoritesStack" component={FavoritesNavigator} />
@@ -295,79 +267,31 @@ export default function TabNavigator() {
   );
 }
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
-  floatingContainer: {
-    position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 28 : 20,
-    width: width * 0.9,
-    alignSelf: 'center',
-    height: 72,
-    borderRadius: 36,
+  tabContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
-    elevation: 10,
+    height: Platform.OS === 'ios' ? 85 : 70,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    alignItems: 'flex-start',
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
+    justifyContent: 'flex-start',
   },
-  activePill: {
-    backgroundColor: '#14B8A6', // Teal
+  tabLabel: {
+    fontSize: 10,
+    marginTop: 2,
+  },
+  centerButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#14B8A6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  activeText: {
-    display: 'none',
-  },
-  inactivePill: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inactiveText: {
-    display: 'none',
-  },
-  centerButtonWrapper: {
-    width: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    zIndex: 99,
-  },
-  centerButton: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: '#FF6B6B', // Coral Accent
+    backgroundColor: '#3b82f6', // blue-500
     justifyContent: 'center',
     alignItems: 'center',
-    top: -16,
-    borderWidth: 4,
-    borderColor: '#ffffff',
-    shadowColor: '#FF6B6B',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
+    marginTop: -8, // slight offset upwards
   }
 });

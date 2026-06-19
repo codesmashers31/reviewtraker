@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ScrollView, TextInput } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoute, useIsFocused } from '@react-navigation/native';
@@ -24,13 +24,13 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<string>('All');
+  const [selectedType, setSelectedType] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Location Fetching State
-  const [locationName, setLocationName] = useState('Adyar, Chennai');
+  const [locationName, setLocationName] = useState('Whitefield, Bangalore');
   const [loadingLocation, setLoadingLocation] = useState(false);
 
   // Active filters from filter screen route params
@@ -49,29 +49,13 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
     try {
       const servicesEnabled = await Location.hasServicesEnabledAsync();
       if (!servicesEnabled) {
-        setLocationName('Adyar, Chennai');
-        if (!isInitial) {
-          Toast.show({
-            type: 'info',
-            text1: 'Location Services Disabled',
-            text2: 'Using default location (Adyar, Chennai).',
-            position: 'top',
-          });
-        }
+        setLocationName('Whitefield, Bangalore');
         return;
       }
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        if (!isInitial) {
-          Toast.show({
-            type: 'error',
-            text1: 'Location Permission Denied',
-            text2: 'Using default location (Adyar, Chennai).',
-            position: 'top',
-          });
-        }
-        setLocationName('Adyar, Chennai');
+        setLocationName('Whitefield, Bangalore');
         return;
       }
 
@@ -95,31 +79,14 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
 
       if (geocode && geocode.length > 0) {
         const address = geocode[0];
-        const city = address.city || address.subregion || 'Chennai';
-        const neighborhood = address.district || address.name || 'Nearby';
+        const city = address.city || address.subregion || 'Bangalore';
+        const neighborhood = address.district || address.name || 'Whitefield';
         setLocationName(`${neighborhood}, ${city}`);
-
-        if (!isInitial) {
-          Toast.show({
-            type: 'success',
-            text1: 'Location Updated',
-            text2: `Set to ${neighborhood}, ${city}`,
-            position: 'top',
-          });
-        }
       } else {
-        setLocationName('Chennai, TN');
+        setLocationName('Bangalore, KA');
       }
     } catch (error) {
-      setLocationName('Adyar, Chennai');
-      if (!isInitial) {
-        Toast.show({
-          type: 'info',
-          text1: 'Location Unavailable',
-          text2: 'Using default location (Adyar, Chennai).',
-          position: 'top',
-        });
-      }
+      setLocationName('Whitefield, Bangalore');
     } finally {
       setLoadingLocation(false);
     }
@@ -128,12 +95,10 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   useEffect(() => {
     if (isFocused) {
       loadProperties();
-      fetchLocation(true); // Silently fetch location on focus
+      fetchLocation(true);
 
-      // If a search query was passed as parameter (e.g. from popular areas chip)
       if (route.params?.query) {
         setSearchQuery(route.params.query);
-        // Clear param after consumption to avoid locking search
         navigation.setParams({ query: undefined } as any);
       }
     }
@@ -149,7 +114,6 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   const filteredAndSortedProperties = useMemo(() => {
     let result = [...properties];
 
-    // 1. Search Query (Property Name, Address, Area, City, State)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -162,45 +126,37 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
       );
     }
 
-    // 2. Category Tab Filter (Co-Living, PG, Hostel, Hotel, Apartment, Room)
-    if (selectedType !== 'All') {
-      result = result.filter((p) => p.type === selectedType);
+    if (selectedType !== 'ALL') {
+      const mapType = selectedType === 'SERVICE APARTMENT' ? 'Service Apartment' : selectedType === 'CO-LIVING' ? 'Co-Living Property' : selectedType === 'RENTAL' ? 'Rental Room' : selectedType.charAt(0) + selectedType.slice(1).toLowerCase();
+      result = result.filter((p) => p.type.toLowerCase() === mapType.toLowerCase() || p.type.toLowerCase().includes(selectedType.toLowerCase()));
     }
 
-    // 3. Filter page parameters
+    // Filters logic
     if (activeFilters.verifiedOnly) {
       result = result.filter((p) => p.claimedBy !== null || p.trustScore >= 80);
     }
-
     if (activeFilters.highTrustScore) {
       result = result.filter((p) => p.trustScore >= 75);
     }
-
     if (activeFilters.ac) {
       result = result.filter((p) => p.facilities.some(f => f.toLowerCase().includes('ac') || f.toLowerCase().includes('condition')));
     }
-
     if (activeFilters.wifi) {
       result = result.filter((p) => p.facilities.some(f => f.toLowerCase().includes('wifi') || f.toLowerCase().includes('internet')));
     }
-
     if (activeFilters.foodIncluded) {
       result = result.filter((p) => p.facilities.some(f => f.toLowerCase().includes('meal') || f.toLowerCase().includes('food')));
     }
-
     if (activeFilters.maleHostel) {
       result = result.filter((p) => p.genderType === 'boys');
     }
-
     if (activeFilters.femaleHostel) {
       result = result.filter((p) => p.genderType === 'girls');
     }
-
     if (activeFilters.propertyType && activeFilters.propertyType !== 'All') {
       result = result.filter((p) => p.type === activeFilters.propertyType);
     }
 
-    // 4. Apply sorting
     if (sortBy === 'trustDesc') {
       result.sort((a, b) => b.trustScore - a.trustScore);
     } else if (sortBy === 'reviewsDesc') {
@@ -210,17 +166,6 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
     return result;
   }, [properties, searchQuery, selectedType, activeFilters, sortBy]);
 
-  const getSortLabel = () => {
-    switch (sortBy) {
-      case 'trustDesc':
-        return 'Top Trusted';
-      case 'reviewsDesc':
-        return 'Most Reviewed';
-      default:
-        return 'Sort By';
-    }
-  };
-
   const cycleSort = () => {
     const options: SortOption[] = ['default', 'trustDesc', 'reviewsDesc'];
     const currentIndex = options.indexOf(sortBy);
@@ -228,139 +173,238 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
     setSortBy(options[nextIndex]);
   };
 
-  const typesList = ['All', 'PG', 'Hostel', 'Hotel', 'Service Apartment', 'Rental Room', 'Co-Living Property'];
+  const typesList = ['ALL', 'PG', 'HOSTEL', 'HOTEL', 'SERVICE APARTMENT', 'RENTAL', 'CO-LIVING'];
 
-  // Check if any filters are currently active to show indicators
   const filterCount = Object.values(activeFilters).filter(val => val !== undefined && val !== null && val !== false && val !== 'All').length;
 
-  return (
-    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-slate-50/50'}`} edges={['top', 'left', 'right']}>
-      {/* Top Header with Location Fetching */}
-      <View className={`px-5 pt-4 pb-3 flex-row justify-between items-center border-b ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-        <View className="flex-row items-center flex-1">
-          <View className="bg-primary-600 p-2 rounded-xl flex-row items-center justify-center">
-            <Ionicons name="compass-outline" size={18} color="#ffffff" />
-          </View>
-          <View className="ml-3 flex-1 justify-center">
-            <Text className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Search Location</Text>
+  const textDark = isDark ? 'text-white' : 'text-[#0f172a]';
+  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
+  const bgStyles = isDark ? 'bg-[#0f172a]' : 'bg-[#fafafa]';
+  const cardBg = isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100';
 
-            <TouchableOpacity
-              onPress={() => fetchLocation(false)}
-              className="flex-row items-center mt-0.5"
-              activeOpacity={0.7}
-            >
-              <Ionicons name="location" size={12} color={isDark ? '#3b82f6' : '#14B8A6'} />
-              <Text className={`text-xs font-black ml-1 mr-1.5 truncate max-w-[140px] ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-                {locationName}
-              </Text>
-              {loadingLocation ? (
-                <ActivityIndicator size="small" color="#14B8A6" style={{ transform: [{ scale: 0.7 }] }} />
-              ) : (
-                <Ionicons name="chevron-down" size={10} color="#64748b" />
-              )}
-            </TouchableOpacity>
-          </View>
+  const renderHeader = () => (
+    <View className="px-5 pt-4">
+      {/* Search Location Blue Card */}
+      <View className={`rounded-2xl p-4 flex-row items-center shadow-sm mb-4 border ${cardBg}`}>
+        <View className="bg-[#1d4ed8] w-10 h-10 rounded-xl items-center justify-center shadow-md">
+          <Ionicons name="compass" size={20} color="#ffffff" />
         </View>
-
-        <View className="flex-row items-center space-x-2.5">
-          <TouchableOpacity
-            onPress={() => Toast.show({ type: 'info', text1: 'Notifications dashboard mock.' })}
-            className="p-2.5 bg-slate-50 border border-slate-100 rounded-full"
-          >
-            <Ionicons name="notifications-outline" size={16} color="#475569" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Main Content Area */}
-      <View className="flex-1 px-5 pt-4">
-        {/* Search Input Bar */}
-        <View className={`flex-row items-center border rounded-2xl px-4 py-1.5 mb-4 shadow-sm ${isDark ? 'bg-slate-900 border-slate-800 shadow-slate-950/20' : 'bg-white border-slate-200 shadow-slate-100/5'}`}>
-          <Ionicons name="search-outline" size={18} color="#94a3b8" />
-          <TextInput
-            className={`flex-1 ml-2 text-xs font-semibold h-10 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}
-            placeholder="Search by name, area, city..."
-            placeholderTextColor="#94a3b8"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery ? (
-            <TouchableOpacity onPress={() => setSearchQuery('')} className="mr-2">
-              <Ionicons name="close-circle" size={18} color="#cbd5e1" />
-            </TouchableOpacity>
-          ) : null}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Filters' as any)}
-            className="border-l border-slate-200 pl-3 flex-row items-center"
-          >
-            <Ionicons name="funnel-outline" size={16} color={filterCount > 0 ? '#14B8A6' : '#475569'} />
-            {filterCount > 0 && (
-              <View className="bg-primary-600 rounded-full h-4 w-4 justify-center items-center ml-1">
-                <Text className="text-white text-[8px] font-black">{filterCount}</Text>
-              </View>
+        <View className="ml-3 flex-1">
+          <Text className="text-[10px] font-black uppercase text-[#1d4ed8] tracking-widest mb-0.5">Search Location</Text>
+          <TouchableOpacity onPress={() => fetchLocation(false)} className="flex-row items-center">
+            <Ionicons name="location" size={12} color="#0f172a" />
+            <Text className={`text-[13px] font-black ml-1 ${textDark}`}>
+              {locationName}
+            </Text>
+            {loadingLocation ? (
+              <ActivityIndicator size="small" color="#1d4ed8" style={{ marginLeft: 4, transform: [{ scale: 0.6 }] }} />
+            ) : (
+              <Ionicons name="chevron-down" size={10} color="#64748b" style={{ marginLeft: 4 }} />
             )}
           </TouchableOpacity>
         </View>
+        <TouchableOpacity className="bg-slate-50 p-2 rounded-full border border-slate-200">
+          <Ionicons name="settings-outline" size={18} color="#475569" />
+        </TouchableOpacity>
+      </View>
 
-        {/* Accommodation Types Horizontal scroll */}
-        <View className="mb-3">
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row space-x-2 gap-2">
-            {typesList.map((type) => {
-              const active = selectedType === type;
-              return (
-                <TouchableOpacity
-                  key={type}
-                  onPress={() => setSelectedType(type)}
-                  className={`px-4 py-2 rounded-full border ${active
-                      ? 'bg-primary-600 border-primary-600'
-                      : isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-                    }`}
-                >
-                  <Text className={`text-[10px] font-black uppercase tracking-wider ${active ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-500'}`}>{type}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+      {/* Search Bar */}
+      <View className={`flex-row items-center border rounded-full px-4 py-1.5 mb-5 shadow-sm ${cardBg}`}>
+        <Ionicons name="search-outline" size={20} color="#94a3b8" />
+        <TextInput
+          className={`flex-1 ml-2 text-[13px] font-medium h-10 ${textDark}`}
+          placeholder="Search by name, area, city..."
+          placeholderTextColor="#94a3b8"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        {searchQuery ? (
+          <TouchableOpacity onPress={() => setSearchQuery('')} className="mr-2">
+            <Ionicons name="close-circle" size={18} color="#cbd5e1" />
+          </TouchableOpacity>
+        ) : null}
+        <TouchableOpacity onPress={() => navigation.navigate('Filters' as any)} className="border-l border-slate-200 pl-3 py-1 flex-row items-center">
+          <Ionicons name="funnel-outline" size={18} color={filterCount > 0 ? '#1d4ed8' : '#64748b'} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Filter Tabs */}
+      <View className="mb-6 -mx-5 px-5">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row space-x-2 gap-2" contentContainerStyle={{ paddingRight: 40 }}>
+          {typesList.map((type) => {
+            const active = selectedType === type;
+            return (
+              <TouchableOpacity
+                key={type}
+                onPress={() => setSelectedType(type)}
+                className={`px-5 py-2.5 rounded-full border ${active
+                    ? 'bg-[#1d4ed8] border-[#1d4ed8]'
+                    : isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
+                  }`}
+              >
+                <Text className={`text-[11px] font-black uppercase tracking-wider ${active ? 'text-white' : textDark}`}>{type}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* Results & Sort */}
+      <View className="flex-row justify-between items-center mb-4">
+        <Text className="text-[11px] font-black text-slate-500 uppercase tracking-widest">
+          Showing <Text className={`text-[#1d4ed8]`}>{filteredAndSortedProperties.length}</Text> Results
+        </Text>
+
+        <TouchableOpacity onPress={cycleSort} className="flex-row items-center">
+          <Ionicons name="swap-vertical" size={12} color="#1d4ed8" />
+          <Text className={`text-[11px] font-black ml-1 ${textDark}`}>Sort By</Text>
+          <Ionicons name="chevron-down" size={10} color={isDark ? '#94a3b8' : '#475569'} style={{ marginLeft: 4 }} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const renderFooter = () => (
+    <View className="px-5 pt-4 pb-24">
+      {/* FEATURED ADS */}
+      <View className="mb-8">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark}`}>Featured Ads</Text>
+          <TouchableOpacity><Text className="text-[#1d4ed8] text-[11px] font-bold">View all</Text></TouchableOpacity>
         </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+          {[
+            { title: 'PAYING GUESTS', price: '₹6,500', btn: 'Explore PGs', img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=400' },
+            { title: 'HOSTELS', price: '₹5,000', btn: 'Explore Hostels', img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' },
+            { title: 'SERVICE APARTMENTS', price: '₹18,000', btn: 'Explore Now', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400' },
+            { title: 'CO-LIVING SPACES', price: '₹7,500', btn: 'Explore Spaces', img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=400' }
+          ].map((ad, i) => (
+            <View key={i} className="w-[160px] h-[180px] rounded-[16px] overflow-hidden relative shadow-sm">
+              <Image source={{ uri: ad.img }} className="w-full h-full object-cover" />
+              <View className="absolute inset-0 bg-[#0f172a]/60" />
+              <View className="absolute top-4 left-4 right-4">
+                <Text className="text-white text-[10px] font-black uppercase mb-1">{ad.title}</Text>
+                <Text className="text-slate-300 text-[9px] font-semibold mb-0.5">Starting from</Text>
+                <Text className="text-white text-[15px] font-black">{ad.price} <Text className="text-[10px] font-medium text-slate-300">/mo</Text></Text>
+              </View>
+              <View className="absolute bottom-4 left-4 right-4">
+                <TouchableOpacity className="bg-white py-2 rounded-full items-center">
+                  <Text className="text-[#0f172a] text-[10px] font-black">{ad.btn}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+          <View className="w-5" />
+        </ScrollView>
+      </View>
 
-        {/* Sorting controls */}
-        <View className="flex-row justify-between items-center mt-2 mb-3.5 px-1">
-          <Text className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">
-            Showing {filteredAndSortedProperties.length} results
-          </Text>
+      {/* POPULAR LOCALITIES */}
+      <View className="mb-8">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark}`}>Popular Localities</Text>
+          <TouchableOpacity><Text className="text-[#1d4ed8] text-[11px] font-bold">View all</Text></TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+          {[
+            { name: 'Whitefield', props: '128+', img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=200' },
+            { name: 'Koramangala', props: '96+', img: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=200' },
+            { name: 'HSR Layout', props: '84+', img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=200' },
+            { name: 'Indiranagar', props: '72+', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200' },
+            { name: 'Marathahalli', props: '65+', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=200' }
+          ].map((loc, i) => (
+            <TouchableOpacity key={i} className="w-[120px]">
+              <View className="w-full h-[70px] rounded-[12px] overflow-hidden mb-2">
+                <Image source={{ uri: loc.img }} className="w-full h-full object-cover" />
+              </View>
+              <Text className={`text-[11px] font-black ${textDark}`}>{loc.name}</Text>
+              <Text className={`text-[9px] font-medium ${textMuted} mt-0.5`}>{loc.props} Properties</Text>
+            </TouchableOpacity>
+          ))}
+          <View className="w-5" />
+        </ScrollView>
+      </View>
 
-          <TouchableOpacity
-            onPress={cycleSort}
-            className={`flex-row items-center border px-3.5 py-1.5 rounded-full shadow-sm ${isDark ? 'bg-slate-900 border-slate-800 shadow-slate-950/20' : 'border-slate-200 bg-white shadow-slate-100/5'}`}
-          >
-            <Ionicons name="swap-vertical" size={12} color={isDark ? '#94a3b8' : '#475569'} />
-            <Text className={`text-[10px] font-black ml-1.5 ${isDark ? 'text-slate-350' : 'text-slate-600'}`}>{getSortLabel()}</Text>
+      {/* WHY CHOOSE US */}
+      <View className="mb-4">
+        <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark} mb-4`}>Why Choose Us</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+          {[
+            { title: '100% Verified\nProperties', sub: 'All properties are\nmanually verified', icon: 'shield-checkmark', color: '#1d4ed8', bg: 'bg-blue-50' },
+            { title: 'Trusted by\n10K+ Users', sub: 'Real reviews from\nverified residents', icon: 'people', color: '#3b82f6', bg: 'bg-blue-50' },
+            { title: '24x7 Customer\nSupport', sub: 'We\'re here to help\nyou anytime', icon: 'headset', color: '#6366f1', bg: 'bg-indigo-50' },
+            { title: 'Secure & Safe\nBookings', sub: 'Your safety and privacy\nare our priority', icon: 'lock-closed', color: '#0ea5e9', bg: 'bg-sky-50' }
+          ].map((item, i) => (
+            <View key={i} className={`w-[170px] rounded-[16px] p-4 flex-row border shadow-sm ${cardBg}`}>
+              <View className={`${item.bg} w-10 h-10 rounded-full items-center justify-center mr-3`}>
+                <Ionicons name={item.icon as any} size={18} color={item.color} />
+              </View>
+              <View className="flex-1">
+                <Text className={`text-[10px] font-black ${textDark} leading-3 mb-1`}>{item.title}</Text>
+                <Text className={`text-[8px] font-medium ${textMuted} leading-3`}>{item.sub}</Text>
+              </View>
+            </View>
+          ))}
+          <View className="w-5" />
+        </ScrollView>
+      </View>
+    </View>
+  );
+
+  return (
+    <SafeAreaView className={`flex-1 ${bgStyles}`} edges={['top', 'left', 'right']}>
+      {/* Top Header */}
+      <View className={`px-5 pt-3 pb-2 flex-row justify-between items-start`}>
+        <View>
+          <Text className={`text-[22px] font-black ${textDark} tracking-tight`}>Explore</Text>
+          <View className="flex-row items-center mt-1">
+            <Ionicons name="location-outline" size={12} color="#1d4ed8" />
+            <Text className={`text-[11px] font-black text-[#1d4ed8] ml-1`}>
+              {locationName}
+            </Text>
+            <Ionicons name="chevron-down" size={10} color="#1d4ed8" style={{ marginLeft: 4 }} />
+          </View>
+        </View>
+        
+        <View className="flex-row items-center gap-3">
+          <TouchableOpacity onPress={() => Toast.show({ type: 'info', text1: 'Notifications' })} className="p-1 relative">
+            <Ionicons name="notifications-outline" size={22} color={textDark} />
+            <View className="absolute right-1 top-1 w-2.5 h-2.5 bg-[#1d4ed8] rounded-full border-2 border-white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('ProfileStack', { screen: 'Profile' })}>
+            <Image source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}} className="w-8 h-8 rounded-full border border-slate-200" />
           </TouchableOpacity>
         </View>
-
-        {/* Results list */}
-        {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#14B8A6" />
-          </View>
-        ) : (
-          <FlatList
-            data={filteredAndSortedProperties}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <PGCard item={item} navigation={navigation} />}
-            contentContainerStyle={{ paddingBottom: 120, flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            ListEmptyComponent={
-              <EmptyState
-                title="No Accommodations Found"
-                description="We couldn't find any listings matching your search or filters. Try clearing some criteria."
-              />
-            }
-          />
-        )}
       </View>
+
+      {/* Main Content Area via FlatList */}
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#1d4ed8" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredAndSortedProperties}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View className="px-5">
+              <PGCard item={item} navigation={navigation} />
+            </View>
+          )}
+          ListHeaderComponent={renderHeader}
+          ListFooterComponent={renderFooter}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          ListEmptyComponent={
+            <View className="px-5">
+              <EmptyState
+                title="No Properties Found"
+                description="We couldn't find any listings matching your search or filters. Try adjusting your criteria."
+              />
+            </View>
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }

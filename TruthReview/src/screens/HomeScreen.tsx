@@ -1,691 +1,615 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TextInput,
   TouchableOpacity,
-  FlatList,
   Image,
-  Dimensions,
-  Animated,
   StatusBar,
-  StyleSheet,
-  ActivityIndicator
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import * as Location from 'expo-location';
 import { useTheme } from '../features/theme/ThemeContext';
-
 import { MockDb, Property, Review } from '../services/mockDb';
-import { HomeStackParamList } from '../navigation/types';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 const { width } = Dimensions.get('window');
 
-type NavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
-
-// Slides for Banner Carousel
-const TRENDING_SLIDES = [
-  {
-    id: 'slide_1',
-    title: 'Verified PG Stays',
-    subtitle: 'Cozy student and professional co-living rooms with high trust scores',
-    image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80',
-    tag: 'POPULAR PGs'
-  },
-  {
-    id: 'slide_2',
-    title: 'Premium Hotels & Suites',
-    subtitle: 'Comfortable hotel rooms, luxury amenities & central locations',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
-    tag: 'TOP HOTELS'
-  },
-  {
-    id: 'slide_3',
-    title: 'Hostels & Shared Spaces',
-    subtitle: 'Secure budget stays with verified check-ins and reviews',
-    image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=600&q=80',
-    tag: 'RECOMMENDED'
-  }
+const LOCATION_CHIPS = [
+  { label: 'Nearby', icon: 'navigate-outline' },
+  { label: 'Adyar', icon: 'location-outline' },
+  { label: 'Velachery', icon: 'location-outline' },
+  { label: 'T Nagar', icon: 'location-outline' },
+  { label: 'OMR', icon: 'location-outline' },
+  { label: 'More', icon: 'grid-outline' },
 ];
 
-// Categories data
-const CATEGORIES = [
-  { id: 'PG', name: 'PG', icon: 'business-outline', gradient: ['#14b8a6', '#0d9488'] },
-  { id: 'Hostel', name: 'Hostel', icon: 'home-outline', gradient: ['#14b8a6', '#0f766e'] },
-  { id: 'Hotel', name: 'Hotel', icon: 'bed-outline', gradient: ['#ff6b6b', '#e05252'] },
-  { id: 'Co-Living Property', name: 'Co-Living', icon: 'people-outline', gradient: ['#8b5cf6', '#6d28d9'] },
-  { id: 'Rental Room', name: 'Rental Room', icon: 'key-outline', gradient: ['#06b6d4', '#0891b2'] },
-  { id: 'Service Apartment', name: 'Service Apt', icon: 'copy-outline', gradient: ['#ff6b6b', '#e05252'] },
-  { id: 'Office', name: 'Workspace', icon: 'briefcase-outline', gradient: ['#64748b', '#475569'] }
+const PROPERTY_TYPES = [
+  { label: 'PG', icon: 'home-outline', color: '#1d4ed8', bg: '#eff6ff' },
+  { label: 'Hostel', icon: 'business-outline', color: '#1d4ed8', bg: '#eff6ff' },
+  { label: 'Hotel', icon: 'bed-outline', color: '#1d4ed8', bg: '#eff6ff' },
+  { label: 'Co-living', icon: 'people-outline', color: '#1d4ed8', bg: '#eff6ff' },
+  { label: 'Rental', icon: 'key-outline', color: '#1d4ed8', bg: '#eff6ff' },
+  { label: 'Service Apt.', icon: 'briefcase-outline', color: '#1d4ed8', bg: '#eff6ff' },
+];
+
+const LOCATIONS = [
+  { name: 'Adyar', count: '520+ Stays', rating: '4.3', img: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=400' },
+  { name: 'Velachery', count: '410+ Stays', rating: '4.4', img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400' },
+  { name: 'T Nagar', count: '380+ Stays', rating: '4.2', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400' },
+  { name: 'OMR', count: '620+ Stays', rating: '4.5', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400' },
+];
+
+const EXPLORE_TYPES = [
+  { label: 'PG', sub: 'Paying Guest', icon: 'home-outline', color: '#3b82f6', bg: '#eff6ff' },
+  { label: 'Hostel', sub: 'Student Hostel', icon: 'business-outline', color: '#8b5cf6', bg: '#f5f3ff' },
+  { label: 'Hotel', sub: 'Hotels', icon: 'bed-outline', color: '#ec4899', bg: '#fdf2f8' },
+  { label: 'Co-living', sub: 'Co-living Spaces', icon: 'people-outline', color: '#f59e0b', bg: '#fffbeb' },
+  { label: 'Rental Rooms', sub: 'Rooms', icon: 'key-outline', color: '#10b981', bg: '#ecfdf5' },
+  { label: 'Service Apt.', sub: 'Serviced', icon: 'briefcase-outline', color: '#6366f1', bg: '#eef2ff' },
+];
+
+const POPULAR_ADYAR = [
+  { name: 'Royal Inn Hotel', location: 'Adyar, Chennai', rating: '4.2', reviews: 76, price: '₹2,200 - ₹3,500', priceSuffix: '/night', facilities: ['Wi-Fi', 'AC', 'Room Service'], img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400' },
+  { name: 'Co-Live Adyar', location: 'Adyar, Chennai', rating: '4.6', reviews: 112, price: '₹9,000 - ₹12,000', priceSuffix: '/mo', facilities: ['Community', 'Events'], img: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400' },
+  { name: 'Adyar Student Hostel', location: 'Adyar, Chennai', rating: '4.4', reviews: 80, price: '₹4,500 - ₹6,000', priceSuffix: '/mo', facilities: ['Wi-Fi', 'Mess'], img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' },
+];
+
+const TOP_RATED = [
+  { name: 'Green Leaf PG', location: 'Velachery', rating: '4.6', reviews: 112, img: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=300' },
+  { name: 'Zolo Regent', location: 'OMR', rating: '4.6', reviews: 56, img: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=300' },
+  { name: 'Stanza Living', location: 'Whitefield', rating: '4.7', reviews: 132, img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=300' },
+  { name: 'Blossom Hostel', location: 'Koramangala', rating: '4.4', reviews: 88, img: 'https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=300' },
+];
+
+const BUDGET_STAYS = [
+  { name: 'Budget PG', sub: 'Starts from', price: '₹3,500/mo', icon: 'home-outline', color: '#10b981', bg: '#ecfdf5' },
+  { name: 'Student Hostel', sub: 'Starts from', price: '₹3,000/mo', icon: 'business-outline', color: '#8b5cf6', bg: '#f5f3ff' },
+  { name: 'Economy Hotel', sub: 'Starts from', price: '₹1,200/night', icon: 'bed-outline', color: '#f59e0b', bg: '#fffbeb' },
+  { name: 'Shared Rooms', sub: 'Starts from', price: '₹2,500/mo', icon: 'people-outline', color: '#3b82f6', bg: '#eff6ff' },
+];
+
+const METRO_STATIONS = [
+  { name: 'Whitefield Metro', count: '80+ Stays', img: 'https://images.unsplash.com/photo-1541410965313-d53b3b16ef3f?w=300' },
+  { name: 'Kundalahalli Metro', count: '120+ Stays', img: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=300' },
+  { name: 'Indiranagar Metro', count: '100+ Stays', img: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=300' },
+  { name: 'MG Road Metro', count: '150+ Stays', img: 'https://images.unsplash.com/photo-1552560200-a03586ee739d?w=300' },
+];
+
+const RECENTLY_ADDED = [
+  { name: 'New Horizon PG', location: 'Adyar, Chennai', price: '₹5,500/mo', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400' },
+  { name: 'Skyline Hostel', location: 'OMR, Chennai', price: '₹4,800/mo', img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400' },
+  { name: 'Urban Stay Hotel', location: 'T Nagar, Chennai', price: '₹2,800/night', img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400' },
 ];
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const { isDark } = useTheme();
-
-  // Data State
   const [properties, setProperties] = useState<Property[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [locationName, setLocationName] = useState('Whitefield, Bangalore');
+  const [overallTrustScore, setOverallTrustScore] = useState(89);
+  const [totalReviewsCount, setTotalReviewsCount] = useState(124);
+  const [selectedChip, setSelectedChip] = useState('Adyar');
 
-  // Location Fetching State
-  const [locationName, setLocationName] = useState('Adyar, Chennai');
-  const [loadingLocation, setLoadingLocation] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-
-  // Banner Carousel auto-scroll index state
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const carouselScrollX = useRef(new Animated.Value(0)).current;
-  const carouselRef = useRef<FlatList>(null);
-
-  // Load database entities
   useEffect(() => {
     const loadData = async () => {
       const allProps = await MockDb.getProperties();
       const allRevs = await MockDb.getReviews();
       setProperties(allProps);
       setReviews(allRevs);
+      if (allProps.length > 0) {
+        const sumTrust = allProps.reduce((acc, p) => acc + p.trustScore, 0);
+        setOverallTrustScore(Math.round(sumTrust / allProps.length));
+      }
+      setTotalReviewsCount(124);
     };
     loadData();
-    fetchLocation(true); // Auto fetch location on mount silently
+    fetchLocation();
   }, []);
 
-  // Location Fetching Function
-  const fetchLocation = async (isInitial = false) => {
-    setLoadingLocation(true);
+  const fetchLocation = async () => {
     try {
       const servicesEnabled = await Location.hasServicesEnabledAsync();
-      if (!servicesEnabled) {
-        setLocationName('Adyar, Chennai');
-        if (!isInitial) {
-          Toast.show({
-            type: 'info',
-            text1: 'Location Services Disabled',
-            text2: 'Using default location (Adyar, Chennai).',
-            position: 'top',
-          });
-        }
-        return;
-      }
-
+      if (!servicesEnabled) return;
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        if (!isInitial) {
-          Toast.show({
-            type: 'error',
-            text1: 'Location Permission Denied',
-            text2: 'Using default location (Adyar, Chennai).',
-            position: 'top',
-          });
-        }
-        setLocationName('Adyar, Chennai');
-        return;
+      if (status !== 'granted') return;
+      let location = await Location.getLastKnownPositionAsync({});
+      if (!location) location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const geocode = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+      if (geocode?.length > 0) {
+        const a = geocode[0];
+        setLocationName(`${a.district || a.name || 'Whitefield'}, ${a.city || 'Bangalore'}`);
       }
-
-      let location = null;
-      try {
-        location = await Location.getLastKnownPositionAsync({});
-      } catch (e) {
-        // Silently catch
-      }
-
-      if (!location) {
-        location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-      }
-
-      const geocode = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-
-      if (geocode && geocode.length > 0) {
-        const address = geocode[0];
-        const city = address.city || address.subregion || 'Chennai';
-        const neighborhood = address.district || address.name || 'Nearby';
-        setLocationName(`${neighborhood}, ${city}`);
-
-        if (!isInitial) {
-          Toast.show({
-            type: 'success',
-            text1: 'Location Updated',
-            text2: `Set to ${neighborhood}, ${city}`,
-            position: 'top',
-          });
-        }
-      } else {
-        setLocationName('Chennai, TN');
-      }
-    } catch (error) {
-      setLocationName('Adyar, Chennai');
-      if (!isInitial) {
-        Toast.show({
-          type: 'info',
-          text1: 'Location Unavailable',
-          text2: 'Using default location (Adyar, Chennai).',
-          position: 'top',
-        });
-      }
-    } finally {
-      setLoadingLocation(false);
-    }
+    } catch (_) {}
   };
 
-  // Banner Auto-scrolling Effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      let nextIndex = carouselIndex + 1;
-      if (nextIndex >= TRENDING_SLIDES.length) {
-        nextIndex = 0;
-      }
-      setCarouselIndex(nextIndex);
-      carouselRef.current?.scrollToIndex({
-        index: nextIndex,
-        animated: true
-      });
-    }, 4500);
+  const goSearch = () => navigation.navigate('SearchStack', { screen: 'Search' });
+  const goDetails = (id: string) => navigation.navigate('PGDetails', { pgId: id });
 
-    return () => clearInterval(timer);
-  }, [carouselIndex]);
+  const bg = isDark ? '#0f172a' : '#f8faff';
+  const cardBg = isDark ? '#1e293b' : '#ffffff';
+  const cardBorder = isDark ? '#334155' : '#f1f5f9';
+  const textMain = isDark ? '#f8fafc' : '#0f172a';
+  const textSub = isDark ? '#94a3b8' : '#64748b';
+  const sectionBg = isDark ? '#1e293b' : '#ffffff';
 
-  // Find corresponding reviews for a property
-  const getPropertyReviews = (propertyId: string) => {
-    return reviews.filter(r => r.propertyId === propertyId);
-  };
-
-  // Get filtered property listing
-  const getFilteredProperties = () => {
-    let list = [...properties];
-
-    // Search query matches property name, location, or description
-    if (searchQuery.trim().length > 0) {
-      list = list.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.type.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Filter by selected City/Area from the header circular list
-    if (selectedCity) {
-      list = list.filter(p =>
-        p.area.toLowerCase() === selectedCity.toLowerCase() ||
-        p.city.toLowerCase() === selectedCity.toLowerCase() ||
-        p.location.toLowerCase().includes(selectedCity.toLowerCase())
-      );
-    }
-
-    // Filter Chips
-    if (activeFilter === 'Hotels Only') {
-      list = list.filter(p => p.type === 'Hotel' || p.type === 'Service Apartment');
-    } else if (activeFilter === 'PGs & Hostels') {
-      list = list.filter(p => p.type === 'PG' || p.type === 'Hostel');
-    } else if (activeFilter === 'Co-Living Hubs') {
-      list = list.filter(p => p.type === 'Co-Living Property');
-    } else if (activeFilter === 'Highly Rated') {
-      list = list.filter(p => p.trustScore >= 80);
-    } else if (activeFilter === 'Work-Friendly') {
-      list = list.filter(p => p.facilities.some(f => f.toLowerCase().includes('wifi') || f.toLowerCase().includes('workstation') || f.toLowerCase().includes('internet')));
-    } else if (activeFilter === 'Highest Trust') {
-      list = list.sort((a, b) => b.trustScore - a.trustScore);
-    }
-
-    return list;
-  };
-
-  const handleCategoryPress = (categoryId: string) => {
-    navigation.navigate('SearchStack', {
-      screen: 'Search',
-      params: { query: categoryId }
-    } as any);
-  };
-
-  const handleSearchNavigation = () => {
-    navigation.navigate('SearchStack', { screen: 'Search' });
-  };
+  const SectionHeader = ({ title, onPress }: { title: string; onPress?: () => void }) => (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 14 }}>
+      <Text style={{ fontSize: 15, fontWeight: '900', color: textMain, letterSpacing: -0.3 }}>{title}</Text>
+      <TouchableOpacity onPress={onPress || goSearch}>
+        <Text style={{ color: '#3b82f6', fontSize: 12, fontWeight: '700' }}>View all</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
-    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-950' : 'bg-slate-50/50'}`} edges={['left', 'right', 'bottom']}>
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} translucent backgroundColor="transparent" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor="transparent" translucent />
 
-      {/* Background Decorative Blur Gradients */}
-      <View className={`absolute top-0 left-0 right-0 h-96 bg-gradient-to-b ${isDark ? 'from-blue-950/10 via-indigo-950/5' : 'from-blue-100/30 via-indigo-50/15'} to-transparent`} style={{ pointerEvents: 'none' }} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 110 }}>
 
-      {/* Main Scroll Content */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 110 }}
-      >
-        {/* OYO-STYLE VIBRANT ROSE HEADER BLOCK (SOLID ROSE FOR SEARCH BLOCK ONLY) */}
-        <View className={`px-5 pt-12 pb-7 rounded-b-[32px] shadow-md ${isDark ? 'bg-slate-900 border-b border-slate-800' : 'bg-primary-600 shadow-primary-600/10'}`}>
-          {/* Top Row: Menu, Brand, Profile */}
-          <View className="flex-row justify-between items-center mb-5">
-            <TouchableOpacity
-              onPress={() => Toast.show({ type: 'info', text1: 'Menu opened' })}
-              className="p-1"
-            >
-              <Ionicons name="menu-outline" size={24} color="#ffffff" />
-            </TouchableOpacity>
-
-            <View className="flex-row items-center">
-              <Ionicons name="shield-checkmark" size={20} color="#ffffff" />
-              <Text className="text-lg font-black text-white ml-1.5 uppercase tracking-wider">Truth Review</Text>
+        {/* ── 1. HEADER ── */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ backgroundColor: '#1d4ed8', borderRadius: 12, width: 34, height: 34, justifyContent: 'center', alignItems: 'center' }}>
+              <Ionicons name="shield-checkmark" size={18} color="#fff" />
             </View>
-
-            <View className="flex-row items-center space-x-2.5">
-              <TouchableOpacity
-                onPress={() => Toast.show({ type: 'info', text1: 'Notifications dashboard mock.' })}
-                className="p-2 bg-white/10 rounded-full"
-              >
-                <Ionicons name="notifications-outline" size={16} color="#ffffff" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('ProfileStack', { screen: 'Profile' })}
-                className="p-2 bg-white/10 rounded-full"
-              >
-                <Ionicons name="person-outline" size={16} color="#ffffff" />
+            <View style={{ marginLeft: 10 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ fontSize: 17, fontWeight: '900', color: textMain, letterSpacing: -0.5 }}>Truth </Text>
+                <Text style={{ fontSize: 17, fontWeight: '900', color: '#1d4ed8', letterSpacing: -0.5 }}>Review</Text>
+              </View>
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Ionicons name="location" size={10} color="#1d4ed8" />
+                <Text style={{ fontSize: 11, color: textSub, marginLeft: 3, fontWeight: '600' }}>{locationName}</Text>
+                <Ionicons name="chevron-down" size={10} color={textSub} style={{ marginLeft: 2 }} />
               </TouchableOpacity>
             </View>
           </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <TouchableOpacity onPress={() => Toast.show({ type: 'info', text1: 'Notifications' })} style={{ position: 'relative', padding: 2 }}>
+              <Ionicons name="notifications-outline" size={22} color={textMain} />
+              <View style={{ position: 'absolute', right: 2, top: 2, width: 8, height: 8, backgroundColor: '#1d4ed8', borderRadius: 4, borderWidth: 1.5, borderColor: '#fff' }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ProfileStack', { screen: 'Profile' })}>
+              <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: '#e2e8f0' }} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-          {/* Rounded Search Pill */}
-          <TouchableOpacity
-            onPress={handleSearchNavigation}
-            activeOpacity={0.95}
-            className="flex-row items-center bg-white px-5 py-3.5 rounded-2xl shadow-md"
-          >
-            <Ionicons name="search" size={18} color="#475569" />
-            <View className="ml-3 flex-1">
-              <Text className="text-xs font-black text-slate-800">
-                {selectedCity ? selectedCity : locationName}
-              </Text>
-              <Text className="text-[10px] text-slate-400 font-bold mt-0.5">
-                Stays, Hostels, Workspaces
-              </Text>
+        {/* ── 2. SEARCH BAR ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 12 }}>
+          <TouchableOpacity onPress={goSearch} activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: sectionBg, borderRadius: 14, paddingHorizontal: 16, height: 48, borderWidth: 1, borderColor: cardBorder, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 }}>
+            <Ionicons name="search-outline" size={18} color="#94a3b8" />
+            <Text style={{ flex: 1, marginLeft: 10, fontSize: 13, color: '#94a3b8', fontWeight: '500' }}>Search PGs, Hostels, Hotels...</Text>
+            <View style={{ backgroundColor: '#1d4ed8', width: 34, height: 34, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <Ionicons name="options-outline" size={16} color="#fff" />
             </View>
-            {loadingLocation && (
-              <ActivityIndicator size="small" color="#14B8A6" />
-            )}
           </TouchableOpacity>
         </View>
 
-        {/* Scrollable Cities & Features (Outside/Below the Gradient Header) */}
-        <View className="px-5 pt-5 pb-2">
-          {/* Scrollable Chennai Localities (locations) */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12 }}
-            className="mb-5"
-          >
-            {/* Nearby GPS Locator */}
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedCity(null);
-                fetchLocation(false);
-              }}
-              className="items-center"
-            >
-              <View className="w-14 h-14 rounded-full bg-white justify-center items-center shadow-sm border border-slate-200">
-                <Ionicons name="compass-outline" size={24} color="#14B8A6" />
-              </View>
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Nearby</Text>
-            </TouchableOpacity>
-
-            {/* Adyar */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('Adyar')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Adyar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Adyar</Text>
-            </TouchableOpacity>
-
-            {/* Velachery */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('Velachery')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Velachery' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Velachery</Text>
-            </TouchableOpacity>
-
-            {/* T. Nagar */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('T. Nagar')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'T. Nagar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>T. Nagar</Text>
-            </TouchableOpacity>
-
-            {/* OMR */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('Perungudi')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Perungudi' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>OMR</Text>
-            </TouchableOpacity>
-
-            {/* Tambaram */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('Tambaram')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Tambaram' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Tambaram</Text>
-            </TouchableOpacity>
-
-            {/* Anna Nagar */}
-            <TouchableOpacity
-              onPress={() => setSelectedCity('Anna Nagar')}
-              className="items-center"
-            >
-              <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=150&q=80' }}
-                className={`w-14 h-14 rounded-full border-2 ${selectedCity === 'Anna Nagar' ? 'border-primary-600' : 'border-white shadow-sm'}`}
-              />
-              <Text className={`text-[10px] font-black mt-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Anna Nagar</Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          {/* Stays Features Row */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12 }}
-            className={`border-t pt-4 ${isDark ? 'border-slate-800' : 'border-slate-100'}`}
-          >
-            {[
-              { label: 'Clean Rooms', icon: 'sparkles-outline' },
-              { label: 'Helpful Staff', icon: 'heart-outline' },
-              { label: 'AC Rooms', icon: 'snow-outline' },
-              { label: 'Free Wi-Fi', icon: 'wifi-outline' },
-              { label: 'Toiletries', icon: 'leaf-outline' }
-            ].map((feat, idx) => (
-              <View key={idx} className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${isDark ? 'bg-slate-900 border-slate-850' : 'bg-primary-50/60 border-primary-100'}`}>
-                <Ionicons name={feat.icon as any} size={11} color={isDark ? '#3b82f6' : '#14B8A6'} />
-                <Text className={`text-[9px] font-extrabold uppercase ml-1.5 tracking-wider ${isDark ? 'text-slate-200' : 'text-primary-700'}`}>{feat.label}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* TRENDING BANNER CAROUSEL */}
-        <View className="mt-5">
-          <FlatList
-            ref={carouselRef}
-            data={TRENDING_SLIDES}
-            keyExtractor={(item) => item.id}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            getItemLayout={(data, index) => (
-              { length: width, offset: width * index, index }
-            )}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { x: carouselScrollX } } }],
-              { useNativeDriver: false }
-            )}
-            onMomentumScrollEnd={(e) => {
-              const idx = Math.round(e.nativeEvent.contentOffset.x / width);
-              setCarouselIndex(idx);
-            }}
-            renderItem={({ item }) => (
-              <View style={{ width: width, paddingHorizontal: 20 }}>
-                <TouchableOpacity
-                  activeOpacity={0.95}
-                  onPress={handleSearchNavigation}
-                  className="w-full h-48 rounded-3xl overflow-hidden relative shadow-md shadow-slate-200/5"
-                >
-                  <Image source={{ uri: item.image }} className="w-full h-full object-cover" />
-                  <View className="absolute inset-0 bg-black/40" />
-
-                  <View className="absolute top-4 left-4 bg-primary-600 px-2.5 py-0.5 rounded-md">
-                    <Text className="text-[9px] font-black text-white tracking-widest">{item.tag}</Text>
-                  </View>
-
-                  <View className="absolute bottom-4 left-4 right-4 bg-white/10 border border-white/20 p-3 rounded-2xl">
-                    <Text className="text-white text-xs font-black">{item.title}</Text>
-                    <Text className="text-white/80 text-[10px] font-bold mt-0.5" numberOfLines={1}>{item.subtitle}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-
-          {/* Dots Indicator */}
-          <View className="flex-row justify-center items-center mt-3 space-x-1.5">
-            {TRENDING_SLIDES.map((_, idx) => {
-              const isActive = carouselIndex === idx;
-              return (
-                <View
-                  key={idx}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${isActive ? 'w-4 bg-primary-600' : 'w-1.5 bg-slate-300'
-                    }`}
-                />
-              );
-            })}
-          </View>
-        </View>
-
-        {/* CATEGORIES SECTION */}
-        <View className="mt-6">
-          <View className="px-5 mb-3">
-            <Text className="text-xs font-black uppercase tracking-wider text-slate-400">Discover Stays & Workspaces</Text>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-          >
-            {CATEGORIES.map((cat) => (
-              <TouchableOpacity
-                key={cat.id}
-                onPress={() => handleCategoryPress(cat.id)}
-                activeOpacity={0.9}
-                style={{
-                  backgroundColor: `${cat.gradient[0]}0a`,
-                  borderColor: `${cat.gradient[0]}22`,
-                }}
-                className="mr-3 flex-row items-center px-4 py-2 border rounded-full shadow-sm shadow-slate-100/30"
-              >
-                <View
-                  className="p-1.5 rounded-full"
-                  style={{ backgroundColor: `${cat.gradient[0]}15` }}
-                >
-                  <Ionicons name={cat.icon as any} size={13} color={cat.gradient[0]} />
-                </View>
-                <Text className={`text-[11px] font-black ml-2.5 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-                  {cat.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* FILTER CHIPS */}
-        <View className="mt-7">
-          <View className="px-5 mb-3 flex-row justify-between items-center">
-            <Text className="text-xs font-black uppercase tracking-wider text-slate-400">Browse Verified Stays</Text>
-          </View>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            className="mb-4"
-          >
-            {['All', 'PGs & Hostels', 'Hotels Only', 'Co-Living Hubs', 'Highly Rated', 'Work-Friendly', 'Highest Trust'].map((chip) => {
-              const isActive = activeFilter === chip;
-              return (
-                <TouchableOpacity
-                  key={chip}
-                  onPress={() => setActiveFilter(chip)}
-                  className={`mr-2 px-4 py-2 rounded-full border ${isActive
-                      ? 'bg-primary-600 border-primary-600'
-                      : isDark ? 'bg-slate-900 border-slate-850' : 'bg-white border-slate-200'
-                    }`}
-                >
-                  <Text className={`text-[10px] font-bold ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-slate-600'
-                    }`}>
-                    {chip}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* ONE-BY-ONE PROPERTY LIST WITH IMAGES */}
-        <View className="px-5 space-y-5">
-          {getFilteredProperties().map((prop) => {
-            const propReviews = getPropertyReviews(prop.id);
-            const latestReview = propReviews.length > 0 ? propReviews[0] : null;
-
+        {/* ── 3. LOCATION CHIPS ── */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }} style={{ marginBottom: 16 }}>
+          {LOCATION_CHIPS.map((chip) => {
+            const active = selectedChip === chip.label;
             return (
               <TouchableOpacity
-                key={prop.id}
-                activeOpacity={0.95}
-                onPress={() => navigation.navigate('PGDetails', { pgId: prop.id })}
-                className={`border rounded-[24px] overflow-hidden shadow-sm mb-4 ${isDark ? 'bg-slate-900 border-slate-850 shadow-slate-950/20' : 'bg-white border-slate-100 shadow-slate-100/50'}`}
+                key={chip.label}
+                onPress={() => setSelectedChip(chip.label)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 18,
+                  paddingVertical: 8,
+                  borderRadius: 20,
+                  backgroundColor: active ? '#1d4ed8' : sectionBg,
+                  borderWidth: 1,
+                  borderColor: active ? '#1d4ed8' : cardBorder,
+                }}
               >
-                {/* Large Property Image */}
-                <View className="h-48 w-full relative">
-                  <Image
-                    source={{ uri: prop.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80' }}
-                    className="w-full h-full object-cover"
-                  />
-                  <View className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-
-                  {/* Category Pill Tag */}
-                  <View className="absolute top-4 left-4 bg-black/60 px-3 py-1 rounded-full flex-row items-center">
-                    <Ionicons
-                      name={prop.type === 'Hotel' || prop.type === 'Service Apartment' ? 'bed-outline' : 'business-outline'}
-                      size={10}
-                      color="#ffffff"
-                    />
-                    <Text className="text-white text-[8px] font-black uppercase ml-1 tracking-wider">{prop.type}</Text>
-                  </View>
-
-                  {/* Gender Restriction Badge */}
-                  {prop.genderType !== 'none' && (
-                    <View className="absolute top-4 right-4 bg-primary-600 px-3 py-1 rounded-full">
-                      <Text className="text-white text-[8px] font-black uppercase tracking-wider">
-                        {prop.genderType}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                {/* Property Detail Content */}
-                <View className="p-5">
-                  <View className="flex-row justify-between items-start">
-                    <View className="flex-1">
-                      <Text className={`text-md font-black leading-5 ${isDark ? 'text-white' : 'text-slate-800'}`} numberOfLines={1}>
-                        {prop.name}
-                      </Text>
-                      <View className="flex-row items-center mt-1">
-                        <Ionicons name="location-outline" size={11} color="#64748b" />
-                        <Text className={`text-[10px] ml-0.5 truncate ${isDark ? 'text-slate-450' : 'text-slate-500'}`}>{prop.location}</Text>
-                      </View>
-                    </View>
-                  </View>
-
-                  {/* Trust Score & Ratings summary */}
-                  <View className={`flex-row justify-between items-center mt-4 p-3 rounded-2xl border ${isDark ? 'bg-slate-850 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                    <View className="flex-row items-center flex-1">
-                      <Ionicons name="ribbon-outline" size={16} color="#10B981" />
-                      <View className="ml-2 flex-1 pr-3">
-                        <View className="flex-row justify-between items-center mb-0.5">
-                          <Text className={`text-[9px] font-bold uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Trust Score</Text>
-                          <Text className="text-[10px] font-black text-emerald-600">{prop.trustScore}%</Text>
-                        </View>
-                        <View className={`h-1 rounded-full w-full ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-                          <View
-                            className="h-full bg-emerald-500 rounded-full"
-                            style={{ width: `${prop.trustScore}%` }}
-                          />
-                        </View>
-                      </View>
-                    </View>
-
-                    <View className={`h-6 w-[1px] mx-1 ${isDark ? 'bg-slate-700' : 'bg-slate-200/80'}`} />
-
-                    <View className="flex-row items-center pl-3">
-                      <Ionicons name="star" size={12} color="#f59e0b" />
-                      <Text className={`text-xs font-black ml-1 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-                        {propReviews.length > 0
-                          ? (propReviews.reduce((acc, r) => acc + r.ratings.overall, 0) / propReviews.length).toFixed(1)
-                          : 'N/A'
-                        }
-                      </Text>
-                      <Text className="text-[9px] text-slate-400 font-medium ml-1">({propReviews.length})</Text>
-                    </View>
-                  </View>
-
-                  {/* Quote Section showing Latest Review Snippet */}
-                  {latestReview ? (
-                    <View className={`mt-4 border-l-2 p-3 rounded-r-xl ${isDark ? 'bg-slate-850/40 border-slate-700' : 'bg-slate-50/40 border-slate-300'}`}>
-                      <View className="flex-row justify-between items-center">
-                        <Text className="text-[9px] font-black text-slate-400 uppercase">
-                          Latest Resident Review
-                        </Text>
-                        {latestReview.verified && (
-                          <View className="bg-emerald-50 px-1.5 py-0.5 rounded-md flex-row items-center">
-                            <Ionicons name="shield-checkmark" size={8} color="#10B981" />
-                            <Text className="text-emerald-600 text-[7px] font-extrabold uppercase ml-0.5">Verified</Text>
-                          </View>
-                        )}
-                      </View>
-                      <Text className={`text-xs italic mt-1.5 leading-4 ${isDark ? 'text-slate-350' : 'text-slate-600'}`} numberOfLines={2}>
-                        "{latestReview.comment}"
-                      </Text>
-                    </View>
-                  ) : (
-                    <View className={`mt-4 border-l-2 p-3 rounded-r-xl ${isDark ? 'bg-slate-850/40 border-slate-800' : 'bg-slate-50/40 border-slate-200'}`}>
-                      <Text className="text-xs text-slate-400 italic">No reviews posted yet. Be the first to share your experience!</Text>
-                    </View>
-                  )}
-                </View>
+                <Ionicons
+                  name={chip.icon as any}
+                  size={12}
+                  color={active ? '#fff' : '#1d4ed8'}
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={{ fontSize: 12, fontWeight: '700', color: active ? '#fff' : textSub }}>
+                  {chip.label}
+                </Text>
               </TouchableOpacity>
             );
           })}
+        </ScrollView>
+
+        {/* ── 4. HERO BANNER ── */}
+        <View style={{ marginHorizontal: 20, borderRadius: 24, overflow: 'hidden', marginBottom: 20, minHeight: 160, elevation: 8, shadowColor: '#1d4ed8', shadowOpacity: 0.25, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }}>
+          <LinearGradient
+            colors={['#1d4ed8', '#2563eb', '#3b82f6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ flex: 1 }}
+          >
+            <View style={{ flexDirection: 'row', padding: 20, paddingRight: 0 }}>
+              <View style={{ flex: 1, paddingRight: 10 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, marginBottom: 12 }}>
+                  <Ionicons name="shield-checkmark" size={10} color="#ffffff" />
+                  <Text style={{ fontSize: 9, color: '#ffffff', fontWeight: '800', marginLeft: 4, letterSpacing: 0.5 }}>India's Verified Platform</Text>
+                </View>
+                <Text style={{ fontSize: 24, fontWeight: '900', color: '#ffffff', letterSpacing: -0.5, lineHeight: 30 }}>Find the Truth{'\n'}<Text style={{ color: '#bae6fd' }}>Before You Stay</Text></Text>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', fontWeight: '500', marginTop: 8, lineHeight: 16 }}>Verified reviews. Real experiences.{'\n'}Better choices.</Text>
+              </View>
+
+              {/* Right side: building + trust score */}
+              <View style={{ width: 120, alignItems: 'flex-end' }}>
+                {/* Trust Score Card */}
+                <BlurView intensity={30} tint="light" style={{ borderRadius: 16, padding: 10, width: 92, alignItems: 'center', marginRight: 14, marginTop: 4, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                    <Text style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.5 }}>Trust Score</Text>
+                    <Ionicons name="information-circle-outline" size={9} color="rgba(255,255,255,0.7)" style={{ marginLeft: 2 }} />
+                  </View>
+                  <Text style={{ fontSize: 32, fontWeight: '900', color: '#10b981', letterSpacing: -1 }}>{overallTrustScore}</Text>
+                  <Text style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>/100</Text>
+                  <View style={{ backgroundColor: 'rgba(16,185,129,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="checkmark-circle" size={9} color="#10b981" />
+                    <Text style={{ fontSize: 8, color: '#10b981', fontWeight: '800', marginLeft: 2 }}>Excellent</Text>
+                  </View>
+                  <Text style={{ fontSize: 7, color: 'rgba(255,255,255,0.6)', marginTop: 6, fontWeight: '500', textAlign: 'center' }}>Based on {totalReviewsCount} reviews</Text>
+                </BlurView>
+                {/* Building illustration */}
+                <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginRight: 14, marginTop: 8 }}>
+                  <View style={{ width: 12, height: 28, backgroundColor: 'rgba(255,255,255,0.4)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
+                  <View style={{ width: 10, height: 20, backgroundColor: 'rgba(255,255,255,0.5)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
+                  <View style={{ width: 16, height: 38, backgroundColor: 'rgba(255,255,255,0.7)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
+                  <View style={{ width: 12, height: 24, backgroundColor: 'rgba(255,255,255,0.5)', borderTopLeftRadius: 4, borderTopRightRadius: 4 }} />
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+
+        {/* ── 5. PROPERTY TYPE ICON ROW ── */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }} style={{ marginBottom: 20 }}>
+          {PROPERTY_TYPES.map((pt) => (
+            <TouchableOpacity key={pt.label} onPress={goSearch} style={{ alignItems: 'center', width: 60 }}>
+              <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: pt.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 6, borderWidth: 1, borderColor: pt.bg }}>
+                <Ionicons name={pt.icon as any} size={24} color={pt.color} />
+              </View>
+              <Text style={{ fontSize: 10, fontWeight: '700', color: textMain, textAlign: 'center' }}>{pt.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* ── 6. STATS ROW ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <View style={{ flexDirection: 'row', backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 4, elevation: 1 }}>
+            {[
+              { value: '12,450+', label: 'Verified Reviews', icon: 'star', color: '#f59e0b' },
+              { value: '3,210+', label: 'Properties Listed', icon: 'business', color: '#3b82f6' },
+              { value: '92%', label: 'Verified Residents', icon: 'shield-checkmark', color: '#10b981' },
+              { value: '4.6/5', label: 'Avg. Rating', icon: 'people', color: '#8b5cf6' },
+            ].map((stat, i, arr) => (
+              <View key={i} style={{ flex: 1, alignItems: 'center', paddingVertical: 14, paddingHorizontal: 4, borderRightWidth: i < arr.length - 1 ? 1 : 0, borderRightColor: cardBorder }}>
+                <Ionicons name={stat.icon as any} size={16} color={stat.color} />
+                <Text style={{ fontSize: 13, fontWeight: '900', color: textMain, marginTop: 4, letterSpacing: -0.3 }}>{stat.value}</Text>
+                <Text style={{ fontSize: 8, color: textSub, fontWeight: '600', textAlign: 'center', marginTop: 2, lineHeight: 11 }}>{stat.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* ── 7. BROWSE BY LOCATION ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Browse by Location" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
+            {LOCATIONS.map((loc, i) => (
+              <TouchableOpacity
+                key={i}
+                activeOpacity={0.9}
+                style={{
+                  width: 120,
+                  height: 160,
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  position: 'relative',
+                  elevation: 5,
+                  shadowColor: '#000',
+                  shadowOpacity: 0.15,
+                  shadowRadius: 8,
+                  shadowOffset: { width: 0, height: 4 },
+                }}
+              >
+                <Image
+                  source={{ uri: loc.img }}
+                  style={{ width: '100%', height: '100%', position: 'absolute' }}
+                  resizeMode="cover"
+                />
+                <LinearGradient
+                  colors={['transparent', 'rgba(15,23,42,0.85)']}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    height: 100,
+                  }}
+                />
+                <View style={{ position: 'absolute', bottom: 12, left: 12, right: 12 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '900', color: '#ffffff', marginBottom: 2 }}>
+                    {loc.name}
+                  </Text>
+                  <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: '600', marginBottom: 4 }}>
+                    {loc.count}
+                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="star" size={11} color="#fbbf24" style={{ marginRight: 2 }} />
+                    <Text style={{ fontSize: 10, fontWeight: '900', color: '#fbbf24' }}>
+                      {loc.rating}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 8. EXPLORE BY PROPERTY TYPE ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Explore by Property Type" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+            {EXPLORE_TYPES.map((type, i) => (
+              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 90, alignItems: 'center', backgroundColor: sectionBg, borderRadius: 20, borderWidth: 1, borderColor: cardBorder, paddingVertical: 14, paddingHorizontal: 6, elevation: 3, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } }}>
+                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: type.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+                  <Ionicons name={type.icon as any} size={20} color={type.color} />
+                </View>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: textMain, textAlign: 'center' }}>{type.label}</Text>
+                <Text style={{ fontSize: 9, color: textSub, fontWeight: '500', textAlign: 'center', marginTop: 2 }}>{type.sub}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 9. POPULAR STAYS IN ADYAR ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Popular Stays in Adyar" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+            {POPULAR_ADYAR.map((prop, i) => (
+              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 220, backgroundColor: sectionBg, borderRadius: 24, borderWidth: 0, overflow: 'hidden', shadowColor: '#1d4ed8', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 5 }}>
+                <View style={{ height: 130, position: 'relative' }}>
+                  <Image source={{ uri: prop.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                  {/* Verified badge */}
+                  <View style={{ position: 'absolute', top: 10, left: 10, backgroundColor: '#10b981', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="checkmark-circle" size={9} color="#fff" />
+                    <Text style={{ color: '#fff', fontSize: 9, fontWeight: '800', marginLeft: 3 }}>VERIFIED</Text>
+                  </View>
+                  {/* Heart */}
+                  <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10, backgroundColor: '#fff', width: 28, height: 28, borderRadius: 14, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="heart-outline" size={14} color="#ef4444" />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '900', color: textMain, marginBottom: 3 }} numberOfLines={1}>{prop.name}</Text>
+                  <Text style={{ fontSize: 10, color: textSub, marginBottom: 6 }} numberOfLines={1}>{prop.location}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                    <Ionicons name="star" size={11} color="#f59e0b" />
+                    <Text style={{ fontSize: 11, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
+                    <Text style={{ fontSize: 10, color: textSub, marginLeft: 4 }}>({prop.reviews})</Text>
+                  </View>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: textMain, marginBottom: 8 }}>{prop.price}<Text style={{ fontSize: 9, fontWeight: '500', color: textSub }}> {prop.priceSuffix}</Text></Text>
+                  <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
+                    {prop.facilities.map((f, fi) => (
+                      <View key={fi} style={{ backgroundColor: '#f0f9ff', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 5, borderWidth: 1, borderColor: '#bae6fd' }}>
+                        <Text style={{ fontSize: 8, color: '#0369a1', fontWeight: '700' }}>{f}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 10. TOP RATED STAYS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Top Rated Stays" />
+          <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+            {TOP_RATED.map((prop, idx) => (
+              <TouchableOpacity key={idx} onPress={goSearch} activeOpacity={0.9} style={{ width: (width - 52) / 2, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden' }}>
+                <View style={{ height: 100, position: 'relative' }}>
+                  <Image source={{ uri: prop.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{prop.name}</Text>
+                  <Text style={{ fontSize: 10, color: textSub, marginBottom: 4 }} numberOfLines={1}>{prop.location}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="star" size={10} color="#f59e0b" />
+                    <Text style={{ fontSize: 10, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
+                    <Text style={{ fontSize: 9, color: textSub, marginLeft: 3 }}>({prop.reviews})</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* ── 11. BUDGET FRIENDLY STAYS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Budget Friendly Stays" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
+            {BUDGET_STAYS.map((item, i) => (
+              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 130, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, padding: 14, alignItems: 'center' }}>
+                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                  <Ionicons name={item.icon as any} size={22} color={item.color} />
+                </View>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, textAlign: 'center', marginBottom: 4 }}>{item.name}</Text>
+                <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }}>{item.sub}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 12. REFER & EARN BANNER ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Text style={{ fontSize: 14, fontWeight: '900', color: textMain }}>Refer & Earn Rewards </Text>
+                <Text style={{ fontSize: 14 }}>🎁</Text>
+              </View>
+              <Text style={{ fontSize: 10, color: textSub, fontWeight: '500', marginBottom: 12, lineHeight: 15 }}>Refer your friends and earn exciting rewards.</Text>
+              <TouchableOpacity style={{ backgroundColor: '#1d4ed8', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, alignSelf: 'flex-start', shadowColor: '#1d4ed8', shadowOpacity: 0.3, shadowRadius: 6, elevation: 3 }}>
+                <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>Refer Now</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ alignItems: 'center', paddingLeft: 12 }}>
+              <Text style={{ fontSize: 44 }}>🎁</Text>
+              <View style={{ flexDirection: 'row', gap: 2, marginTop: 4 }}>
+                {['🌟','✨','💫'].map((s, i) => <Text key={i} style={{ fontSize: 10 }}>{s}</Text>)}
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* ── 13. NEAR METRO STATIONS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Near Metro Stations" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+            {METRO_STATIONS.map((item, i) => (
+              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
+                <View style={{ height: 90, position: 'relative' }}>
+                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
+                  <Text style={{ fontSize: 10, color: textSub }} numberOfLines={1}>{item.count}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 14. RECENTLY ADDED ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Recently Added" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+            {RECENTLY_ADDED.map((item, i) => (
+              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 180, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
+                <View style={{ height: 110, position: 'relative' }}>
+                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                  <TouchableOpacity style={{ position: 'absolute', top: 8, right: 8, backgroundColor: '#fff', width: 26, height: 26, borderRadius: 13, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="heart-outline" size={13} color="#ef4444" />
+                  </TouchableOpacity>
+                  <View style={{ position: 'absolute', bottom: 8, left: 8, backgroundColor: '#1d4ed8', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 }}>
+                    <Text style={{ fontSize: 8, color: '#fff', fontWeight: '800' }}>NEW</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
+                  <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }} numberOfLines={1}>{item.location}</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 15. STUDENT RECOMMENDED ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <SectionHeader title="Student Recommended" />
+          <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 6, elevation: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+              <Image source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }} style={{ width: 52, height: 52, borderRadius: 26, borderWidth: 2, borderColor: '#dbeafe', marginRight: 14 }} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 12, color: textSub, fontWeight: '500', fontStyle: 'italic', lineHeight: 18, marginBottom: 10 }}>
+                  "Stanza Living has the best environment for students. Safe, clean and comfortable."
+                </Text>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: textMain }}>– Priya Sharma</Text>
+                <Text style={{ fontSize: 9, color: textSub, marginTop: 2 }}>Christ University</Text>
+              </View>
+              <View style={{ alignItems: 'center', marginLeft: 10 }}>
+                <View style={{ flexDirection: 'row', gap: 2, marginBottom: 4 }}>
+                  {[1,2,3,4,5].map(s => <Ionicons key={s} name="star" size={10} color="#f59e0b" />)}
+                </View>
+                <Text style={{ fontSize: 14, fontWeight: '900', color: textMain }}>4.8</Text>
+              </View>
+            </View>
+            {/* Dots */}
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 5, marginTop: 12 }}>
+              {[1,2,3,4].map((d, i) => (
+                <View key={d} style={{ width: i === 0 ? 16 : 6, height: 6, borderRadius: 3, backgroundColor: i === 0 ? '#1d4ed8' : '#e2e8f0' }} />
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* ── 16. COMPLAINTS & SAFETY INSIGHTS ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <SectionHeader title="Complaints & Safety Insights" />
+          <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              {[
+                { label: 'Food Issues', count: '46', icon: 'restaurant-outline', color: '#ef4444', bg: '#fef2f2' },
+                { label: 'Water Problems', count: '28', icon: 'water-outline', color: '#3b82f6', bg: '#eff6ff' },
+                { label: 'Deposit Delay', count: '14', icon: 'hourglass-outline', color: '#f59e0b', bg: '#fffbeb' },
+                { label: 'Safety Concerns', count: '5', icon: 'shield-checkmark-outline', color: '#10b981', bg: '#ecfdf5' },
+              ].map((item, i) => (
+                <View key={i} style={{ flex: 1, alignItems: 'center' }}>
+                  <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 6 }}>
+                    <Ionicons name={item.icon as any} size={16} color={item.color} />
+                  </View>
+                  <Text style={{ fontSize: 16, fontWeight: '900', color: textMain }}>{item.count}</Text>
+                  <Text style={{ fontSize: 8, color: textSub, textAlign: 'center', marginTop: 2, lineHeight: 11 }}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* ── 17. WHY CHOOSE TRUTH REVIEW? ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <SectionHeader title="Why Choose Truth Review?" onPress={() => {}} />
+          <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              {[
+                { label: '100% Verified\nProperties', icon: 'shield-checkmark-outline', color: '#1d4ed8', bg: '#eff6ff' },
+                { label: 'Real Reviews\nBy Residents', icon: 'chatbubble-ellipses-outline', color: '#f59e0b', bg: '#fffbeb' },
+                { label: 'Trusted by\nStudents', icon: 'school-outline', color: '#10b981', bg: '#ecfdf5' },
+                { label: 'Safe & Secure\nPlatform', icon: 'lock-closed-outline', color: '#8b5cf6', bg: '#f5f3ff' },
+              ].map((item, i) => (
+                <View key={i} style={{ flex: 1, alignItems: 'center' }}>
+                  <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 6 }}>
+                    <Ionicons name={item.icon as any} size={18} color={item.color} />
+                  </View>
+                  <Text style={{ fontSize: 8, color: textMain, textAlign: 'center', fontWeight: '700', lineHeight: 12 }}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* ── 18. ADD REVIEW CTA BANNER ── */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 8 }}>
+          <View style={{ backgroundColor: '#1d4ed8', borderRadius: 18, padding: 20, flexDirection: 'row', alignItems: 'center', shadowColor: '#1d4ed8', shadowOpacity: 0.3, shadowRadius: 10, elevation: 4 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '900', color: '#fff', marginBottom: 4 }}>Add Your Review & Help Others</Text>
+              <Text style={{ fontSize: 11, color: '#bfdbfe', fontWeight: '500' }}>Your review can help someone choose better</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ReviewStack', { screen: 'AddReviewLanding' } as any)}
+              style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, flexDirection: 'row', alignItems: 'center', marginLeft: 12 }}
+            >
+              <Ionicons name="create-outline" size={14} color="#1d4ed8" />
+              <Text style={{ fontSize: 11, fontWeight: '900', color: '#1d4ed8', marginLeft: 4 }}>Add Review</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  categoryShadow: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-    elevation: 2
-  }
-});
