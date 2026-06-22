@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { useIsFocused } from '@react-navigation/native';
-import Svg, { Path as SvgPath, Circle as SvgCircle } from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { HomeStackParamList } from '../../../navigation/types';
 import { MockDb, Property, Review } from '../../../services/mockDb';
@@ -191,261 +191,233 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header Back & Save overlay */}
-      <View className="absolute top-12 left-0 right-0 z-10 flex-row justify-between px-5 items-center">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="h-10 w-10 bg-black/40 rounded-full justify-center items-center active:scale-95"
-        >
-          <Ionicons name="arrow-back" size={22} color="#ffffff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={toggleFavorite}
-          className="h-10 w-10 bg-black/40 rounded-full justify-center items-center active:scale-95"
-        >
-          <Ionicons
-            name={isFavorited ? 'heart' : 'heart-outline'}
-            size={22}
-            color={isFavorited ? '#FF6B6B' : '#ffffff'}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-        {/* Gallery Image Carousel */}
-        <View className="relative h-72 bg-slate-100">
+    <View className="flex-1 bg-slate-50">
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1" bounces={false}>
+        {/* HERO SECTION */}
+        <View className="relative w-full h-[400px] bg-slate-200">
           <ScrollView
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             onScroll={(e) => {
               const slide = Math.round(e.nativeEvent.contentOffset.x / width);
-              if (slide !== activeImageIndex) {
-                setActiveImageIndex(slide);
-              }
+              if (slide !== activeImageIndex) setActiveImageIndex(slide);
             }}
             scrollEventThrottle={16}
           >
             {property.images.map((image, idx) => (
-              <Image
-                key={idx}
-                source={{ uri: image }}
-                style={{ width, height: 288 }}
-                resizeMode="cover"
-              />
+              <Image key={idx} source={{ uri: image }} style={{ width, height: 400 }} resizeMode="cover" />
             ))}
           </ScrollView>
 
-          {/* Dots */}
-          {property.images.length > 1 && (
-            <View className="absolute bottom-4 left-0 right-0 flex-row justify-center space-x-2 gap-1.5">
-              {property.images.map((_, idx) => (
-                <View
-                  key={idx}
-                  className={`h-2 w-2 rounded-full ${idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'
-                    }`}
-                />
-              ))}
+          {/* Gradient Overlay for text readability */}
+          <LinearGradient
+            colors={['transparent', 'rgba(15,23,42,0.85)']}
+            style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 220 }}
+          />
+
+          {/* Header Action Buttons */}
+          <View className="absolute top-12 left-0 right-0 z-10 flex-row justify-between px-5 items-center">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="h-11 w-11 bg-white rounded-full justify-center items-center shadow-sm elevation-2 active:scale-95"
+            >
+              <Ionicons name="arrow-back" size={20} color="#0f172a" />
+            </TouchableOpacity>
+
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={toggleFavorite}
+                className="h-11 w-11 bg-white rounded-full justify-center items-center shadow-sm elevation-2 active:scale-95"
+              >
+                <Ionicons name={isFavorited ? 'heart' : 'heart-outline'} size={20} color={isFavorited ? '#1d4ed8' : '#0f172a'} />
+              </TouchableOpacity>
+              <TouchableOpacity className="h-11 w-11 bg-white rounded-full justify-center items-center shadow-sm elevation-2 active:scale-95">
+                <Ionicons name="share-social" size={20} color="#0f172a" />
+              </TouchableOpacity>
             </View>
-          )}
+          </View>
+
+          {/* Hero Content (Pill, Title, Location, Floating Trust Card) */}
+          <View className="absolute bottom-10 left-5 right-5 flex-row justify-between items-end">
+            <View className="flex-1 pr-4">
+              <View className="bg-white rounded-full px-3 py-1.5 flex-row items-center self-start mb-3">
+                <Ionicons name="people" size={12} color="#1d4ed8" />
+                <Text className="text-[9px] font-black uppercase text-blue-700 ml-1.5 tracking-wider">{gender.text}</Text>
+              </View>
+              <Text className="text-2xl font-black text-white leading-8 mb-2 shadow-sm">{property.name}</Text>
+              <View className="flex-row items-center justify-between">
+                <View className="flex-row items-center flex-1 pr-2">
+                  <Ionicons name="location-outline" size={14} color="#e2e8f0" />
+                  <Text className="text-slate-200 text-[11px] font-semibold ml-1 flex-1" numberOfLines={1}>{property.address}</Text>
+                </View>
+                <TouchableOpacity onPress={handleOpenMap}>
+                  <Text className="text-white text-[10px] font-bold">View on Map &gt;</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Floating Trust Score Card inside Hero */}
+            <View className="bg-white rounded-2xl p-3 w-[100px] items-center shadow-md elevation-4">
+              <View className="flex-row items-center mb-1">
+                <Ionicons name="shield-checkmark" size={12} color="#1d4ed8" />
+                <Text className="text-[9px] font-bold text-slate-700 ml-1">Trust Score</Text>
+              </View>
+              <View className="flex-row items-baseline mb-1">
+                <Text className="text-2xl font-black text-slate-800 tracking-tighter">{property.trustScore}</Text>
+                <Text className="text-[10px] font-bold text-slate-500">/100</Text>
+              </View>
+              <Text className="text-[10px] font-bold text-green-600 mb-2">{trustInfo.label}</Text>
+              <View className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <View className="h-full bg-blue-600 rounded-full" style={{ width: `${property.trustScore}%` }} />
+              </View>
+            </View>
+          </View>
         </View>
 
-        {/* Contents */}
-        <View className="p-5">
-          {/* Tag + Title */}
-          <View className="flex-row items-center justify-between mb-2">
-            <View className={`px-3 py-1 rounded-full ${gender.bg}`}>
-              <Text className={`text-[10px] font-black uppercase tracking-wide ${gender.textCol}`}>
-                {gender.text}
+        {/* Floating Stats Row */}
+        <View className="px-5 -mt-6 z-20">
+          <View className="bg-white rounded-3xl p-4 flex-row justify-between items-center shadow-sm elevation-2 border border-slate-100">
+            {/* Trust Rating */}
+            <View className="flex-1 items-center border-r border-slate-100">
+              <View className="w-8 h-8 rounded-full bg-blue-50 justify-center items-center mb-1.5">
+                <Ionicons name="star" size={14} color="#1d4ed8" />
+              </View>
+              <Text className="text-[15px] font-black text-slate-800">
+                {reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.ratings.overall, 0) / reviews.length).toFixed(1) : '5.0'}
               </Text>
+              <Text className="text-[9px] font-semibold text-slate-500 mt-0.5">Trust Rating</Text>
+              <Text className="text-[8px] text-slate-400 mt-0.5">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</Text>
             </View>
 
-            <Text className="text-[10px] text-slate-400 font-extrabold uppercase">{property.type}</Text>
-          </View>
-
-          <View className="flex-row justify-between items-start mb-2">
-            <Text className="text-2xl font-black text-slate-800 flex-1 mr-3 leading-8">
-              {property.name}
-            </Text>
-
-            {/* Verified Badge */}
-            {(property.claimedBy !== null || property.trustScore >= 80) && (
-              <View className="bg-green-500 rounded-full px-2.5 py-1 flex-row items-center mt-1">
-                <Ionicons name="checkmark-circle" size={12} color="#ffffff" />
-                <Text className="text-white text-[9px] font-black ml-1 uppercase">Verified Listing</Text>
+            {/* Total Reviews */}
+            <View className="flex-1 items-center border-r border-slate-100">
+              <View className="w-8 h-8 rounded-full bg-blue-50 justify-center items-center mb-1.5">
+                <Ionicons name="chatbubble-ellipses" size={14} color="#1d4ed8" />
               </View>
-            )}
-          </View>
-
-          <View className="flex-row items-center mb-4">
-            <Ionicons name="location-outline" size={16} color="#64748b" />
-            <Text className="text-slate-500 text-xs font-semibold ml-1.5 flex-1" numberOfLines={1}>
-              {property.address}
-            </Text>
-            <TouchableOpacity onPress={handleOpenMap} className="ml-2">
-              <Text className="text-primary-600 font-black text-xs">View Map</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Dynamic Trust Score Section */}
-          <View className="bg-slate-50 border border-slate-100 rounded-3xl p-5 mb-6 flex-row justify-between items-center shadow-sm">
-            <View className="flex-1 mr-4">
-              <View className="flex-row items-center gap-2">
-                <Text className="text-base font-extrabold text-slate-800">Trust Score</Text>
-                <View className={`px-2 py-0.5 rounded-md ${trustInfo.bg}`}>
-                  <Text className={`text-[10px] font-black uppercase ${trustInfo.col}`}>{trustInfo.label}</Text>
-                </View>
-              </View>
-              <Text className="text-xs text-slate-400 font-semibold mt-1 leading-5">
-                Calculated dynamically weighting verified stays, reviews freshness, and complaint ratios.
-              </Text>
+              <Text className="text-[15px] font-black text-slate-800">{reviews.length > 0 ? `${reviews.length}+` : '0'}</Text>
+              <Text className="text-[9px] font-semibold text-slate-500 mt-0.5">Total Reviews</Text>
             </View>
 
-            {/* Circular Gauge */}
-            <View className="relative justify-center items-center h-20 w-20">
-              <Svg height={80} width={80}>
-                {/* Background arc */}
-                <SvgCircle
-                  cx="40"
-                  cy="40"
-                  r="32"
-                  stroke="#e2e8f0"
-                  strokeWidth="6"
-                  fill="transparent"
-                />
-                {/* Progress arc */}
-                <SvgCircle
-                  cx="40"
-                  cy="40"
-                  r="32"
-                  stroke={trustInfo.stroke}
-                  strokeWidth="6"
-                  fill="transparent"
-                  strokeDasharray={`${2 * Math.PI * 32}`}
-                  strokeDashoffset={`${2 * Math.PI * 32 * (1 - property.trustScore / 100)}`}
-                  strokeLinecap="round"
-                  transform="rotate(-90 40 40)"
-                />
-              </Svg>
-              <View className="absolute items-center">
-                <Text className="text-slate-800 text-xl font-black">{property.trustScore}</Text>
-                <Text className="text-slate-400 text-[8px] font-black uppercase">out of 100</Text>
+            {/* Trust Score */}
+            <View className="flex-1 items-center border-r border-slate-100">
+              <View className="w-8 h-8 rounded-full bg-blue-50 justify-center items-center mb-1.5">
+                <Ionicons name="shield-checkmark" size={14} color="#1d4ed8" />
               </View>
+              <Text className="text-[15px] font-black text-slate-800">{property.trustScore}%</Text>
+              <Text className="text-[9px] font-semibold text-slate-500 mt-0.5">Trust Score</Text>
+            </View>
+
+            {/* Prime Location */}
+            <View className="flex-1 items-center">
+              <View className="w-8 h-8 rounded-full bg-blue-50 justify-center items-center mb-1.5">
+                <Ionicons name="location" size={14} color="#1d4ed8" />
+              </View>
+              <Text className="text-[12px] font-black text-slate-800" numberOfLines={1}>{property.location}</Text>
+              <Text className="text-[9px] font-semibold text-slate-500 mt-0.5">Prime Location</Text>
             </View>
           </View>
+        </View>
 
 
+        {/* ── BODY CONTENT ── */}
+        <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
 
-          {/* Reusable Issue Trends Chart */}
-          <View className="mb-6">
+          {/* Verified Complaint Trends */}
+          <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
             <IssueTrends data={complaints} />
           </View>
 
-          {/* Amenities */}
-          <View className="mb-6">
-            <Text className="text-base font-extrabold text-slate-800 mb-3">Facilities & Amenities</Text>
-            <View className="flex-row flex-wrap gap-2">
+          {/* Facilities & Amenities */}
+          <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#0f172a', marginBottom: 12 }}>Facilities & Amenities</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
               {property.facilities.map((fac, idx) => (
                 <View
                   key={idx}
-                  className="flex-row items-center bg-slate-50 border border-slate-100 px-3 py-2.5 rounded-xl min-w-[46%] m-0.5"
+                  style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, minWidth: '46%', flex: 1, margin: 2 }}
                 >
-                  <Ionicons name={getFacilityIcon(fac)} size={15} color="#14B8A6" />
-                  <Text className="text-slate-700 text-xs font-bold ml-2">{fac}</Text>
+                  <Ionicons name={getFacilityIcon(fac)} size={16} color="#1d4ed8" />
+                  <Text style={{ color: '#334155', fontSize: 12, fontWeight: '600', marginLeft: 8 }}>{fac}</Text>
                 </View>
               ))}
             </View>
           </View>
 
-          {/* Description */}
-          <View className="mb-8">
-            <Text className="text-base font-extrabold text-slate-800 mb-2">About this Property</Text>
-            <Text className="text-slate-500 text-xs leading-6 font-semibold">
-              {property.description}
-            </Text>
+          {/* About this Property */}
+          <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#0f172a', marginBottom: 8 }}>About this Property</Text>
+            <Text style={{ color: '#64748b', fontSize: 12, lineHeight: 20, fontWeight: '500' }}>{property.description}</Text>
           </View>
 
           {/* Action CTAs */}
-          <View className="flex-row gap-3 mb-8 border-t border-slate-100 pt-6">
+          <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
             <TouchableOpacity
               onPress={() => navigation.navigate('VerifyResidency', { pgId })}
-              className="flex-1 bg-green-50 border border-green-200/50 py-3.5 rounded-2xl flex-row items-center justify-center active:opacity-95"
+              style={{ flex: 1, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#bfdbfe', paddingVertical: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
             >
-              <Ionicons name="shield-checkmark" size={16} color="#16a34a" />
-              <Text className="text-green-700 text-xs font-black ml-2 uppercase">Verify Stay</Text>
+              <Ionicons name="shield-checkmark" size={15} color="#1d4ed8" />
+              <Text style={{ color: '#1d4ed8', fontSize: 11, fontWeight: '800', marginLeft: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Verify Stay</Text>
             </TouchableOpacity>
 
             {!property.claimedBy ? (
               <TouchableOpacity
                 onPress={() => navigation.navigate('ClaimProperty', { pgId })}
-                className="flex-1 bg-indigo-50 border border-indigo-200/50 py-3.5 rounded-2xl flex-row items-center justify-center active:opacity-95"
+                style={{ flex: 1, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#bfdbfe', paddingVertical: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
               >
-                <Ionicons name="business" size={16} color="#4f46e5" />
-                <Text className="text-indigo-700 text-xs font-black ml-2 uppercase">Claim Ownership</Text>
+                <Ionicons name="business" size={15} color="#1d4ed8" />
+                <Text style={{ color: '#1d4ed8', fontSize: 11, fontWeight: '800', marginLeft: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Claim Ownership</Text>
               </TouchableOpacity>
             ) : null}
           </View>
 
           {/* Reviews List */}
-          <View className="border-t border-slate-100 pt-6 mb-20">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-base font-extrabold text-slate-800">
-                Resident Experiences ({reviews.length})
-              </Text>
-
+          <View style={{ marginBottom: 100 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: '#0f172a' }}>Resident Experiences ({reviews.length})</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('AddReview', { pgId })}
-                className="bg-primary-50 px-3 py-1.5 rounded-xl"
+                style={{ backgroundColor: '#eff6ff', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 }}
               >
-                <Text className="text-xs font-black text-primary-600 uppercase">Write Review</Text>
+                <Text style={{ fontSize: 10, fontWeight: '800', color: '#1d4ed8', textTransform: 'uppercase' }}>VIEW ALL REVIEWS &gt;</Text>
               </TouchableOpacity>
             </View>
 
             {reviews.length === 0 ? (
-              <View className="items-center py-8 bg-slate-50 rounded-2xl">
+              <View style={{ alignItems: 'center', paddingVertical: 32, backgroundColor: '#f8fafc', borderRadius: 20 }}>
                 <Ionicons name="chatbox-ellipses-outline" size={36} color="#cbd5e1" />
-                <Text className="text-slate-400 font-bold text-xs mt-2">No reviews written yet. Be the first!</Text>
+                <Text style={{ color: '#94a3b8', fontWeight: '600', fontSize: 12, marginTop: 8 }}>No reviews written yet. Be the first!</Text>
               </View>
             ) : (
               reviews.map((item) => (
-                <View key={item.id} className="border-b border-slate-50 py-5">
+                <View key={item.id} style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 12, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
 
-                  {/* Anonymous reviewer metadata */}
-                  <View className="flex-row justify-between items-center mb-3">
-                    <View className="flex-row items-center">
-                      <Ionicons
-                        name={item.verified ? 'shield-checkmark' : 'person-circle-outline'}
-                        size={20}
-                        color={item.verified ? '#16a34a' : '#94a3b8'}
-                      />
-                      <View className="ml-2">
-                        <Text className={`text-xs font-black ${item.verified ? 'text-green-700' : 'text-slate-700'}`}>
-                          {item.verified ? 'Verified Resident' : 'Resident'}
+                  {/* Reviewer Header */}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: item.verified ? '#dcfce7' : '#f1f5f9', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
+                        <Ionicons name={item.verified ? 'shield-checkmark' : 'person'} size={18} color={item.verified ? '#16a34a' : '#94a3b8'} />
+                      </View>
+                      <View>
+                        <Text style={{ fontSize: 12, fontWeight: '800', color: item.verified ? '#16a34a' : '#334155' }}>
+                          {item.verified ? '✓ Verified Resident' : 'Resident'}
                         </Text>
-                        <Text className="text-[9px] text-slate-400 font-bold mt-0.5">
-                          Stayed: {item.stayDuration} Months • {item.stayStartDate}
-                        </Text>
+                        <Text style={{ fontSize: 10, color: '#94a3b8', fontWeight: '500', marginTop: 1 }}>Stayed: {item.stayDuration} Months</Text>
                       </View>
                     </View>
-                    <Text className="text-slate-400 text-[9px] font-semibold">{item.date}</Text>
+                    <Text style={{ fontSize: 10, color: '#94a3b8', fontWeight: '500' }}>{item.date}</Text>
                   </View>
 
-                  {/* Overall stars & flag button */}
-                  <View className="flex-row justify-between items-center mb-3 bg-slate-50 p-2 rounded-xl border border-slate-100">
-                    <View className="flex-row items-center">
-                      <Ionicons name="star" size={12} color="#f59e0b" />
-                      <Text className="text-slate-700 text-xs font-black ml-1.5">Overall rating: {item.ratings.overall}/5</Text>
-                    </View>
-
-                    <TouchableOpacity onPress={() => setReportingReviewId(item.id)} className="p-1">
-                      <Ionicons name="flag-outline" size={13} color="#ef4444" />
-                    </TouchableOpacity>
+                  {/* Star Rating Row */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                    {[1, 2, 3, 4, 5].map(s => (
+                      <Ionicons key={s} name={s <= item.ratings.overall ? 'star' : 'star-outline'} size={14} color="#f59e0b" style={{ marginRight: 2 }} />
+                    ))}
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#334155', marginLeft: 6 }}>{item.ratings.overall}/5</Text>
                   </View>
 
-                  {/* Ratings breakdown (collapsible design / grid) */}
-                  <View className="flex-row flex-wrap gap-2.5 mb-3 px-1">
+                  {/* Ratings breakdown grid */}
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                     {[
                       { l: 'Food', v: item.ratings.food },
                       { l: 'Clean', v: item.ratings.cleanliness },
@@ -456,48 +428,50 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       { l: 'Refund', v: item.ratings.deposit },
                       { l: 'Maint', v: item.ratings.maintenance },
                     ].map((c) => (
-                      <View key={c.l} className="flex-row items-center bg-slate-50 px-2 py-1 rounded-md">
-                        <Text className="text-slate-400 text-[9px] font-bold uppercase">{c.l}:</Text>
-                        <Text className={`text-[10px] font-black ml-1 ${c.v <= 2 ? 'text-red-500' : 'text-slate-800'}`}>{c.v}</Text>
+                      <View key={c.l} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 }}>
+                        <Text style={{ fontSize: 9, color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase' }}>{c.l} </Text>
+                        <Text style={{ fontSize: 10, fontWeight: '800', color: c.v <= 2 ? '#ef4444' : '#0f172a' }}>{c.v}</Text>
                       </View>
                     ))}
                   </View>
 
-                  <Text className="text-slate-600 text-xs font-semibold leading-5 mb-4 px-1">{item.comment}</Text>
+                  <Text style={{ color: '#475569', fontSize: 12, lineHeight: 20, fontWeight: '500', marginBottom: 10 }}>{item.comment}</Text>
 
                   {/* Review gallery photos */}
                   {Object.keys(item.photos).length > 0 && (
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-4 px-1">
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }}>
                       {Object.entries(item.photos).map(([key, uri]) => {
                         if (!uri) return null;
                         return (
-                          <View key={key} className="mr-2 relative rounded-xl overflow-hidden bg-slate-150">
-                            <Image source={{ uri }} className="h-24 w-32" resizeMode="cover" />
-                            <View className="absolute bottom-2 left-2 bg-black/60 px-2 py-0.5 rounded-md">
-                              <Text className="text-[8px] text-white font-extrabold uppercase">{key}</Text>
-                            </View>
+                          <View key={key} style={{ marginRight: 8, borderRadius: 12, overflow: 'hidden' }}>
+                            <Image source={{ uri }} style={{ height: 80, width: 100 }} resizeMode="cover" />
                           </View>
                         );
                       })}
                     </ScrollView>
                   )}
 
+                  {/* Report button */}
+                  <TouchableOpacity onPress={() => setReportingReviewId(item.id)} style={{ alignSelf: 'flex-end', padding: 4 }}>
+                    <Ionicons name="flag-outline" size={14} color="#ef4444" />
+                  </TouchableOpacity>
+
                   {/* Admin inspection overlay */}
                   {user?.role === 'admin' && (
-                    <View className="bg-red-50/25 border border-red-100/40 rounded-2xl p-3 mb-4">
-                      <Text className="text-[10px] font-black text-red-700 uppercase">🛡️ Admin Inspector View</Text>
-                      <Text className="text-slate-600 text-[10px] font-semibold mt-1">Reviewer account ID: {item.reviewerId}</Text>
+                    <View style={{ backgroundColor: 'rgba(254,242,242,0.5)', borderWidth: 1, borderColor: 'rgba(254,202,202,0.4)', borderRadius: 14, padding: 10, marginTop: 8 }}>
+                      <Text style={{ fontSize: 10, fontWeight: '800', color: '#b91c1c', textTransform: 'uppercase' }}>🛡️ Admin Inspector View</Text>
+                      <Text style={{ color: '#475569', fontSize: 10, fontWeight: '500', marginTop: 4 }}>Reviewer ID: {item.reviewerId}</Text>
                     </View>
                   )}
 
-                  {/* Owner replies response */}
+                  {/* Owner reply */}
                   {item.ownerReply && (
-                    <View className="bg-slate-50 border border-slate-100 rounded-2xl p-4.5 ml-2 mt-2">
-                      <View className="flex-row justify-between items-center mb-1.5">
-                        <Text className="text-primary-700 text-[10px] font-black uppercase tracking-wider">Property Owner Response</Text>
-                        <Text className="text-slate-400 text-[9px] font-semibold">{item.ownerReply.date}</Text>
+                    <View style={{ backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 14, padding: 14, marginLeft: 8, marginTop: 10 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <Text style={{ color: '#1d4ed8', fontSize: 10, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.5 }}>Property Owner Response</Text>
+                        <Text style={{ color: '#94a3b8', fontSize: 9, fontWeight: '500' }}>{item.ownerReply.date}</Text>
                       </View>
-                      <Text className="text-slate-700 text-xs font-semibold leading-5">"{item.ownerReply.comment}"</Text>
+                      <Text style={{ color: '#334155', fontSize: 11, fontWeight: '500', lineHeight: 18 }}>"{item.ownerReply.comment}"</Text>
                     </View>
                   )}
                 </View>
@@ -507,83 +481,55 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
         </View>
       </ScrollView>
 
-      {/* Booking and contact bottom drawer */}
-      <View className="border-t border-slate-100 bg-white px-5 py-4 flex-row justify-between items-center">
-        <View>
-          <Text className="text-slate-400 text-[10px] font-black uppercase tracking-wide">Trust Rating</Text>
-          <View className="flex-row items-center mt-1">
-            <Ionicons name="star" size={16} color="#f59e0b" />
-            <Text className="text-slate-800 text-lg font-black ml-1">
-              {reviews.length > 0
-                ? (reviews.reduce((acc, r) => acc + r.ratings.overall, 0) / reviews.length).toFixed(1)
-                : 'N/A'
-              }
-            </Text>
-            <Text className="text-slate-400 text-[10px] font-bold ml-1.5">({reviews.length} reviews)</Text>
-          </View>
-        </View>
-
+      {/* ── STICKY BOTTOM CONTACT BAR ── */}
+      <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: 1, borderTopColor: '#f1f5f9', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, elevation: 8 }}>
         <TouchableOpacity
-          className="bg-primary-500 px-8 py-3.5 rounded-xl flex-row items-center justify-center shadow-lg shadow-primary-500/20 active:opacity-90"
           onPress={handleCall}
+          style={{ backgroundColor: '#1d4ed8', borderRadius: 16, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', shadowColor: '#1d4ed8', shadowOpacity: 0.3, shadowRadius: 12, elevation: 6 }}
         >
-          <Ionicons name="call" size={16} color="#ffffff" />
-          <Text className="text-white text-base font-extrabold ml-2">Contact Property</Text>
+          <Ionicons name="call" size={18} color="#fff" />
+          <Text style={{ color: '#fff', fontSize: 15, fontWeight: '800', marginLeft: 8, letterSpacing: 0.3 }}>Contact Property</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Simple ABSOLUTE VIEW Modal overlay for Content Reporting */}
+      {/* Report Modal */}
       {reportingReviewId !== null && (
-        <View className="absolute inset-0 bg-black/60 z-30 justify-center items-center px-6">
-          <View className="bg-white rounded-3xl p-5 w-full shadow-2xl">
-            <Text className="text-lg font-black text-slate-800 mb-1">Report Content</Text>
-            <Text className="text-slate-400 text-xs font-semibold mb-4">Select why you think this review violates guidelines</Text>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 30, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 24, padding: 20, width: '100%', shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 20, elevation: 20 }}>
+            <Text style={{ fontSize: 17, fontWeight: '900', color: '#0f172a', marginBottom: 4 }}>Report Content</Text>
+            <Text style={{ color: '#94a3b8', fontSize: 12, fontWeight: '500', marginBottom: 16 }}>Select why you think this review violates guidelines</Text>
 
-            {/* Type selector */}
             {(['Fake Review', 'Abusive Content', 'Spam', 'Wrong Property Information'] as const).map((t) => (
               <TouchableOpacity
                 key={t}
                 onPress={() => setReportType(t)}
-                className={`py-3 px-4 rounded-xl border mb-2 flex-row justify-between items-center ${reportType === t ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'
-                  }`}
+                style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: reportType === t ? '#fca5a5' : '#e2e8f0', backgroundColor: reportType === t ? '#fef2f2' : '#f8fafc', marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
               >
-                <Text className={`text-xs font-bold ${reportType === t ? 'text-red-700' : 'text-slate-700'}`}>{t}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: reportType === t ? '#b91c1c' : '#334155' }}>{t}</Text>
                 {reportType === t && <Ionicons name="checkmark" size={14} color="#ef4444" />}
               </TouchableOpacity>
             ))}
 
-            <Text className="text-slate-600 font-bold text-xs mt-3 mb-2">Detailed explanation</Text>
+            <Text style={{ color: '#475569', fontWeight: '700', fontSize: 12, marginTop: 12, marginBottom: 8 }}>Detailed explanation</Text>
             <TextInput
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 text-xs font-semibold h-20 mb-6"
+              style={{ width: '100%', backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, color: '#0f172a', fontSize: 12, fontWeight: '500', height: 80, marginBottom: 20 }}
               placeholder="e.g. This review is written by the competitor..."
               multiline
               value={reportComment}
               onChangeText={setReportComment}
             />
 
-            <View className="flex-row gap-3">
-              <View className="flex-1">
-                <Button
-                  title="Cancel"
-                  variant="outline"
-                  onPress={() => {
-                    setReportingReviewId(null);
-                    setReportComment('');
-                  }}
-                />
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Button title="Cancel" variant="outline" onPress={() => { setReportingReviewId(null); setReportComment(''); }} />
               </View>
-              <View className="flex-1">
-                <Button
-                  title="Submit Report"
-                  variant="danger"
-                  loading={submittingReport}
-                  onPress={handleReportSubmit}
-                />
+              <View style={{ flex: 1 }}>
+                <Button title="Submit Report" variant="danger" loading={submittingReport} onPress={handleReportSubmit} />
               </View>
             </View>
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
