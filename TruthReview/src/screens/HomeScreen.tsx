@@ -128,7 +128,16 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     } catch (_) {}
   };
 
-  const goSearch = () => navigation.navigate('SearchStack', { screen: 'Search' });
+  const goSearch = (query?: string | any) => {
+    if (query && typeof query === 'string') {
+      navigation.navigate('SearchStack', {
+        screen: 'Search',
+        params: { location: query, query }
+      });
+    } else {
+      navigation.navigate('SearchStack', { screen: 'Search' });
+    }
+  };
   const goDetails = (id: string) => navigation.navigate('PGDetails', { pgId: id });
 
   const bg = isDark ? '#0f172a' : '#f8faff';
@@ -227,50 +236,27 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </ScrollView>
 
         {/* ── 4. HERO BANNER ── */}
-        <View style={{ marginHorizontal: 20, borderRadius: 24, overflow: 'hidden', marginBottom: 20, minHeight: 160, elevation: 8, shadowColor: '#1d4ed8', shadowOpacity: 0.25, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }}>
-          <LinearGradient
-            colors={['#1d4ed8', '#2563eb', '#3b82f6']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{ flex: 1 }}
-          >
-            <View style={{ flexDirection: 'row', padding: 20, paddingRight: 0 }}>
-              <View style={{ flex: 1, paddingRight: 10 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, marginBottom: 12 }}>
-                  <Ionicons name="shield-checkmark" size={10} color="#ffffff" />
-                  <Text style={{ fontSize: 9, color: '#ffffff', fontWeight: '800', marginLeft: 4, letterSpacing: 0.5 }}>India's Verified Platform</Text>
-                </View>
-                <Text style={{ fontSize: 24, fontWeight: '900', color: '#ffffff', letterSpacing: -0.5, lineHeight: 30 }}>Find the Truth{'\n'}<Text style={{ color: '#bae6fd' }}>Before You Stay</Text></Text>
-                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', fontWeight: '500', marginTop: 8, lineHeight: 16 }}>Verified reviews. Real experiences.{'\n'}Better choices.</Text>
-              </View>
-
-              {/* Right side: building + trust score */}
-              <View style={{ width: 120, alignItems: 'flex-end' }}>
-                {/* Trust Score Card */}
-                <BlurView intensity={30} tint="light" style={{ borderRadius: 16, padding: 10, width: 92, alignItems: 'center', marginRight: 14, marginTop: 4, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                    <Text style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.5 }}>Trust Score</Text>
-                    <Ionicons name="information-circle-outline" size={9} color="rgba(255,255,255,0.7)" style={{ marginLeft: 2 }} />
-                  </View>
-                  <Text style={{ fontSize: 32, fontWeight: '900', color: '#10b981', letterSpacing: -1 }}>{overallTrustScore}</Text>
-                  <Text style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>/100</Text>
-                  <View style={{ backgroundColor: 'rgba(16,185,129,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="checkmark-circle" size={9} color="#10b981" />
-                    <Text style={{ fontSize: 8, color: '#10b981', fontWeight: '800', marginLeft: 2 }}>Excellent</Text>
-                  </View>
-                  <Text style={{ fontSize: 7, color: 'rgba(255,255,255,0.6)', marginTop: 6, fontWeight: '500', textAlign: 'center' }}>Based on {totalReviewsCount} reviews</Text>
-                </BlurView>
-                {/* Building illustration */}
-                <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginRight: 14, marginTop: 8 }}>
-                  <View style={{ width: 12, height: 28, backgroundColor: 'rgba(255,255,255,0.4)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
-                  <View style={{ width: 10, height: 20, backgroundColor: 'rgba(255,255,255,0.5)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
-                  <View style={{ width: 16, height: 38, backgroundColor: 'rgba(255,255,255,0.7)', borderTopLeftRadius: 4, borderTopRightRadius: 4, marginRight: 2 }} />
-                  <View style={{ width: 12, height: 24, backgroundColor: 'rgba(255,255,255,0.5)', borderTopLeftRadius: 4, borderTopRightRadius: 4 }} />
-                </View>
-              </View>
-            </View>
-          </LinearGradient>
-        </View>
+        <TouchableOpacity
+          onPress={goSearch}
+          activeOpacity={0.95}
+          style={{
+            marginHorizontal: 20,
+            borderRadius: 12,
+            overflow: 'hidden',
+            marginBottom: 20,
+            elevation: 8,
+            shadowColor: '#1d4ed8',
+            shadowOpacity: 0.15,
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: 4 }
+          }}
+        >
+          <Image
+            source={require('../../assets/hero_banner.jpg')}
+            style={{ width: '100%', height: 194 }}
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
 
         {/* ── 5. PROPERTY TYPE ICON ROW ── */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }} style={{ marginBottom: 20 }}>
@@ -310,6 +296,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               <TouchableOpacity
                 key={i}
                 activeOpacity={0.9}
+                onPress={() => goSearch(loc.name)}
                 style={{
                   width: 120,
                   height: 160,

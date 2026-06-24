@@ -32,6 +32,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   // Location Fetching State
   const [locationName, setLocationName] = useState('Whitefield, Bangalore');
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [hasFetchedLocation, setHasFetchedLocation] = useState(false);
 
   // Active filters from filter screen route params
   const activeFilters = route.params?.filters || {};
@@ -95,14 +96,26 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
   useEffect(() => {
     if (isFocused) {
       loadProperties();
-      fetchLocation(true);
 
-      if (route.params?.query) {
-        setSearchQuery(route.params.query);
-        navigation.setParams({ query: undefined } as any);
+      const passedLocation = route.params?.location;
+      const passedQuery = route.params?.query;
+
+      if (passedLocation || passedQuery) {
+        if (passedLocation) {
+          const citySuffix = ['Adyar', 'Velachery', 'T Nagar', 'OMR'].includes(passedLocation) ? ', Chennai' : ', Bangalore';
+          setLocationName(`${passedLocation}${citySuffix}`);
+          setHasFetchedLocation(true);
+        }
+        if (passedQuery) {
+          setSearchQuery(passedQuery);
+        }
+        navigation.setParams({ location: undefined, query: undefined } as any);
+      } else if (!hasFetchedLocation) {
+        fetchLocation(true);
+        setHasFetchedLocation(true);
       }
     }
-  }, [isFocused, route.params?.query]);
+  }, [isFocused, route.params?.location, route.params?.query, hasFetchedLocation]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -229,8 +242,13 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
       </View>
 
       {/* Filter Tabs */}
-      <View className="mb-6 -mx-5 px-5">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row space-x-2 gap-2" contentContainerStyle={{ paddingRight: 40 }}>
+      <View className="mb-6">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -20 }}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}
+        >
           {typesList.map((type) => {
             const active = selectedType === type;
             return (
@@ -272,29 +290,34 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark}`}>Featured Ads</Text>
           <TouchableOpacity><Text className="text-[#1d4ed8] text-[11px] font-bold">View all</Text></TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -20 }}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}
+        >
           {[
             { title: 'PAYING GUESTS', price: '₹6,500', btn: 'Explore PGs', img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=400' },
             { title: 'HOSTELS', price: '₹5,000', btn: 'Explore Hostels', img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' },
             { title: 'SERVICE APARTMENTS', price: '₹18,000', btn: 'Explore Now', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400' },
             { title: 'CO-LIVING SPACES', price: '₹7,500', btn: 'Explore Spaces', img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=400' }
           ].map((ad, i) => (
-            <View key={i} className="w-[160px] h-[180px] rounded-[16px] overflow-hidden relative shadow-sm">
+            <View key={i} className="w-[175px] h-[200px] rounded-[20px] overflow-hidden relative shadow-md">
               <Image source={{ uri: ad.img }} className="w-full h-full object-cover" />
-              <View className="absolute inset-0 bg-[#0f172a]/60" />
+              <View className="absolute inset-0" style={{ backgroundColor: 'rgba(15, 23, 42, 0.55)' }} />
               <View className="absolute top-4 left-4 right-4">
-                <Text className="text-white text-[10px] font-black uppercase mb-1">{ad.title}</Text>
+                <Text className="text-white text-[10px] font-black uppercase mb-1 tracking-wider">{ad.title}</Text>
                 <Text className="text-slate-300 text-[9px] font-semibold mb-0.5">Starting from</Text>
                 <Text className="text-white text-[15px] font-black">{ad.price} <Text className="text-[10px] font-medium text-slate-300">/mo</Text></Text>
               </View>
               <View className="absolute bottom-4 left-4 right-4">
-                <TouchableOpacity className="bg-white py-2 rounded-full items-center">
-                  <Text className="text-[#0f172a] text-[10px] font-black">{ad.btn}</Text>
+                <TouchableOpacity className="bg-white py-2.5 rounded-xl items-center flex-row justify-center shadow-sm active:scale-95" activeOpacity={0.8}>
+                  <Text className="text-[#0f172a] text-[10px] font-black tracking-wide">{ad.btn}</Text>
+                  <Ionicons name="arrow-forward" size={10} color="#0f172a" style={{ marginLeft: 4 }} />
                 </TouchableOpacity>
               </View>
             </View>
           ))}
-          <View className="w-5" />
         </ScrollView>
       </View>
 
@@ -304,7 +327,12 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark}`}>Popular Localities</Text>
           <TouchableOpacity><Text className="text-[#1d4ed8] text-[11px] font-bold">View all</Text></TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -20 }}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}
+        >
           {[
             { name: 'Whitefield', props: '128+', img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=200' },
             { name: 'Koramangala', props: '96+', img: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=200' },
@@ -312,39 +340,44 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
             { name: 'Indiranagar', props: '72+', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200' },
             { name: 'Marathahalli', props: '65+', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=200' }
           ].map((loc, i) => (
-            <TouchableOpacity key={i} className="w-[120px]">
-              <View className="w-full h-[70px] rounded-[12px] overflow-hidden mb-2">
+            <TouchableOpacity key={i} className="w-[130px]" activeOpacity={0.8}>
+              <View className="w-full h-[85px] rounded-[16px] overflow-hidden mb-2 shadow-sm">
                 <Image source={{ uri: loc.img }} className="w-full h-full object-cover" />
               </View>
-              <Text className={`text-[11px] font-black ${textDark}`}>{loc.name}</Text>
-              <Text className={`text-[9px] font-medium ${textMuted} mt-0.5`}>{loc.props} Properties</Text>
+              <View className="px-1">
+                <Text className={`text-[12px] font-black ${textDark}`} numberOfLines={1}>{loc.name}</Text>
+                <Text className={`text-[9px] font-semibold ${textMuted} mt-0.5`}>{loc.props} Properties</Text>
+              </View>
             </TouchableOpacity>
           ))}
-          <View className="w-5" />
         </ScrollView>
       </View>
 
       {/* WHY CHOOSE US */}
       <View className="mb-4">
         <Text className={`text-[12px] font-black uppercase tracking-widest ${textDark} mb-4`}>Why Choose Us</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5 px-5 gap-3">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -20 }}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}
+        >
           {[
-            { title: '100% Verified\nProperties', sub: 'All properties are\nmanually verified', icon: 'shield-checkmark', color: '#1d4ed8', bg: 'bg-blue-50' },
-            { title: 'Trusted by\n10K+ Users', sub: 'Real reviews from\nverified residents', icon: 'people', color: '#3b82f6', bg: 'bg-blue-50' },
-            { title: '24x7 Customer\nSupport', sub: 'We\'re here to help\nyou anytime', icon: 'headset', color: '#6366f1', bg: 'bg-indigo-50' },
-            { title: 'Secure & Safe\nBookings', sub: 'Your safety and privacy\nare our priority', icon: 'lock-closed', color: '#0ea5e9', bg: 'bg-sky-50' }
+            { title: '100% Verified\nProperties', sub: 'All properties are\nmanually verified', icon: 'shield-checkmark', color: '#1d4ed8', bg: 'rgba(29, 78, 216, 0.1)' },
+            { title: 'Trusted by\n10K+ Users', sub: 'Real reviews from\nverified residents', icon: 'people', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+            { title: '24x7 Customer\nSupport', sub: 'We\'re here to help\nyou anytime', icon: 'headset', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.1)' },
+            { title: 'Secure & Safe\nBookings', sub: 'Your safety and privacy\nare our priority', icon: 'lock-closed', color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.1)' }
           ].map((item, i) => (
-            <View key={i} className={`w-[170px] rounded-[16px] p-4 flex-row border shadow-sm ${cardBg}`}>
-              <View className={`${item.bg} w-10 h-10 rounded-full items-center justify-center mr-3`}>
+            <View key={i} className={`w-[195px] h-[80px] rounded-[18px] p-3 flex-row items-center border ${cardBg} shadow-sm`}>
+              <View style={{ backgroundColor: item.bg }} className="w-9 h-9 rounded-full items-center justify-center mr-3">
                 <Ionicons name={item.icon as any} size={18} color={item.color} />
               </View>
               <View className="flex-1">
-                <Text className={`text-[10px] font-black ${textDark} leading-3 mb-1`}>{item.title}</Text>
-                <Text className={`text-[8px] font-medium ${textMuted} leading-3`}>{item.sub}</Text>
+                <Text className={`text-[10px] font-black ${textDark} leading-tight mb-0.5`}>{item.title}</Text>
+                <Text className={`text-[8px] font-semibold ${textMuted} leading-normal`}>{item.sub}</Text>
               </View>
             </View>
           ))}
-          <View className="w-5" />
         </ScrollView>
       </View>
     </View>
