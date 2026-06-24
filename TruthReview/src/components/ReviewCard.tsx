@@ -160,11 +160,11 @@ export default function ReviewCard({ review, currentUserRole, currentUserId }: R
             { l: 'Food', v: review.ratings.food },
             { l: 'Clean', v: review.ratings.cleanliness },
             { l: 'Water', v: review.ratings.water },
-            { l: 'Wi-Fi', v: review.ratings.internet },
-            { l: 'Safety', v: review.ratings.safety },
-            { l: 'Staff', v: review.ratings.management },
-            { l: 'Refund', v: review.ratings.deposit },
-            { l: 'Maint', v: review.ratings.maintenance },
+            { l: 'Wi-Fi', v: review.ratings.wifi },
+            { l: 'Safety', v: review.ratings.security },
+            { l: 'Staff', v: review.ratings.staff },
+            { l: 'Loc', v: review.ratings.location },
+            { l: 'Value', v: review.ratings.valueForMoney },
           ].map((c) => (
             <View key={c.l} className="flex-row items-center bg-slate-50 px-2 py-1 rounded-md min-w-[22%]">
               <Text className="text-slate-400 text-[9px] font-bold uppercase">{c.l}:</Text>

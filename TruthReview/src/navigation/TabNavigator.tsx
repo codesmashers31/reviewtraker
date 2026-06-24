@@ -40,6 +40,8 @@ import MyReviewsScreen from '../features/review/screens/MyReviewsScreen';
 import AddPropertyScreen from '../features/pg/screens/AddPropertyScreen';
 import VerifyResidencyScreen from '../features/review/screens/VerifyResidencyScreen';
 import AddReviewLandingScreen from '../features/review/screens/AddReviewLandingScreen';
+import NotificationPreferencesScreen from '../screens/NotificationPreferencesScreen';
+import PrivacySettingsScreen from '../screens/PrivacySettingsScreen';
 
 // Owner Screens
 import ClaimPropertyScreen from '../features/owner/screens/ClaimPropertyScreen';
@@ -106,6 +108,8 @@ function ProfileNavigator() {
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
       <ProfileStack.Screen name="Profile" component={ProfileScreen} />
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
+      <ProfileStack.Screen name="NotificationPreferences" component={NotificationPreferencesScreen} />
+      <ProfileStack.Screen name="PrivacySettings" component={PrivacySettingsScreen} />
       <ProfileStack.Screen name="MyReviews" component={MyReviewsScreen} />
       <ProfileStack.Screen name="AddProperty" component={AddPropertyScreen} />
 

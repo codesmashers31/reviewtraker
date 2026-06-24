@@ -587,7 +587,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               <Text style={{ fontSize: 11, color: '#bfdbfe', fontWeight: '500' }}>Your review can help someone choose better</Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('ReviewStack', { screen: 'AddReviewLanding' } as any)}
+              onPress={() => (navigation as any).navigate('AddReviewTab')}
               style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, flexDirection: 'row', alignItems: 'center', marginLeft: 12 }}
             >
               <Ionicons name="create-outline" size={14} color="#1d4ed8" />

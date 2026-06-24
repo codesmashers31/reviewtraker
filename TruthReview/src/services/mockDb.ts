@@ -29,14 +29,14 @@ export interface Property {
 }
 
 export interface ReviewRatings {
-  food: number;
   cleanliness: number;
+  food: number;
+  security: number;
+  wifi: number;
+  staff: number;
+  location: number;
   water: number;
-  internet: number;
-  safety: number;
-  management: number;
-  deposit: number;
-  maintenance: number;
+  valueForMoney: number;
   overall: number;
 }
 
@@ -44,8 +44,12 @@ export interface Review {
   id: string;
   propertyId: string;
   reviewerId: string;
+  reviewerName?: string;
   ratings: ReviewRatings;
   comment: string;
+  pros: string[];
+  cons: string[];
+  recommended: boolean;
   photos: {
     room?: string;
     food?: string;
@@ -96,9 +100,9 @@ export interface UserReport {
 export interface ComplaintStats {
   food: number;
   water: number;
-  safety: number;
-  deposit: number;
-  maintenance: number;
+  security: number;
+  staff: number;
+  valueForMoney: number;
 }
 
 const STORAGE_DB_KEYS = {
@@ -252,17 +256,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_1',
     reviewerId: 'user_1',
     ratings: {
-      food: 5,
       cleanliness: 5,
+      food: 5,
+      security: 5,
+      wifi: 4,
+      staff: 5,
+      location: 5,
       water: 4,
-      internet: 4,
-      safety: 5,
-      management: 5,
-      deposit: 5,
-      maintenance: 4,
+      valueForMoney: 5,
       overall: 5,
     },
     comment: 'Exceptional facilities and very clean rooms. The food is high quality and feels like home-cooked meals. Safe for students and staff are highly professional.',
+    pros: ['Clean Rooms', 'Good Food', 'Friendly Staff'],
+    cons: ['Slightly Expensive'],
+    recommended: true,
     photos: {
       room: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=300&q=80',
     },
@@ -277,17 +284,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_1',
     reviewerId: 'user_2',
     ratings: {
-      food: 4,
       cleanliness: 4,
+      food: 4,
+      security: 4,
+      wifi: 3,
+      staff: 4,
+      location: 5,
       water: 4,
-      internet: 3,
-      safety: 4,
-      management: 4,
-      deposit: 4,
-      maintenance: 4,
+      valueForMoney: 4,
       overall: 4,
     },
     comment: 'Nice place near Adyar main road. Power backup works perfectly. Wi-Fi drops speed during peak hours of 8 PM to 10 PM. Clean toilets.',
+    pros: ['Good Location', 'Clean Washrooms'],
+    cons: ['Slow WiFi at night'],
+    recommended: true,
     photos: {},
     stayDuration: 4,
     stayStartDate: 'January 2026',
@@ -300,17 +310,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_2',
     reviewerId: 'user_3',
     ratings: {
-      food: 4,
       cleanliness: 5,
+      food: 4,
+      security: 5,
+      wifi: 4,
+      staff: 5,
+      location: 5,
       water: 5,
-      internet: 4,
-      safety: 5,
-      management: 5,
-      deposit: 4,
-      maintenance: 5,
+      valueForMoney: 4,
       overall: 5,
     },
     comment: 'Perfect hostel for girls. Extremely secure with biometric lock and 24/7 security. Rooms are tidy and cleaned daily. Fully satisfied.',
+    pros: ['Extremely Secure', 'Clean Rooms', 'Helpful Staff'],
+    cons: [],
+    recommended: true,
     photos: {
       washroom: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=300&q=80',
     },
@@ -328,17 +341,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_2',
     reviewerId: 'user_4',
     ratings: {
-      food: 2, // Food complaint
       cleanliness: 4,
+      food: 2,
+      security: 5,
+      wifi: 4,
+      staff: 3,
+      location: 4,
       water: 4,
-      internet: 4,
-      safety: 5,
-      management: 3,
-      deposit: 4,
-      maintenance: 4,
+      valueForMoney: 3,
       overall: 3,
     },
     comment: 'Rooms are good and ventilation is fine. However, the food quality has dropped recently. It is often cold and lacks taste. Hopefully, management resolves this soon.',
+    pros: ['Good Ventilation', 'Secure'],
+    cons: ['Bad Food Quality'],
+    recommended: false,
     photos: {},
     stayDuration: 6,
     stayStartDate: 'November 2025',
@@ -351,17 +367,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_3',
     reviewerId: 'user_5',
     ratings: {
-      food: 4,
       cleanliness: 4,
+      food: 4,
+      security: 4,
+      wifi: 5,
+      staff: 4,
+      location: 4,
       water: 3,
-      internet: 5,
-      safety: 4,
-      management: 4,
-      deposit: 2, // Deposit complaint
-      maintenance: 4,
+      valueForMoney: 2,
       overall: 4,
     },
     comment: 'Fantastic internet speed and working spaces for developers. Clean environment. The only issue is the deposit refund process which takes more than 45 days.',
+    pros: ['Fast WiFi', 'Great Working Space'],
+    cons: ['Bad Value for Money', 'Deposit Issues'],
+    recommended: true,
     photos: {
       room: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=300&q=80',
     },
@@ -376,17 +395,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_4',
     reviewerId: 'user_6',
     ratings: {
+      cleanliness: 2,
       food: 3,
-      cleanliness: 2, // Cleanliness complaint
-      water: 2, // Water complaint
-      internet: 3,
-      safety: 3,
-      management: 2,
-      deposit: 1, // Deposit complaint
-      maintenance: 2,
+      security: 3,
+      wifi: 3,
+      staff: 2,
+      location: 3,
+      water: 2,
+      valueForMoney: 1,
       overall: 2,
     },
     comment: 'Water availability issues in the morning. Getting the deposit back from the owner is a nightmare. Highly unhygienic washroom facilities.',
+    pros: [],
+    cons: ['Water Issues', 'Unhygienic', 'Bad Management'],
+    recommended: false,
     photos: {},
     stayDuration: 3,
     stayStartDate: 'March 2026',
@@ -399,17 +421,20 @@ const initialReviews: Review[] = [
     propertyId: 'prop_5',
     reviewerId: 'user_7',
     ratings: {
-      food: 5,
       cleanliness: 5,
+      food: 5,
+      security: 5,
+      wifi: 5,
+      staff: 5,
+      location: 5,
       water: 5,
-      internet: 5,
-      safety: 5,
-      management: 5,
-      deposit: 5,
-      maintenance: 5,
+      valueForMoney: 5,
       overall: 5,
     },
     comment: 'Super luxury service apartment. Regular updates, premium clean kitchen, and friendly management. Excellent security system.',
+    pros: ['Luxury', 'Clean Kitchen', 'Friendly Staff'],
+    cons: [],
+    recommended: true,
     photos: {
       building: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=300&q=80',
     },
@@ -777,17 +802,17 @@ export class MockDb {
     const stats: ComplaintStats = {
       food: 0,
       water: 0,
-      safety: 0,
-      deposit: 0,
-      maintenance: 0,
+      security: 0,
+      staff: 0,
+      valueForMoney: 0,
     };
 
     propertyReviews.forEach((r) => {
       if (r.ratings.food <= 2) stats.food++;
       if (r.ratings.water <= 2) stats.water++;
-      if (r.ratings.safety <= 2) stats.safety++;
-      if (r.ratings.deposit <= 2) stats.deposit++;
-      if (r.ratings.maintenance <= 2) stats.maintenance++;
+      if (r.ratings.security <= 2) stats.security++;
+      if (r.ratings.staff <= 2) stats.staff++;
+      if (r.ratings.valueForMoney <= 2) stats.valueForMoney++;
     });
 
     return stats;
@@ -874,22 +899,22 @@ export class MockDb {
       totalWeight += finalReviewWeight;
 
       // Complaint counts
-      let hasSafetyComplaint = r.ratings.safety <= 2;
+      let hasSafetyComplaint = r.ratings.security <= 2;
       let hasOtherComplaint = 
         r.ratings.food <= 2 ||
         r.ratings.water <= 2 ||
-        r.ratings.deposit <= 2 ||
-        r.ratings.maintenance <= 2 ||
+        r.ratings.valueForMoney <= 2 ||
+        r.ratings.wifi <= 2 ||
         r.ratings.cleanliness <= 2 ||
-        r.ratings.management <= 2 ||
-        r.ratings.internet <= 2;
+        r.ratings.staff <= 2 ||
+        r.ratings.location <= 2;
 
       if (hasSafetyComplaint) {
         complaintPenalties += 15; // safety complaint is critical
       }
       if (hasOtherComplaint) {
         // count how many other low ratings there are
-        const lowRatings = Object.entries(r.ratings).filter(([key, val]) => key !== 'safety' && val <= 2).length;
+        const lowRatings = Object.entries(r.ratings).filter(([key, val]) => key !== 'security' && val <= 2).length;
         complaintPenalties += lowRatings * 5;
       }
 
@@ -930,7 +955,7 @@ export class MockDb {
 
     // Gather complaints total count
     const complaints = this.getComplaintsStats(propReviews);
-    const totalComplaints = complaints.food + complaints.water + complaints.safety + complaints.deposit + complaints.maintenance;
+    const totalComplaints = complaints.food + complaints.water + complaints.security + complaints.staff + complaints.valueForMoney;
 
     properties[propIdx].trustScore = score;
     properties[propIdx].reviewsCount = propReviews.length;
@@ -949,9 +974,9 @@ export class MockDb {
     return [
       { category: 'Food Quality', count: stats.food, trend: 'up' },
       { category: 'Water Supply', count: stats.water, trend: 'stable' },
-      { category: 'Safety & Security', count: stats.safety, trend: 'down' },
-      { category: 'Deposit Refunds', count: stats.deposit, trend: 'up' },
-      { category: 'Maintenance Issues', count: stats.maintenance, trend: 'stable' },
+      { category: 'Safety & Security', count: stats.security, trend: 'down' },
+      { category: 'Staff Issues', count: stats.staff, trend: 'up' },
+      { category: 'Value For Money', count: stats.valueForMoney, trend: 'stable' },
     ];
   }
 
