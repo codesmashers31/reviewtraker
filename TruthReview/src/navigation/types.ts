@@ -11,7 +11,7 @@ export type HomeStackParamList = {
   Home: undefined;
   PGDetails: { pgId: string };
   PGReviews: { pgId: string };
-  AddReview: { pgId: string; reviewId?: string };
+  AddReview: { pgId: string; reviewId?: string; pgName?: string };
   AddProperty: undefined;
   VerifyResidency: { pgId: string };
   ClaimProperty: { pgId: string };
@@ -43,6 +43,8 @@ export type FavoritesStackParamList = {
 export type ProfileStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
+  NotificationPreferences: undefined;
+  PrivacySettings: undefined;
   MyReviews: undefined;
   AdminPanel: undefined;
   ManagePGs: undefined;

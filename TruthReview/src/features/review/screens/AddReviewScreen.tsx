@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -15,26 +15,37 @@ import { RootState } from '../../../store';
 type Props = NativeStackScreenProps<HomeStackParamList, 'AddReview'>;
 
 export default function AddReviewScreen({ route, navigation }: Props) {
-  const { pgId } = route.params;
+  const { pgId, pgName } = route.params;
   const { user } = useSelector((state: RootState) => state.auth);
 
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState('');
-  const [stayMonths, setStayMonths] = useState('8');
-  const [stayStartPeriod, setStayStartPeriod] = useState('October 2025');
+  const [stayMonths, setStayMonths] = useState('');
+  const [stayStartPeriod, setStayStartPeriod] = useState('');
+  const [reviewerName, setReviewerName] = useState('');
+
+  const [pros, setPros] = useState<string[]>([]);
+  const [cons, setCons] = useState<string[]>([]);
+  const [recommended, setRecommended] = useState<boolean>(true);
 
   // 9 Rating Dimensions State
   const [ratings, setRatings] = useState({
-    food: 4,
-    cleanliness: 4,
-    water: 4,
-    internet: 4,
-    safety: 4,
-    management: 4,
-    deposit: 4,
-    maintenance: 4,
-    overall: 4,
+    cleanliness: 0,
+    food: 0,
+    security: 0,
+    wifi: 0,
+    staff: 0,
+    location: 0,
+    water: 0,
+    valueForMoney: 0,
+    overall: 0,
   });
+
+  const PROS_OPTIONS = ['Clean Rooms', 'Good Food', 'Fast WiFi', 'Helpful Staff', 'Extremely Secure', 'Good Location', 'Value for Money'];
+  const CONS_OPTIONS = ['Limited Parking', 'Bad Food Quality', 'Slow WiFi at night', 'Deposit Issues', 'Water Issues', 'Strict Rules'];
+
+  const togglePro = (pro: string) => setPros(prev => prev.includes(pro) ? prev.filter(p => p !== pro) : [...prev, pro]);
+  const toggleCon = (con: string) => setCons(prev => prev.includes(con) ? prev.filter(c => c !== con) : [...prev, con]);
 
   // Attached Photos Simulation
   const [photos, setPhotos] = useState<{
@@ -60,7 +71,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
     Toast.show({
       type: 'success',
       text1: 'Photo Attached',
-      text2: `Simulated upload for ${category} photo completed.`,
+      text2: `Simulated upload for ${category} completed.`,
       position: 'bottom',
     });
   };
@@ -74,11 +85,21 @@ export default function AddReviewScreen({ route, navigation }: Props) {
   };
 
   const onSubmitReview = async () => {
+    if (ratings.overall === 0) {
+      Toast.show({
+        type: 'error',
+        text1: 'Overall Rating Required',
+        text2: 'Please provide at least an overall rating before submitting.',
+        position: 'bottom',
+      });
+      return;
+    }
+    
     if (comment.trim().length < 10) {
       Toast.show({
         type: 'error',
         text1: 'Review too short',
-        text2: 'Please write a review comment of at least 10 characters.',
+        text2: 'Please write a descriptive comment of at least 10 characters.',
         position: 'bottom',
       });
       return;
@@ -89,17 +110,21 @@ export default function AddReviewScreen({ route, navigation }: Props) {
       await MockDb.addReview({
         propertyId: pgId,
         reviewerId: user?.id || 'guest_user',
+        reviewerName: reviewerName.trim() || undefined,
         ratings,
         comment,
+        pros,
+        cons,
+        recommended,
         photos,
         stayDuration: Number(stayMonths) || 1,
-        stayStartDate: stayStartPeriod,
+        stayStartDate: stayStartPeriod || 'Unknown',
       });
 
       Toast.show({
         type: 'success',
-        text1: 'Review Posted',
-        text2: 'Thank you! Your anonymous review is now live.',
+        text1: 'Review Posted 🎉',
+        text2: 'Thank you! Your verified review is now live.',
         position: 'bottom',
       });
 
@@ -116,7 +141,29 @@ export default function AddReviewScreen({ route, navigation }: Props) {
     }
   };
 
-  const renderStarSelector = (label: string, key: keyof typeof ratings) => {
+  // Helper function to dynamically color stars based on rating selected
+  const getRatingColor = (val: number, currentStarIndex: number) => {
+    if (currentStarIndex > val) return '#cbd5e1'; // Inactive slate-300
+    if (val <= 2) return '#ef4444'; // Red for poor
+    if (val === 3) return '#f59e0b'; // Amber for average
+    return '#10b981'; // Emerald green for good/excellent
+  };
+  
+  const getRatingBgColor = (val: number) => {
+    if (val === 0) return 'bg-slate-100';
+    if (val <= 2) return 'bg-red-50';
+    if (val === 3) return 'bg-amber-50';
+    return 'bg-emerald-50';
+  };
+  
+  const getRatingTextColor = (val: number) => {
+    if (val === 0) return 'text-slate-400';
+    if (val <= 2) return 'text-red-600';
+    if (val === 3) return 'text-amber-600';
+    return 'text-emerald-600';
+  };
+
+  const renderStarSelector = (label: string, key: keyof typeof ratings, isPrimary: boolean = false) => {
     const value = ratings[key];
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -124,23 +171,24 @@ export default function AddReviewScreen({ route, navigation }: Props) {
         <TouchableOpacity
           key={i}
           onPress={() => handleRatingChange(key, i)}
-          className="mx-0.5 active:scale-95"
+          className={`active:scale-90 transition-transform ${isPrimary ? 'mx-1' : 'mx-0.5'}`}
         >
           <Ionicons
             name={i <= value ? 'star' : 'star-outline'}
-            size={18}
-            color={i <= value ? '#f59e0b' : '#cbd5e1'}
+            size={isPrimary ? 28 : 20}
+            color={getRatingColor(value, i)}
           />
         </TouchableOpacity>
       );
     }
+    
     return (
-      <View className="flex-row justify-between items-center py-2.5 border-b border-slate-50">
-        <Text className="text-slate-700 text-xs font-bold">{label}</Text>
+      <View className={`flex-row justify-between items-center ${isPrimary ? 'pb-5 pt-2 border-b border-slate-100 mb-2' : 'py-3 border-b border-slate-50'}`}>
+        <Text className={`${isPrimary ? 'text-slate-900 text-sm font-black' : 'text-slate-700 text-[13px] font-bold'}`}>{label}</Text>
         <View className="flex-row items-center">
-          <View className="flex-row mr-2">{stars}</View>
-          <View className="bg-slate-100/60 px-1.5 py-0.5 rounded">
-            <Text className="text-[10px] font-black text-slate-600">{value}</Text>
+          <View className="flex-row mr-3">{stars}</View>
+          <View className={`px-2 py-1 rounded-md min-w-[28px] items-center ${getRatingBgColor(value)}`}>
+            <Text className={`text-[11px] font-black ${getRatingTextColor(value)}`}>{value || '-'}</Text>
           </View>
         </View>
       </View>
@@ -148,129 +196,237 @@ export default function AddReviewScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <View className="flex-row items-center px-4 py-4 border-b border-slate-50">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="h-10 w-10 bg-slate-50 border border-slate-100 rounded-full justify-center items-center active:bg-slate-100"
-        >
-          <Ionicons name="close" size={20} color="#475569" />
-        </TouchableOpacity>
-        <Text className="text-xl font-extrabold text-slate-800 ml-3">Write Resident Review</Text>
+    <SafeAreaView className="flex-1 bg-[#f8fafc]">
+      {/* Sticky Premium Header */}
+      <View className="flex-row items-center justify-between px-5 py-4 bg-white border-b border-slate-100 shadow-sm z-10">
+        <View className="flex-row items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="h-10 w-10 bg-slate-50 border border-slate-200 rounded-full justify-center items-center active:bg-slate-100"
+          >
+            <Ionicons name="close" size={20} color="#0f172a" />
+          </TouchableOpacity>
+          <View className="ml-3">
+            <Text className="text-xl font-black text-slate-900">Rate & Review</Text>
+            <Text className="text-[10px] font-bold text-blue-600 tracking-widest uppercase">Verified Resident</Text>
+          </View>
+        </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} className="flex-1 p-5">
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-5 pt-6 pb-20">
 
-        {/* Privacy Note */}
-        <View className="bg-slate-50 border border-slate-150 rounded-2xl p-4.5 mb-6">
-          <View className="flex-row items-center mb-1">
-            <Ionicons name="shield-checkmark" size={16} color="#14B8A6" />
-            <Text className="text-xs font-extrabold text-slate-700 ml-1.5">Your Privacy is Protected</Text>
-          </View>
-          <Text className="text-[10px] text-slate-400 font-semibold leading-5 mt-1">
-            We mask all reviewer identities. The public will never see your Name, Email, or Address. Your review will only show "Verified Resident" or "Resident" along with your length of stay.
-          </Text>
-        </View>
-
-        {/* Stay parameters */}
-        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Stay Details</Text>
-        <View className="flex-row gap-3 mb-6">
-          <View className="flex-1">
-            <Input
-              label="Stay Duration (Months)"
-              placeholder="e.g. 8"
-              keyboardType="numeric"
-              value={stayMonths}
-              onChangeText={setStayMonths}
-            />
-          </View>
-          <View className="flex-1">
-            <Input
-              label="Stay Start Period"
-              placeholder="e.g. October 2025"
-              value={stayStartPeriod}
-              onChangeText={setStayStartPeriod}
-            />
-          </View>
-        </View>
-
-        {/* 9 Dimensions Rating Grid */}
-        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Detailed Ratings Matrix</Text>
-        <View className="bg-slate-50/50 border border-slate-100 rounded-3xl p-4.5 mb-6">
-          {renderStarSelector('Overall Experience', 'overall')}
-          {renderStarSelector('Food Quality', 'food')}
-          {renderStarSelector('Cleanliness & Hygiene', 'cleanliness')}
-          {renderStarSelector('Water Availability', 'water')}
-          {renderStarSelector('Internet Quality', 'internet')}
-          {renderStarSelector('Safety & Security', 'safety')}
-          {renderStarSelector('Management Behaviour', 'management')}
-          {renderStarSelector('Deposit Refund Speed', 'deposit')}
-          {renderStarSelector('Maintenance Services', 'maintenance')}
-        </View>
-
-        {/* Review Comments */}
-        <View className="mb-6">
-          <Text className="text-slate-600 font-bold text-xs mb-2">Write detailed review comment (min 10 chars)</Text>
-          <TextInput
-            className="w-full bg-slate-50 border border-slate-200 px-4 py-3.5 rounded-2xl text-slate-800 text-xs font-medium h-36"
-            placeholder="Share your real experience. How was the hygiene, safety, food quality, behavior of owner/warden, refund of deposit, and Wi-Fi speeds?"
-            multiline
-            textAlignVertical="top"
-            value={comment}
-            onChangeText={setComment}
-          />
-          <Text className="text-right text-slate-400 text-[10px] font-semibold mt-1">
-            {comment.length} characters (minimum 10)
-          </Text>
-        </View>
-
-        {/* Image Attachment Categories */}
-        <Text className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Attach Photos</Text>
-        <View className="space-y-3 gap-3 mb-8">
-          {(['room', 'food', 'washroom', 'building'] as const).map((cat) => {
-            const hasPhoto = photos[cat];
-            return (
-              <View key={cat} className="flex-row justify-between items-center bg-slate-50 border border-slate-150 p-3.5 rounded-2xl">
-                <View className="flex-row items-center">
-                  <View className="h-10 w-10 bg-slate-200 rounded-xl overflow-hidden justify-center items-center">
-                    {hasPhoto ? (
-                      <Image source={{ uri: hasPhoto }} className="h-full w-full" />
-                    ) : (
-                      <Ionicons name="image-outline" size={18} color="#94a3b8" />
-                    )}
-                  </View>
-                  <Text className="text-slate-700 text-xs font-extrabold capitalize ml-3">{cat} Photo</Text>
-                </View>
-
-                {hasPhoto ? (
-                  <TouchableOpacity
-                    onPress={() => handleRemovePhoto(cat)}
-                    className="bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg"
-                  >
-                    <Text className="text-[10px] font-black text-red-600 uppercase">Remove</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => handleAttachPhoto(cat)}
-                    className="bg-slate-200 px-3 py-1.5 rounded-lg active:bg-slate-350"
-                  >
-                    <Text className="text-[10px] font-black text-slate-700 uppercase">Attach</Text>
-                  </TouchableOpacity>
-                )}
+          {/* Privacy & Trust Card */}
+          <View className="bg-emerald-50 border border-emerald-100 rounded-3xl p-5 mb-8 shadow-sm">
+            <View className="flex-row items-center mb-2">
+              <View className="bg-emerald-100 p-1.5 rounded-full mr-2">
+                <Ionicons name="shield-checkmark" size={16} color="#059669" />
               </View>
-            );
-          })}
-        </View>
+              <Text className="text-sm font-extrabold text-emerald-800">100% Anonymous Review</Text>
+            </View>
+            <Text className="text-[11px] text-emerald-700 font-medium leading-5">
+              Your identity is protected. We will mask your Name, Email, and exact details. The public will only see "Verified Resident" and your ratings to ensure you can speak the truth safely.
+            </Text>
+          </View>
 
-        {/* Submit */}
-        <Button
-          title="Submit Verified Review"
-          loading={submitting}
-          onPress={onSubmitReview}
-          className="mb-12"
-        />
-      </ScrollView>
+          {/* Core Ratings Card */}
+          <View className="bg-white border border-slate-200 rounded-3xl p-5 mb-8 shadow-sm">
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="podium" size={16} color="#3b82f6" />
+              <Text className="text-sm font-black text-slate-900 uppercase tracking-widest ml-1.5">Rating Matrix</Text>
+            </View>
+            
+            {renderStarSelector('Overall Experience', 'overall', true)}
+            
+            <View className="mt-2">
+              {renderStarSelector('Cleanliness', 'cleanliness')}
+              {renderStarSelector('Food Quality', 'food')}
+              {renderStarSelector('Security', 'security')}
+              {renderStarSelector('WiFi Speed', 'wifi')}
+              {renderStarSelector('Staff & Management', 'staff')}
+              {renderStarSelector('Location', 'location')}
+              {renderStarSelector('Water Facility', 'water')}
+              {renderStarSelector('Value For Money', 'valueForMoney')}
+            </View>
+          </View>
+
+          {/* Recommendation Toggle */}
+          <TouchableOpacity 
+            activeOpacity={0.8}
+            onPress={() => setRecommended(!recommended)}
+            className={`flex-row items-center justify-between p-5 rounded-3xl mb-8 shadow-sm border ${recommended ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200'}`}
+          >
+            <View className="flex-row items-center flex-1">
+              <View className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${recommended ? 'bg-emerald-500' : 'bg-slate-100'}`}>
+                <Ionicons name={recommended ? "checkmark-circle" : "close-circle"} size={24} color={recommended ? "white" : "#94a3b8"} />
+              </View>
+              <View>
+                <Text className={`text-sm font-black ${recommended ? 'text-emerald-900' : 'text-slate-800'}`}>
+                  {recommended ? 'Yes, I recommend this place' : 'No, I do not recommend'}
+                </Text>
+                <Text className={`text-[10px] font-bold mt-0.5 ${recommended ? 'text-emerald-600' : 'text-slate-500'}`}>
+                  Would you tell a friend to stay here?
+                </Text>
+              </View>
+            </View>
+            <View className={`w-12 h-6 rounded-full p-1 flex-row ${recommended ? 'bg-emerald-500 justify-end' : 'bg-slate-300 justify-start'}`}>
+              <View className="w-4 h-4 rounded-full bg-white shadow-sm" />
+            </View>
+          </TouchableOpacity>
+
+          {/* Pros & Cons Selectors */}
+          <Text className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Key Highlights</Text>
+          
+          <View className="bg-white border border-slate-200 rounded-3xl p-4 mb-4 shadow-sm">
+            <View className="flex-row items-center mb-3">
+              <Ionicons name="thumbs-up" size={16} color="#10b981" />
+              <Text className="text-[13px] font-black text-slate-800 ml-2">What was good? (Pros)</Text>
+            </View>
+            <View className="flex-row flex-wrap gap-2">
+              {PROS_OPTIONS.map(pro => {
+                const isSelected = pros.includes(pro);
+                return (
+                  <TouchableOpacity
+                    key={pro}
+                    onPress={() => togglePro(pro)}
+                    className={`px-3 py-1.5 rounded-full border ${isSelected ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'}`}
+                  >
+                    <Text className={`text-[11px] font-bold ${isSelected ? 'text-emerald-700' : 'text-slate-600'}`}>{pro}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          <View className="bg-white border border-slate-200 rounded-3xl p-4 mb-8 shadow-sm">
+            <View className="flex-row items-center mb-3">
+              <Ionicons name="thumbs-down" size={16} color="#ef4444" />
+              <Text className="text-[13px] font-black text-slate-800 ml-2">What was bad? (Cons)</Text>
+            </View>
+            <View className="flex-row flex-wrap gap-2">
+              {CONS_OPTIONS.map(con => {
+                const isSelected = cons.includes(con);
+                return (
+                  <TouchableOpacity
+                    key={con}
+                    onPress={() => toggleCon(con)}
+                    className={`px-3 py-1.5 rounded-full border ${isSelected ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'}`}
+                  >
+                    <Text className={`text-[11px] font-bold ${isSelected ? 'text-red-700' : 'text-slate-600'}`}>{con}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* Stay Context Details */}
+          <Text className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Context of your stay</Text>
+          <View className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm mb-4">
+            <Text className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Your Name</Text>
+            <TextInput
+              className="w-full text-slate-900 text-sm font-bold border-b border-slate-100 pb-2 focus:border-blue-500"
+              placeholder="Display Name (or leave blank to be Anonymous)"
+              placeholderTextColor="#94a3b8"
+              value={reviewerName}
+              onChangeText={setReviewerName}
+            />
+          </View>
+          <View className="flex-row gap-3 mb-8">
+            <View className="flex-1 bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
+              <Text className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Stayed Months</Text>
+              <TextInput
+                className="w-full text-slate-900 text-sm font-bold border-b border-slate-100 pb-2 focus:border-blue-500"
+                placeholder="e.g. 8"
+                placeholderTextColor="#94a3b8"
+                keyboardType="numeric"
+                value={stayMonths}
+                onChangeText={setStayMonths}
+              />
+            </View>
+            <View className="flex-1 bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
+              <Text className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Started From</Text>
+              <TextInput
+                className="w-full text-slate-900 text-sm font-bold border-b border-slate-100 pb-2 focus:border-blue-500"
+                placeholder="e.g. Oct 2025"
+                placeholderTextColor="#94a3b8"
+                value={stayStartPeriod}
+                onChangeText={setStayStartPeriod}
+              />
+            </View>
+          </View>
+
+          {/* Detailed Written Review */}
+          <Text className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Your True Experience</Text>
+          <View className="bg-white border border-slate-200 rounded-3xl p-1 mb-8 shadow-sm">
+            <TextInput
+              className="w-full bg-slate-50 rounded-2xl px-5 py-4 text-slate-800 text-[13px] font-medium h-40 focus:bg-blue-50/30"
+              placeholder="What was the reality of living here? Mention hygiene, safety, hidden costs, or anything a future resident should know before moving in."
+              placeholderTextColor="#94a3b8"
+              multiline
+              textAlignVertical="top"
+              value={comment}
+              onChangeText={setComment}
+            />
+            <View className="px-4 py-3 flex-row justify-between items-center bg-white rounded-b-3xl">
+              <Text className="text-[10px] font-bold text-slate-500">Minimum 10 characters required</Text>
+              <Text className={`text-[10px] font-black ${comment.length >= 10 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                {comment.length} / 500
+              </Text>
+            </View>
+          </View>
+
+          {/* Photo Evidence Section */}
+          <View className="flex-row justify-between items-center mb-4 ml-1">
+             <Text className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Photographic Evidence</Text>
+             <Text className="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">Optional</Text>
+          </View>
+          
+          <View className="flex-row flex-wrap justify-between gap-y-3 mb-12">
+            {(['room', 'food', 'washroom', 'building'] as const).map((cat) => {
+              const hasPhoto = photos[cat];
+              return (
+                <View key={cat} className="w-[48%]">
+                  {hasPhoto ? (
+                    <View className="w-full aspect-square bg-white border border-slate-200 rounded-3xl p-1.5 relative shadow-sm">
+                      <Image source={{ uri: hasPhoto }} className="w-full h-full rounded-2xl" />
+                      <View className="absolute bottom-3 left-3 bg-slate-900/70 px-2 py-1 rounded-md backdrop-blur-md">
+                        <Text className="text-[9px] font-black text-white capitalize">{cat}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => handleRemovePhoto(cat)}
+                        className="absolute top-3 right-3 bg-white/90 w-8 h-8 rounded-full items-center justify-center shadow-lg"
+                      >
+                        <Ionicons name="trash" size={14} color="#ef4444" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => handleAttachPhoto(cat)}
+                      className="w-full aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl justify-center items-center active:bg-slate-100"
+                    >
+                      <View className="bg-white w-10 h-10 rounded-full border border-slate-100 justify-center items-center shadow-sm mb-2">
+                        <Ionicons name="camera" size={18} color="#3b82f6" />
+                      </View>
+                      <Text className="text-[11px] font-black text-slate-700 capitalize">{cat}</Text>
+                      <Text className="text-[9px] font-bold text-slate-400 mt-0.5">Tap to upload</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+
+          {/* Submit Action */}
+          <Button
+            title="Publish Verified Review"
+            loading={submitting}
+            onPress={onSubmitReview}
+            className="mb-10 bg-blue-600 py-4 shadow-lg shadow-blue-500/30"
+            textStyle="text-base"
+          />
+          
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

@@ -195,9 +195,9 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
 
           <View className={`rounded-2xl border overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'} shadow-sm`}>
             {[
-              { label: 'Personal Information', sub: 'Edit your name, photo and bio', icon: 'person-outline', color: '#3b82f6', bg: 'bg-blue-50', onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon!' }) },
-              { label: 'Notification Preferences', sub: 'Manage alerts and updates', icon: 'notifications-outline', color: '#6366f1', bg: 'bg-indigo-50', onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon!' }) },
-              { label: 'Privacy Settings', sub: 'Control your data & visibility', icon: 'lock-closed-outline', color: '#0ea5e9', bg: 'bg-sky-50', onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon!' }) },
+              { label: 'Personal Information', sub: 'Edit your name, photo and bio', icon: 'person-outline', color: '#3b82f6', bg: 'bg-blue-50', onPress: () => navigation.navigate('EditProfile') },
+              { label: 'Notification Preferences', sub: 'Manage alerts and updates', icon: 'notifications-outline', color: '#6366f1', bg: 'bg-indigo-50', onPress: () => navigation.navigate('NotificationPreferences') },
+              { label: 'Privacy Settings', sub: 'Control your data & visibility', icon: 'lock-closed-outline', color: '#0ea5e9', bg: 'bg-sky-50', onPress: () => navigation.navigate('PrivacySettings') },
               { label: 'Suggest New Property', sub: 'Help others by adding verified places', icon: 'add-circle-outline', color: '#10b981', bg: 'bg-emerald-50', onPress: () => navigation.navigate('AddProperty') },
             ].map((item, idx, arr) => (
               <TouchableOpacity
@@ -309,7 +309,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
               </Text>
 
               <TouchableOpacity
-                onPress={() => navigation.navigate('ReviewStack', { screen: 'AddReviewLanding' } as any)}
+                onPress={() => (navigation as any).navigate('AddReviewTab')}
                 className="bg-[#1d4ed8] px-6 py-3 rounded-full flex-row items-center shadow-md shadow-blue-500/30"
               >
                 <Ionicons name="pencil" size={14} color="#ffffff" />

@@ -8,9 +8,9 @@ interface IssueTrendsProps {
   data?: {
     food: number;
     water: number;
-    safety: number;
-    deposit: number;
-    maintenance: number;
+    security: number;
+    staff: number;
+    valueForMoney: number;
   };
 }
 
@@ -19,16 +19,16 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
 
   // Fallback default trend values over 6 months
   const monthlyData = [
-    { month: 'Jan', food: 12, water: 8, safety: 3, deposit: 5, maintenance: 15 },
-    { month: 'Feb', food: 15, water: 7, safety: 2, deposit: 6, maintenance: 12 },
-    { month: 'Mar', food: 18, water: 10, safety: 4, deposit: 8, maintenance: 11 },
-    { month: 'Apr', food: 14, water: 9, safety: 2, deposit: 12, maintenance: 9 },
-    { month: 'May', food: 10, water: 6, safety: 1, deposit: 15, maintenance: 8 },
-    { month: 'Jun', food: data?.food || 8, water: data?.water || 5, safety: data?.safety || 1, deposit: data?.deposit || 7, maintenance: data?.maintenance || 6 },
+    { month: 'Jan', food: 12, water: 8, security: 3, staff: 5, valueForMoney: 15 },
+    { month: 'Feb', food: 15, water: 7, security: 2, staff: 6, valueForMoney: 12 },
+    { month: 'Mar', food: 18, water: 10, security: 4, staff: 8, valueForMoney: 11 },
+    { month: 'Apr', food: 14, water: 9, security: 2, staff: 12, valueForMoney: 9 },
+    { month: 'May', food: 10, water: 6, security: 1, staff: 15, valueForMoney: 8 },
+    { month: 'Jun', food: data?.food || 8, water: data?.water || 5, security: data?.security || 1, staff: data?.staff || 7, valueForMoney: data?.valueForMoney || 6 },
   ];
 
   // Calculate overall total complaints monthly
-  const totals = monthlyData.map(m => m.food + m.water + m.safety + m.deposit + m.maintenance);
+  const totals = monthlyData.map(m => m.food + m.water + m.security + m.staff + m.valueForMoney);
   const maxTotal = Math.max(...totals, 10);
 
   // SVG dimensions
@@ -63,9 +63,9 @@ export default function IssueTrends({ data }: IssueTrendsProps) {
   const currentStats = [
     { name: 'Food', count: data?.food || 0, color: 'bg-amber-500', textCol: 'text-amber-700', bgCol: 'bg-amber-50' },
     { name: 'Water', count: data?.water || 0, color: 'bg-blue-500', textCol: 'text-blue-700', bgCol: 'bg-blue-50' },
-    { name: 'Safety', count: data?.safety || 0, color: 'bg-rose-500', textCol: 'text-rose-700', bgCol: 'bg-rose-50' },
-    { name: 'Deposit', count: data?.deposit || 0, color: 'bg-orange-500', textCol: 'text-orange-700', bgCol: 'bg-orange-50' },
-    { name: 'Maintenance', count: data?.maintenance || 0, color: 'bg-purple-500', textCol: 'text-purple-700', bgCol: 'bg-purple-50' },
+    { name: 'Security', count: data?.security || 0, color: 'bg-rose-500', textCol: 'text-rose-700', bgCol: 'bg-rose-50' },
+    { name: 'Staff', count: data?.staff || 0, color: 'bg-orange-500', textCol: 'text-orange-700', bgCol: 'bg-orange-50' },
+    { name: 'Value', count: data?.valueForMoney || 0, color: 'bg-purple-500', textCol: 'text-purple-700', bgCol: 'bg-purple-50' },
   ];
 
   return (

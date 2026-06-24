@@ -375,18 +375,32 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
           <View style={{ marginBottom: 100 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <Text style={{ fontSize: 15, fontWeight: '800', color: '#0f172a' }}>Resident Experiences ({reviews.length})</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('AddReview', { pgId })}
-                style={{ backgroundColor: '#eff6ff', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 }}
-              >
-                <Text style={{ fontSize: 10, fontWeight: '800', color: '#1d4ed8', textTransform: 'uppercase' }}>VIEW ALL REVIEWS &gt;</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <TouchableOpacity
+                  onPress={() => (navigation as any).navigate('HomeStack', { screen: 'AddReview', params: { pgId } })}
+                  style={{ backgroundColor: '#1d4ed8', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 }}
+                >
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#ffffff', textTransform: 'uppercase' }}>WRITE REVIEW</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => (navigation as any).navigate('HomeStack', { screen: 'PGReviews', params: { pgId } })}
+                  style={{ backgroundColor: '#eff6ff', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 }}
+                >
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#1d4ed8', textTransform: 'uppercase' }}>VIEW ALL &gt;</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {reviews.length === 0 ? (
               <View style={{ alignItems: 'center', paddingVertical: 32, backgroundColor: '#f8fafc', borderRadius: 20 }}>
                 <Ionicons name="chatbox-ellipses-outline" size={36} color="#cbd5e1" />
                 <Text style={{ color: '#94a3b8', fontWeight: '600', fontSize: 12, marginTop: 8 }}>No reviews written yet. Be the first!</Text>
+                <TouchableOpacity
+                  onPress={() => (navigation as any).navigate('HomeStack', { screen: 'AddReview', params: { pgId } })}
+                  style={{ marginTop: 12, backgroundColor: '#1d4ed8', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12 }}
+                >
+                  <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>WRITE A REVIEW</Text>
+                </TouchableOpacity>
               </View>
             ) : (
               reviews.map((item) => (
@@ -400,7 +414,9 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       </View>
                       <View>
                         <Text style={{ fontSize: 12, fontWeight: '800', color: item.verified ? '#16a34a' : '#334155' }}>
-                          {item.verified ? '✓ Verified Resident' : 'Resident'}
+                          {item.reviewerName 
+                            ? `${item.reviewerName} ${item.verified ? '(✓ Verified)' : ''}` 
+                            : (item.verified ? '✓ Verified Resident' : 'Anonymous Resident')}
                         </Text>
                         <Text style={{ fontSize: 10, color: '#94a3b8', fontWeight: '500', marginTop: 1 }}>Stayed: {item.stayDuration} Months</Text>
                       </View>
@@ -414,19 +430,27 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       <Ionicons key={s} name={s <= item.ratings.overall ? 'star' : 'star-outline'} size={14} color="#f59e0b" style={{ marginRight: 2 }} />
                     ))}
                     <Text style={{ fontSize: 11, fontWeight: '700', color: '#334155', marginLeft: 6 }}>{item.ratings.overall}/5</Text>
+                    {item.recommended !== undefined && (
+                      <View style={{ marginLeft: 12, backgroundColor: item.recommended ? '#ecfdf5' : '#fef2f2', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, flexDirection: 'row', alignItems: 'center' }}>
+                        <Ionicons name={item.recommended ? "checkmark-circle" : "close-circle"} size={12} color={item.recommended ? "#10b981" : "#ef4444"} />
+                        <Text style={{ fontSize: 10, fontWeight: '800', color: item.recommended ? '#047857' : '#b91c1c', marginLeft: 4 }}>
+                          {item.recommended ? 'Recommended' : 'Not Recommended'}
+                        </Text>
+                      </View>
+                    )}
                   </View>
 
                   {/* Ratings breakdown grid */}
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                     {[
-                      { l: 'Food', v: item.ratings.food },
                       { l: 'Clean', v: item.ratings.cleanliness },
+                      { l: 'Food', v: item.ratings.food },
+                      { l: 'Security', v: item.ratings.security },
+                      { l: 'WiFi', v: item.ratings.wifi },
+                      { l: 'Staff', v: item.ratings.staff },
+                      { l: 'Location', v: item.ratings.location },
                       { l: 'Water', v: item.ratings.water },
-                      { l: 'Wi-Fi', v: item.ratings.internet },
-                      { l: 'Safety', v: item.ratings.safety },
-                      { l: 'Staff', v: item.ratings.management },
-                      { l: 'Refund', v: item.ratings.deposit },
-                      { l: 'Maint', v: item.ratings.maintenance },
+                      { l: 'Value', v: item.ratings.valueForMoney },
                     ].map((c) => (
                       <View key={c.l} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 }}>
                         <Text style={{ fontSize: 9, color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase' }}>{c.l} </Text>
@@ -434,6 +458,32 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                       </View>
                     ))}
                   </View>
+
+                  {/* Pros & Cons */}
+                  {((item.pros && item.pros.length > 0) || (item.cons && item.cons.length > 0)) && (
+                    <View style={{ marginBottom: 10 }}>
+                      {item.pros && item.pros.length > 0 && (
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                          <Text style={{ fontSize: 11, fontWeight: '800', color: '#10b981', marginRight: 4 }}>👍 Pros:</Text>
+                          {item.pros.map(pro => (
+                            <View key={pro} style={{ backgroundColor: '#ecfdf5', borderWidth: 1, borderColor: '#a7f3d0', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                              <Text style={{ fontSize: 10, color: '#047857', fontWeight: '700' }}>{pro}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+                      {item.cons && item.cons.length > 0 && (
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
+                          <Text style={{ fontSize: 11, fontWeight: '800', color: '#ef4444', marginRight: 4 }}>👎 Cons:</Text>
+                          {item.cons.map(con => (
+                            <View key={con} style={{ backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                              <Text style={{ fontSize: 10, color: '#b91c1c', fontWeight: '700' }}>{con}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  )}
 
                   <Text style={{ color: '#475569', fontSize: 12, lineHeight: 20, fontWeight: '500', marginBottom: 10 }}>{item.comment}</Text>
 
