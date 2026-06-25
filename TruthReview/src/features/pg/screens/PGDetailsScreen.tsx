@@ -353,7 +353,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
           {/* Action CTAs */}
           <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('VerifyResidency', { pgId })}
+              onPress={() => (navigation as any).navigate('HomeStack', { screen: 'VerifyResidency', params: { pgId } })}
               style={{ flex: 1, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#bfdbfe', paddingVertical: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
             >
               <Ionicons name="shield-checkmark" size={15} color="#1d4ed8" />
@@ -362,7 +362,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
 
             {!property.claimedBy ? (
               <TouchableOpacity
-                onPress={() => navigation.navigate('ClaimProperty', { pgId })}
+                onPress={() => (navigation as any).navigate('HomeStack', { screen: 'ClaimProperty', params: { pgId } })}
                 style={{ flex: 1, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#bfdbfe', paddingVertical: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Ionicons name="business" size={15} color="#1d4ed8" />

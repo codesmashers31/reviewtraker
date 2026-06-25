@@ -199,6 +199,41 @@ export default function PGCard({ item, navigation }: PGCardProps) {
             <Text className="text-xs text-slate-400 italic">No reviews posted yet. Be the first to share your experience!</Text>
           </View>
         )}
+
+        {/* Verify Stay CTA Row */}
+        <View className={`mt-4 pt-4 border-t flex-row justify-between items-center ${isDark ? 'border-slate-800/80' : 'border-slate-100'}`}>
+          <View className="flex-row items-center flex-1 pr-2">
+            <View className={`h-7 w-7 rounded-full items-center justify-center ${isDark ? 'bg-blue-950/40' : 'bg-blue-50'}`}>
+              <Ionicons name="shield-checkmark-outline" size={14} color={isDark ? '#60a5fa' : '#1d4ed8'} />
+            </View>
+            <View className="ml-2.5 flex-1">
+              <Text className={`text-[10px] font-black leading-tight ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Have you stayed here?
+              </Text>
+              <Text className={`text-[8px] font-semibold mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                Verify your stay & help build trust
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={(e) => {
+              e.stopPropagation();
+              navigation.navigate('HomeStack', {
+                screen: 'VerifyResidency',
+                params: { pgId: item.id },
+              });
+            }}
+            activeOpacity={0.8}
+            className={`px-3.5 py-2 rounded-xl flex-row items-center border active:scale-95 ${
+              isDark ? 'bg-blue-950/40 border-blue-900/50' : 'bg-blue-50 border-blue-100'
+            }`}
+          >
+            <Text className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+              Verify Stay
+            </Text>
+            <Ionicons name="chevron-forward" size={10} color={isDark ? '#60a5fa' : '#1d4ed8'} style={{ marginLeft: 3 }} />
+          </TouchableOpacity>
+        </View>
       </View>
     </Pressable>
   );
