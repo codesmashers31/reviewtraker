@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   const [locationName, setLocationName] = useState('Whitefield, Bangalore');
   const [overallTrustScore, setOverallTrustScore] = useState(89);
   const [totalReviewsCount, setTotalReviewsCount] = useState(124);
-  const [selectedChip, setSelectedChip] = useState('Adyar');
+  const [selectedChip, setSelectedChip] = useState('Nearby');
 
   useEffect(() => {
     const loadData = async () => {
@@ -295,7 +295,106 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </View>
         </View>
 
-        {/* ── 7. BROWSE BY LOCATION ── */}
+        {/* ── 7. TOP RATED STAYS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Top Rated Stays" />
+          <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+            {TOP_RATED.map((prop, idx) => (
+              <TouchableOpacity key={idx} onPress={goSearch} activeOpacity={0.9} style={{ width: (width - 52) / 2, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden' }}>
+                <View style={{ height: 100, position: 'relative' }}>
+                  <Image source={{ uri: prop.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{prop.name}</Text>
+                  <Text style={{ fontSize: 10, color: textSub, marginBottom: 4 }} numberOfLines={1}>{prop.location}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="star" size={10} color="#f59e0b" />
+                    <Text style={{ fontSize: 10, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
+                    <Text style={{ fontSize: 9, color: textSub, marginLeft: 3 }}>({prop.reviews})</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* ── 8. BUDGET FRIENDLY STAYS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Budget Friendly Stays" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
+            {BUDGET_STAYS.map((item, i) => (
+              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 130, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, padding: 14, alignItems: 'center' }}>
+                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                  <Ionicons name={item.icon as any} size={22} color={item.color} />
+                </View>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, textAlign: 'center', marginBottom: 4 }}>{item.name}</Text>
+                <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }}>{item.sub}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 9. EXPLORE BY PROPERTY TYPE ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Explore by Property Type" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+            {EXPLORE_TYPES.map((type, i) => (
+              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 90, alignItems: 'center', backgroundColor: sectionBg, borderRadius: 20, borderWidth: 1, borderColor: cardBorder, paddingVertical: 14, paddingHorizontal: 6, elevation: 3, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } }}>
+                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: type.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+                  <Ionicons name={type.icon as any} size={20} color={type.color} />
+                </View>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: textMain, textAlign: 'center' }}>{type.label}</Text>
+                <Text style={{ fontSize: 9, color: textSub, fontWeight: '500', textAlign: 'center', marginTop: 2 }}>{type.sub}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 10. NEAR METRO STATIONS ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Near Metro Stations" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+            {METRO_STATIONS.map((item, i) => (
+              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
+                <View style={{ height: 90, position: 'relative' }}>
+                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
+                  <Text style={{ fontSize: 10, color: textSub }} numberOfLines={1}>{item.count}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 11. RECENTLY ADDED ── */}
+        <View style={{ marginBottom: 24 }}>
+          <SectionHeader title="Recently Added" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+            {RECENTLY_ADDED.map((item, i) => (
+              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 180, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
+                <View style={{ height: 110, position: 'relative' }}>
+                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                  <TouchableOpacity style={{ position: 'absolute', top: 8, right: 8, backgroundColor: '#fff', width: 26, height: 26, borderRadius: 13, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="heart-outline" size={13} color="#ef4444" />
+                  </TouchableOpacity>
+                  <View style={{ position: 'absolute', bottom: 8, left: 8, backgroundColor: '#1d4ed8', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 }}>
+                    <Text style={{ fontSize: 8, color: '#fff', fontWeight: '800' }}>NEW</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
+                  <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }} numberOfLines={1}>{item.location}</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 12. BROWSE BY LOCATION ── */}
         <View style={{ marginBottom: 24 }}>
           <SectionHeader title="Browse by Location" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
@@ -306,7 +405,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 onPress={() => goSearch(loc.name)}
                 style={{
                   width: 120,
-                  height: 160,
+                  height: 120,
                   borderRadius: 20,
                   overflow: 'hidden',
                   position: 'relative',
@@ -319,7 +418,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               >
                 <Image
                   source={{ uri: loc.img }}
-                  style={{ width: '100%', height: '100%', position: 'absolute' }}
+                  style={{ width: 120, height: 120, position: 'absolute' }}
                   resizeMode="cover"
                 />
                 <LinearGradient
@@ -329,7 +428,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    height: 100,
+                    height: 80,
                   }}
                 />
                 <View style={{ position: 'absolute', bottom: 12, left: 12, right: 12 }}>
@@ -351,23 +450,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </ScrollView>
         </View>
 
-        {/* ── 8. EXPLORE BY PROPERTY TYPE ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Explore by Property Type" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
-            {EXPLORE_TYPES.map((type, i) => (
-              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 90, alignItems: 'center', backgroundColor: sectionBg, borderRadius: 20, borderWidth: 1, borderColor: cardBorder, paddingVertical: 14, paddingHorizontal: 6, elevation: 3, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } }}>
-                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: type.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
-                  <Ionicons name={type.icon as any} size={20} color={type.color} />
-                </View>
-                <Text style={{ fontSize: 11, fontWeight: '800', color: textMain, textAlign: 'center' }}>{type.label}</Text>
-                <Text style={{ fontSize: 9, color: textSub, fontWeight: '500', textAlign: 'center', marginTop: 2 }}>{type.sub}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ── 9. POPULAR STAYS IN ADYAR ── */}
+        {/* ── 13. POPULAR STAYS IN ADYAR ── */}
         <View style={{ marginBottom: 24 }}>
           <SectionHeader title="Popular Stays in Adyar" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
@@ -407,47 +490,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </ScrollView>
         </View>
 
-        {/* ── 10. TOP RATED STAYS ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Top Rated Stays" />
-          <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-            {TOP_RATED.map((prop, idx) => (
-              <TouchableOpacity key={idx} onPress={goSearch} activeOpacity={0.9} style={{ width: (width - 52) / 2, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden' }}>
-                <View style={{ height: 100, position: 'relative' }}>
-                  <Image source={{ uri: prop.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-                </View>
-                <View style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{prop.name}</Text>
-                  <Text style={{ fontSize: 10, color: textSub, marginBottom: 4 }} numberOfLines={1}>{prop.location}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="star" size={10} color="#f59e0b" />
-                    <Text style={{ fontSize: 10, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
-                    <Text style={{ fontSize: 9, color: textSub, marginLeft: 3 }}>({prop.reviews})</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* ── 11. BUDGET FRIENDLY STAYS ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Budget Friendly Stays" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
-            {BUDGET_STAYS.map((item, i) => (
-              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 130, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, padding: 14, alignItems: 'center' }}>
-                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                  <Ionicons name={item.icon as any} size={22} color={item.color} />
-                </View>
-                <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, textAlign: 'center', marginBottom: 4 }}>{item.name}</Text>
-                <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }}>{item.sub}</Text>
-                <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ── 12. REFER & EARN BANNER ── */}
+        {/* ── 14. REFER & EARN BANNER ── */}
         <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
           <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16, flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
