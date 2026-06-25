@@ -102,8 +102,12 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
 
       if (passedLocation || passedQuery) {
         if (passedLocation) {
-          const citySuffix = ['Adyar', 'Velachery', 'T Nagar', 'OMR'].includes(passedLocation) ? ', Chennai' : ', Bangalore';
-          setLocationName(`${passedLocation}${citySuffix}`);
+          if (passedLocation === 'Nearby') {
+            fetchLocation(false);
+          } else {
+            const citySuffix = ['Adyar', 'Velachery', 'T Nagar', 'OMR'].includes(passedLocation) ? ', Chennai' : ', Bangalore';
+            setLocationName(`${passedLocation}${citySuffix}`);
+          }
           setHasFetchedLocation(true);
         }
         if (passedQuery) {

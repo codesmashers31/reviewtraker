@@ -173,7 +173,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 <Text style={{ fontSize: 17, fontWeight: '900', color: textMain, letterSpacing: -0.5 }}>Truth </Text>
                 <Text style={{ fontSize: 17, fontWeight: '900', color: '#1d4ed8', letterSpacing: -0.5 }}>Review</Text>
               </View>
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={() => goSearch()} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Ionicons name="location" size={10} color="#1d4ed8" />
                 <Text style={{ fontSize: 11, color: textSub, marginLeft: 3, fontWeight: '600' }}>{locationName}</Text>
                 <Ionicons name="chevron-down" size={10} color={textSub} style={{ marginLeft: 2 }} />
@@ -209,7 +209,14 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             return (
               <TouchableOpacity
                 key={chip.label}
-                onPress={() => setSelectedChip(chip.label)}
+                onPress={() => {
+                  setSelectedChip(chip.label);
+                  if (chip.label === 'Nearby' || chip.label === 'More') {
+                    goSearch();
+                  } else {
+                    goSearch(chip.label);
+                  }
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -467,7 +474,12 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           <SectionHeader title="Near Metro Stations" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
             {METRO_STATIONS.map((item, i) => (
-              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
+              <TouchableOpacity
+                key={i}
+                activeOpacity={0.9}
+                onPress={() => goSearch(item.name)}
+                style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}
+              >
                 <View style={{ height: 90, position: 'relative' }}>
                   <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                 </View>
