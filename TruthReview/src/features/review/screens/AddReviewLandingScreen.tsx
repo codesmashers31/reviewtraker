@@ -154,9 +154,9 @@ export default function AddReviewLandingScreen({ navigation }: { navigation: any
           </View>
           <View className="items-center">
             <View className="flex-row mb-1">
-              <Image source={{uri: 'https://randomuser.me/api/portraits/women/44.jpg'}} className="w-6 h-6 rounded-full border-2 border-[#f0f9ff] -mr-2 z-30" />
-              <Image source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}} className="w-6 h-6 rounded-full border-2 border-[#f0f9ff] -mr-2 z-20" />
-              <Image source={{uri: 'https://randomuser.me/api/portraits/women/68.jpg'}} className="w-6 h-6 rounded-full border-2 border-[#f0f9ff] z-10" />
+              <Image source={{uri: 'https://randomuser.me/api/portraits/women/44.jpg'}} style={{ width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#f0f9ff', marginRight: -8, zIndex: 30 }} />
+              <Image source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}} style={{ width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#f0f9ff', marginRight: -8, zIndex: 20 }} />
+              <Image source={{uri: 'https://randomuser.me/api/portraits/women/68.jpg'}} style={{ width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#f0f9ff', zIndex: 10 }} />
             </View>
             <Text className="text-[12px] font-black text-slate-800">12,540+</Text>
             <Text className="text-[8px] font-bold text-slate-500 uppercase">Verified Reviewers</Text>

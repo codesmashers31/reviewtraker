@@ -158,7 +158,7 @@ export default function ManagePGsScreen({ navigation }: Props) {
                 <Text className="text-[10px] text-slate-400 font-bold mb-3">Claimed by User: {item.userId} on {item.date}</Text>
                 
                 {/* Proof */}
-                <Image source={{ uri: item.businessProofUrl }} className="h-32 w-full rounded-xl mb-3 bg-slate-200" resizeMode="cover" />
+                <Image source={{ uri: item.businessProofUrl }} style={{ height: 128, width: '100%', borderRadius: 12, marginBottom: 12, backgroundColor: '#e2e8f0' }} resizeMode="cover" />
 
                 <View className="flex-row gap-2">
                   <TouchableOpacity 

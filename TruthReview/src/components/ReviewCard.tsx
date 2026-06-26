@@ -186,7 +186,7 @@ export default function ReviewCard({ review, currentUserRole, currentUserId }: R
             if (!uri) return null;
             return (
               <View key={key} className="mr-2 relative rounded-xl overflow-hidden bg-slate-150">
-                <Image source={{ uri }} className="h-20 w-28" resizeMode="cover" />
+                <Image source={{ uri }} style={{ height: 80, width: 112 }} resizeMode="cover" />
                 <View className="absolute bottom-1.5 left-1.5 bg-black/60 px-1.5 py-0.5 rounded-md">
                   <Text className="text-[7px] text-white font-extrabold uppercase">{key}</Text>
                 </View>

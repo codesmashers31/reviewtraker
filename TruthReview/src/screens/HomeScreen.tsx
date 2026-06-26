@@ -55,9 +55,9 @@ const EXPLORE_TYPES = [
 ];
 
 const POPULAR_ADYAR = [
-  { name: 'Royal Inn Hotel', location: 'Adyar, Chennai', rating: '4.2', reviews: 76, price: '₹2,200 - ₹3,500', priceSuffix: '/night', facilities: ['Wi-Fi', 'AC', 'Room Service'], img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400' },
-  { name: 'Co-Live Adyar', location: 'Adyar, Chennai', rating: '4.6', reviews: 112, price: '₹9,000 - ₹12,000', priceSuffix: '/mo', facilities: ['Community', 'Events'], img: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400' },
-  { name: 'Adyar Student Hostel', location: 'Adyar, Chennai', rating: '4.4', reviews: 80, price: '₹4,500 - ₹6,000', priceSuffix: '/mo', facilities: ['Wi-Fi', 'Mess'], img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' },
+  { name: 'Royal Inn Hotel', location: 'Adyar, Chennai', rating: '4.2', reviews: 76, price: 'Approx. ₹2,200 - ₹3,500', priceSuffix: '/night', facilities: ['Wi-Fi', 'AC', 'Room Service'], img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400' },
+  { name: 'Co-Live Adyar', location: 'Adyar, Chennai', rating: '4.6', reviews: 112, price: 'Approx. ₹9,000 - ₹12,000', priceSuffix: '/mo', facilities: ['Community', 'Events'], img: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400' },
+  { name: 'Adyar Student Hostel', location: 'Adyar, Chennai', rating: '4.4', reviews: 80, price: 'Approx. ₹4,500 - ₹6,000', priceSuffix: '/mo', facilities: ['Wi-Fi', 'Mess'], img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' },
 ];
 
 const TOP_RATED = [
@@ -68,10 +68,10 @@ const TOP_RATED = [
 ];
 
 const BUDGET_STAYS = [
-  { name: 'Budget PG', sub: 'Starts from', price: '₹3,500/mo', icon: 'home-outline', color: '#10b981', bg: '#ecfdf5' },
-  { name: 'Student Hostel', sub: 'Starts from', price: '₹3,000/mo', icon: 'business-outline', color: '#8b5cf6', bg: '#f5f3ff' },
-  { name: 'Economy Hotel', sub: 'Starts from', price: '₹1,200/night', icon: 'bed-outline', color: '#f59e0b', bg: '#fffbeb' },
-  { name: 'Shared Rooms', sub: 'Starts from', price: '₹2,500/mo', icon: 'people-outline', color: '#3b82f6', bg: '#eff6ff' },
+  { name: 'Budget PG', sub: 'Approx.', price: '₹3,500/mo', icon: 'home-outline', color: '#10b981', bg: '#ecfdf5' },
+  { name: 'Student Hostel', sub: 'Approx.', price: '₹3,000/mo', icon: 'business-outline', color: '#8b5cf6', bg: '#f5f3ff' },
+  { name: 'Economy Hotel', sub: 'Approx.', price: '₹1,200/night', icon: 'bed-outline', color: '#f59e0b', bg: '#fffbeb' },
+  { name: 'Shared Rooms', sub: 'Approx.', price: '₹2,500/mo', icon: 'people-outline', color: '#3b82f6', bg: '#eff6ff' },
 ];
 
 const METRO_STATIONS = [
@@ -82,9 +82,9 @@ const METRO_STATIONS = [
 ];
 
 const RECENTLY_ADDED = [
-  { name: 'New Horizon PG', location: 'Adyar, Chennai', price: '₹5,500/mo', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400' },
-  { name: 'Skyline Hostel', location: 'OMR, Chennai', price: '₹4,800/mo', img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400' },
-  { name: 'Urban Stay Hotel', location: 'T Nagar, Chennai', price: '₹2,800/night', img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400' },
+  { name: 'New Horizon PG', location: 'Adyar, Chennai', price: 'Approx. ₹5,500/mo', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400' },
+  { name: 'Skyline Hostel', location: 'OMR, Chennai', price: 'Approx. ₹4,800/mo', img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400' },
+  { name: 'Urban Stay Hotel', location: 'T Nagar, Chennai', price: 'Approx. ₹2,800/night', img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400' },
 ];
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
@@ -266,7 +266,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
 
         {/* ── 5. PROPERTY TYPE ICON ROW ── */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }} style={{ marginBottom: 20 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }} style={{ marginBottom: 20 }}>
           {PROPERTY_TYPES.map((pt) => (
             <TouchableOpacity key={pt.label} onPress={goSearch} style={{ alignItems: 'center', width: 60 }}>
               <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: pt.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 6, borderWidth: 1, borderColor: pt.bg }}>
@@ -278,7 +278,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </ScrollView>
 
         {/* ── 6. STATS ROW ── */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <View style={{ flexDirection: 'row', backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 4, elevation: 1 }}>
             {[
               { value: '12,450+', label: 'Verified Reviews', icon: 'star', color: '#f59e0b' },
@@ -296,32 +296,32 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 7. TOP RATED STAYS ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Top Rated Stays" />
-          <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
             {TOP_RATED.map((prop, idx) => (
-              <TouchableOpacity key={idx} onPress={goSearch} activeOpacity={0.9} style={{ width: (width - 52) / 2, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, overflow: 'hidden' }}>
-                <View style={{ height: 100, position: 'relative' }}>
+              <TouchableOpacity key={idx} onPress={goSearch} activeOpacity={0.9} style={{ width: 220, backgroundColor: sectionBg, borderRadius: 24, borderWidth: 0, overflow: 'hidden', shadowColor: '#1d4ed8', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 5 }}>
+                <View style={{ height: 130, position: 'relative' }}>
                   <Image source={{ uri: prop.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                 </View>
-                <View style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{prop.name}</Text>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '900', color: textMain, marginBottom: 3 }} numberOfLines={1}>{prop.name}</Text>
                   <Text style={{ fontSize: 10, color: textSub, marginBottom: 4 }} numberOfLines={1}>{prop.location}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="star" size={10} color="#f59e0b" />
-                    <Text style={{ fontSize: 10, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
-                    <Text style={{ fontSize: 9, color: textSub, marginLeft: 3 }}>({prop.reviews})</Text>
+                    <Ionicons name="star" size={11} color="#f59e0b" />
+                    <Text style={{ fontSize: 11, fontWeight: '800', color: '#f59e0b', marginLeft: 3 }}>{prop.rating}</Text>
+                    <Text style={{ fontSize: 10, color: textSub, marginLeft: 3 }}>({prop.reviews})</Text>
                   </View>
                 </View>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         </View>
 
         {/* ── 8. BUDGET FRIENDLY STAYS ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Budget Friendly Stays" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 12 }}>
             {BUDGET_STAYS.map((item, i) => (
               <TouchableOpacity key={i} onPress={goSearch} style={{ width: 130, backgroundColor: sectionBg, borderRadius: 16, borderWidth: 1, borderColor: cardBorder, padding: 14, alignItems: 'center' }}>
                 <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: item.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
@@ -335,26 +335,12 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </ScrollView>
         </View>
 
-        {/* ── 9. EXPLORE BY PROPERTY TYPE ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Explore by Property Type" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
-            {EXPLORE_TYPES.map((type, i) => (
-              <TouchableOpacity key={i} onPress={goSearch} style={{ width: 90, alignItems: 'center', backgroundColor: sectionBg, borderRadius: 20, borderWidth: 1, borderColor: cardBorder, paddingVertical: 14, paddingHorizontal: 6, elevation: 3, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } }}>
-                <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: type.bg, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
-                  <Ionicons name={type.icon as any} size={20} color={type.color} />
-                </View>
-                <Text style={{ fontSize: 11, fontWeight: '800', color: textMain, textAlign: 'center' }}>{type.label}</Text>
-                <Text style={{ fontSize: 9, color: textSub, fontWeight: '500', textAlign: 'center', marginTop: 2 }}>{type.sub}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+
 
         {/* ── 10. NEAR METRO STATIONS ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Near Metro Stations" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
             {METRO_STATIONS.map((item, i) => (
               <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
                 <View style={{ height: 90, position: 'relative' }}>
@@ -370,9 +356,9 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 11. RECENTLY ADDED ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Recently Added" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
             {RECENTLY_ADDED.map((item, i) => (
               <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 180, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
                 <View style={{ height: 110, position: 'relative' }}>
@@ -395,9 +381,9 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 12. BROWSE BY LOCATION ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Browse by Location" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 12 }}>
             {LOCATIONS.map((loc, i) => (
               <TouchableOpacity
                 key={i}
@@ -422,7 +408,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                   resizeMode="cover"
                 />
                 <LinearGradient
-                  colors={['transparent', 'rgba(15,23,42,0.85)']}
+                  colors={['rgba(15,23,42,0)', 'rgba(15,23,42,0.85)']}
                   style={{
                     position: 'absolute',
                     left: 0,
@@ -451,9 +437,9 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 13. POPULAR STAYS IN ADYAR ── */}
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 32 }}>
           <SectionHeader title="Popular Stays in Adyar" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
             {POPULAR_ADYAR.map((prop, i) => (
               <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 220, backgroundColor: sectionBg, borderRadius: 24, borderWidth: 0, overflow: 'hidden', shadowColor: '#1d4ed8', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 5 }}>
                 <View style={{ height: 130, position: 'relative' }}>
@@ -468,7 +454,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                     <Ionicons name="heart-outline" size={14} color="#ef4444" />
                   </TouchableOpacity>
                 </View>
-                <View style={{ padding: 12 }}>
+                <View style={{ padding: 10 }}>
                   <Text style={{ fontSize: 13, fontWeight: '900', color: textMain, marginBottom: 3 }} numberOfLines={1}>{prop.name}</Text>
                   <Text style={{ fontSize: 10, color: textSub, marginBottom: 6 }} numberOfLines={1}>{prop.location}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
@@ -491,7 +477,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 14. REFER & EARN BANNER ── */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16, flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
@@ -512,56 +498,9 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </View>
         </View>
 
-        {/* ── 13. NEAR METRO STATIONS ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Near Metro Stations" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
-            {METRO_STATIONS.map((item, i) => (
-              <TouchableOpacity
-                key={i}
-                activeOpacity={0.9}
-                onPress={() => goSearch(item.name)}
-                style={{ width: 140, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}
-              >
-                <View style={{ height: 90, position: 'relative' }}>
-                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-                </View>
-                <View style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
-                  <Text style={{ fontSize: 10, color: textSub }} numberOfLines={1}>{item.count}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ── 14. RECENTLY ADDED ── */}
-        <View style={{ marginBottom: 24 }}>
-          <SectionHeader title="Recently Added" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
-            {RECENTLY_ADDED.map((item, i) => (
-              <TouchableOpacity key={i} activeOpacity={0.9} style={{ width: 180, backgroundColor: sectionBg, borderRadius: 20, borderWidth: 0, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, elevation: 4 }}>
-                <View style={{ height: 110, position: 'relative' }}>
-                  <Image source={{ uri: item.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-                  <TouchableOpacity style={{ position: 'absolute', top: 8, right: 8, backgroundColor: '#fff', width: 26, height: 26, borderRadius: 13, justifyContent: 'center', alignItems: 'center' }}>
-                    <Ionicons name="heart-outline" size={13} color="#ef4444" />
-                  </TouchableOpacity>
-                  <View style={{ position: 'absolute', bottom: 8, left: 8, backgroundColor: '#1d4ed8', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 }}>
-                    <Text style={{ fontSize: 8, color: '#fff', fontWeight: '800' }}>NEW</Text>
-                  </View>
-                </View>
-                <View style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 12, fontWeight: '800', color: textMain, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
-                  <Text style={{ fontSize: 9, color: textSub, marginBottom: 4 }} numberOfLines={1}>{item.location}</Text>
-                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#1d4ed8' }}>{item.price}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
 
         {/* ── 15. STUDENT RECOMMENDED ── */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <SectionHeader title="Student Recommended" />
           <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 6, elevation: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -590,7 +529,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 16. COMPLAINTS & SAFETY INSIGHTS ── */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <SectionHeader title="Complaints & Safety Insights" />
           <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -613,7 +552,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
 
         {/* ── 17. WHY CHOOSE TRUTH REVIEW? ── */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <SectionHeader title="Why Choose Truth Review?" onPress={() => {}} />
           <View style={{ backgroundColor: sectionBg, borderRadius: 18, borderWidth: 1, borderColor: cardBorder, padding: 16 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

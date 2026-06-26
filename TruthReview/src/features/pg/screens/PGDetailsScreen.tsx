@@ -323,10 +323,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
         {/* ── BODY CONTENT ── */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
 
-          {/* Verified Complaint Trends */}
-          <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
-            <IssueTrends data={complaints} />
-          </View>
+
 
           {/* Facilities & Amenities */}
           <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
@@ -372,7 +369,7 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
           </View>
 
           {/* Reviews List */}
-          <View style={{ marginBottom: 100 }}>
+          <View style={{ marginBottom: 16 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <Text style={{ fontSize: 15, fontWeight: '800', color: '#0f172a' }}>Resident Experiences ({reviews.length})</Text>
               <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -527,6 +524,11 @@ export default function PGDetailsScreen({ route, navigation }: Props) {
                 </View>
               ))
             )}
+          </View>
+
+          {/* Verified Complaint Trends */}
+          <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 100, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
+            <IssueTrends data={complaints} />
           </View>
         </View>
       </ScrollView>

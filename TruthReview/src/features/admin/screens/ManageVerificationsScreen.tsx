@@ -136,7 +136,7 @@ export default function ManageVerificationsScreen({ navigation }: Props) {
 
                 {/* Uploaded proof image */}
                 <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Uploaded Document Proof</Text>
-                <Image source={{ uri: item.documentUri }} className="h-40 w-full rounded-2xl mb-4 bg-slate-200" resizeMode="cover" />
+                <Image source={{ uri: item.documentUri }} style={{ height: 160, width: '100%', borderRadius: 16, marginBottom: 16, backgroundColor: '#e2e8f0' }} resizeMode="cover" />
 
                 {/* Action buttons */}
                 <View className="flex-row gap-2 mt-2">
