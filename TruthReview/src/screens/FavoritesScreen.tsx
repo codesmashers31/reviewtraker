@@ -232,6 +232,30 @@ export default function FavoritesScreen({ navigation }: { navigation: any }) {
 
         </ScrollView>
       )}
+
+      {/* Advertisement Banner */}
+      <View className={`px-4 py-4 border-t shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-white'}`}>
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center flex-1 pr-2">
+            <View className={`w-12 h-12 rounded-[14px] items-center justify-center mr-3 ${isDark ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
+              <Ionicons name="sparkles" size={22} color="#3b82f6" />
+            </View>
+            <View className="flex-1">
+              <View className="flex-row items-center mb-1">
+                <Text className={`text-[9px] font-black uppercase tracking-widest mr-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Sponsored</Text>
+                <View className="bg-amber-100 px-1.5 py-0.5 rounded-sm">
+                  <Text className="text-[8px] font-black text-amber-600 uppercase">Ad</Text>
+                </View>
+              </View>
+              <Text className={`text-[13px] font-black leading-4 ${isDark ? 'text-white' : 'text-slate-800'}`} numberOfLines={1}>Premium Student Housing</Text>
+              <Text className={`text-[11px] font-medium mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} numberOfLines={1}>Get 20% off your first month</Text>
+            </View>
+          </View>
+          <TouchableOpacity className="bg-[#1d4ed8] px-4 py-2.5 rounded-full shadow-sm" style={{ shadowColor: '#3b82f6', shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } }}>
+            <Text className="text-white text-[11px] font-black tracking-wide">Explore</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
