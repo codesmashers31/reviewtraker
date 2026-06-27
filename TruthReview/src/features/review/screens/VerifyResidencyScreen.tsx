@@ -212,7 +212,7 @@ export default function VerifyResidencyScreen({ route, navigation }: Props) {
           
           {attachedUri ? (
             <View className="relative bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden items-center p-3">
-              <Image source={{ uri: attachedUri }} className="h-44 w-full rounded-xl" resizeMode="cover" />
+              <Image source={{ uri: attachedUri }} style={{ height: 176, width: '100%', borderRadius: 12 }} resizeMode="cover" />
               <TouchableOpacity
                 onPress={() => setAttachedUri(null)}
                 className="absolute top-5 right-5 h-9 w-9 bg-black/60 rounded-full justify-center items-center"

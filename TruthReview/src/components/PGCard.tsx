@@ -87,7 +87,8 @@ export default function PGCard({ item, navigation }: PGCardProps) {
       <View className="h-48 w-full relative">
         <Image
           source={{ uri: item.images[0] || 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=600&q=80' }}
-          className="h-full w-full object-cover"
+          style={{ width: '100%', height: '100%' }}
+          resizeMode="cover"
         />
         <View className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
 
@@ -136,7 +137,7 @@ export default function PGCard({ item, navigation }: PGCardProps) {
       <View className="p-5">
         {/* Title and location row */}
         <View className="flex-row justify-between items-start">
-          <View className="flex-1">
+          <View className="flex-1 pr-2">
             <Text className={`text-md font-black leading-5 ${isDark ? 'text-white' : 'text-slate-800'}`} numberOfLines={1}>
               {item.name}
             </Text>
@@ -144,6 +145,14 @@ export default function PGCard({ item, navigation }: PGCardProps) {
               <Ionicons name="location-outline" size={12} color="#64748b" />
               <Text className="text-[10px] text-slate-500 ml-0.5 truncate">{item.address || item.location}</Text>
             </View>
+          </View>
+          <View className="items-end justify-center">
+            <Text className={`text-[15px] font-black ${isDark ? 'text-blue-400' : 'text-blue-700'}`}>
+              ₹{item.price?.toLocaleString('en-IN') || 'N/A'}
+            </Text>
+            <Text className={`text-[8px] font-black uppercase mt-0.5 tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              Approx. /mo
+            </Text>
           </View>
         </View>
 

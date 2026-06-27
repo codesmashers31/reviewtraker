@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Image, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoute, useIsFocused } from '@react-navigation/native';
@@ -307,11 +307,11 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
             { title: 'CO-LIVING SPACES', price: '₹7,500', btn: 'Explore Spaces', img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=400' }
           ].map((ad, i) => (
             <View key={i} className="w-[175px] h-[200px] rounded-[20px] overflow-hidden relative shadow-md">
-              <Image source={{ uri: ad.img }} className="w-full h-full object-cover" />
+              <Image source={{ uri: ad.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
               <View className="absolute inset-0" style={{ backgroundColor: 'rgba(15, 23, 42, 0.55)' }} />
               <View className="absolute top-4 left-4 right-4">
                 <Text className="text-white text-[10px] font-black uppercase mb-1 tracking-wider">{ad.title}</Text>
-                <Text className="text-slate-300 text-[9px] font-semibold mb-0.5">Starting from</Text>
+                <Text className="text-slate-300 text-[9px] font-semibold mb-0.5">Approx. Rate</Text>
                 <Text className="text-white text-[15px] font-black">{ad.price} <Text className="text-[10px] font-medium text-slate-300">/mo</Text></Text>
               </View>
               <View className="absolute bottom-4 left-4 right-4">
@@ -346,7 +346,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           ].map((loc, i) => (
             <TouchableOpacity key={i} className="w-[130px]" activeOpacity={0.8}>
               <View className="w-full h-[85px] rounded-[16px] overflow-hidden mb-2 shadow-sm">
-                <Image source={{ uri: loc.img }} className="w-full h-full object-cover" />
+                <Image source={{ uri: loc.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
               </View>
               <View className="px-1">
                 <Text className={`text-[12px] font-black ${textDark}`} numberOfLines={1}>{loc.name}</Text>
@@ -408,7 +408,7 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
             <View className="absolute right-1 top-1 w-2.5 h-2.5 bg-[#1d4ed8] rounded-full border-2 border-white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('ProfileStack', { screen: 'Profile' })}>
-            <Image source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}} className="w-8 h-8 rounded-full border border-slate-200" />
+            <Image source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}} style={{ width: 32, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' }} />
           </TouchableOpacity>
         </View>
       </View>
@@ -419,28 +419,37 @@ export default function SearchScreen({ navigation }: { navigation: any }) {
           <ActivityIndicator size="large" color="#1d4ed8" />
         </View>
       ) : (
-        <FlatList
-          data={filteredAndSortedProperties}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View className="px-5">
-              <PGCard item={item} navigation={navigation} />
-            </View>
-          )}
-          ListHeaderComponent={renderHeader}
-          ListFooterComponent={renderFooter}
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          ListEmptyComponent={
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} colors={['#1d4ed8']} tintColor="#1d4ed8" />
+          }
+        >
+          {renderHeader()}
+          
+          {filteredAndSortedProperties.length === 0 ? (
             <View className="px-5">
               <EmptyState
                 title="No Properties Found"
                 description="We couldn't find any listings matching your search or filters. Try adjusting your criteria."
               />
             </View>
-          }
-        />
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20, gap: 16 }}
+            >
+              {filteredAndSortedProperties.map((item) => (
+                <View key={item.id} style={{ width: 310 }}>
+                  <PGCard item={item} navigation={navigation} />
+                </View>
+              ))}
+            </ScrollView>
+          )}
+
+          {renderFooter()}
+        </ScrollView>
       )}
     </SafeAreaView>
   );

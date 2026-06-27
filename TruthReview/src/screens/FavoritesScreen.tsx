@@ -178,7 +178,7 @@ export default function FavoritesScreen({ navigation }: { navigation: any }) {
             >
               {collections.map((col, idx) => (
                 <TouchableOpacity key={idx} className="w-[150px] h-[180px] rounded-[20px] overflow-hidden relative shadow-md" activeOpacity={0.8}>
-                  <Image source={{ uri: col.img }} className="w-full h-full object-cover" />
+                  <Image source={{ uri: col.img }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                   <View className="absolute inset-0" style={{ backgroundColor: 'rgba(15, 23, 42, 0.4)' }} />
                   <View className="absolute bottom-4 left-3 right-3">
                     <Text className="text-white text-[13px] font-black mb-0.5 leading-4">{col.title}</Text>

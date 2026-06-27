@@ -388,7 +388,7 @@ export default function AddReviewScreen({ route, navigation }: Props) {
                 <View key={cat} className="w-[48%]">
                   {hasPhoto ? (
                     <View className="w-full aspect-square bg-white border border-slate-200 rounded-3xl p-1.5 relative shadow-sm">
-                      <Image source={{ uri: hasPhoto }} className="w-full h-full rounded-2xl" />
+                      <Image source={{ uri: hasPhoto }} style={{ width: '100%', height: '100%', borderRadius: 16 }} />
                       <View className="absolute bottom-3 left-3 bg-slate-900/70 px-2 py-1 rounded-md backdrop-blur-md">
                         <Text className="text-[9px] font-black text-white capitalize">{cat}</Text>
                       </View>
