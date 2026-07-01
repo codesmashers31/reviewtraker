@@ -3,7 +3,7 @@ import { storage, STORAGE_KEYS } from './storage';
 
 // Base URL for the Express backend
 // Update with your local IP if testing on a physical device, e.g., 'http://192.168.1.100:5000/api'
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BASE_URL = process.env.EXPO_PUBLIC_BACKEND_API || 'http://10.0.2.2:5001/api';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -110,8 +110,9 @@ api.interceptors.response.use(
     }
 
     // Standardize the error response structure
+    console.error("API Error details:", error.message, error.response?.data);
     const errorResponse = {
-      message: error.response?.data?.message || 'Something went wrong',
+      message: error.response?.data?.message || error.message || 'Something went wrong',
       status: error.response?.status,
       data: error.response?.data,
     };

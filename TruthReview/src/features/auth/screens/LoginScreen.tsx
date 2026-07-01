@@ -23,6 +23,7 @@ import { AuthStackParamList } from '../../../navigation/types';
 import { useTheme } from '../../theme/ThemeContext';
 import { setCredentials, setLoading } from '../authSlice';
 import { storage, STORAGE_KEYS } from '../../../services/storage';
+import { api } from '../../../services/api';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -38,7 +39,6 @@ export default function LoginScreen({ navigation }: Props) {
   const [otpError, setOtpError] = useState('');
 
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState('');
   const [sendingOtp, setSendingOtp] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
@@ -123,23 +123,45 @@ export default function LoginScreen({ navigation }: Props) {
     if (!validateIdentifier(identifier)) return;
     setSendingOtp(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      const mockOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      setGeneratedOtp(mockOtp);
+      await api.post('auth/sendOtp', { email: identifier });
       setIsOtpSent(true);
       setCountdown(180); // 3 minutes
       Toast.show({
         type: 'info',
         text1: 'Verification Code Sent',
-        text2: `Use code: ${mockOtp} to sign in`,
+        text2: `A code has been sent to your email/phone`,
         position: 'top',
         visibilityTime: 180000, // stays for 3 minutes
       });
-    } catch {
+    } catch (err: any) {
       Toast.show({
         type: 'error',
         text1: 'Failed to Send OTP',
-        text2: 'Something went wrong, please try again.',
+        text2: err?.message || 'Something went wrong, please try again.',
+        position: 'bottom',
+      });
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!validateIdentifier(identifier)) return;
+    setSendingOtp(true);
+    try {
+      await api.post('auth/resendOtp', { email: identifier });
+      setCountdown(180);
+      Toast.show({
+        type: 'success',
+        text1: 'OTP Resent',
+        text2: 'A new code has been sent to your email/phone',
+        position: 'top',
+      });
+    } catch (err: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to Resend OTP',
+        text2: err?.message || 'Something went wrong, please try again.',
         position: 'bottom',
       });
     } finally {
@@ -190,37 +212,28 @@ export default function LoginScreen({ navigation }: Props) {
       setOtpError('Please enter all 6 digits');
       return;
     }
-    if (otpCode !== generatedOtp) {
-      setOtpError('Incorrect code. Please try again.');
-      setDigits(Array(OTP_LENGTH).fill(''));
-      setTimeout(() => inputRefs.current[0]?.focus(), 100);
-      return;
-    }
+
     setOtpError('');
     setVerifyingOtp(true);
     dispatch(setLoading(true));
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const loggedUser = {
-        id: `user_${Math.random().toString(36).substr(2, 9)}`,
-        name: identifier.includes('@') ? identifier.split('@')[0] : 'Resident User',
-        email: identifier.includes('@') ? identifier : `${identifier}@truthreview.com`,
-        role: 'user' as const,
-        phoneNumber: identifier.includes('@') ? '' : identifier,
-      };
-      const token = 'mock_jwt_token_for_user';
+      const response = await api.post('auth/verifyOtp', { email: identifier, otp: otpCode });
+      const { token, user } = response.data;
+
       await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-      await storage.setItem(STORAGE_KEYS.USER_INFO, loggedUser);
+      await storage.setItem(STORAGE_KEYS.USER_INFO, user);
       setIsOtpSent(false);
-      dispatch(setCredentials({ user: loggedUser, token }));
+      dispatch(setCredentials({ user, token }));
       Toast.show({
         type: 'success',
         text1: 'Welcome to Truth Review!',
-        text2: `Signed in as ${loggedUser.name}`,
+        text2: `Signed in successfully`,
         position: 'bottom',
       });
-    } catch (e) {
-      console.error(e);
+    } catch (err: any) {
+      setOtpError(err?.message || 'Incorrect code. Please try again.');
+      setDigits(Array(OTP_LENGTH).fill(''));
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
     } finally {
       setVerifyingOtp(false);
       dispatch(setLoading(false));
@@ -228,12 +241,12 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   // ── Theme helpers ───────────────────────────────────────────────────────────
-  const bg      = isDark ? '#020617' : '#f8faff';
-  const card    = isDark ? '#0f172a' : '#ffffff';
-  const border  = isDark ? '#1e293b' : '#e2e8f0';
+  const bg = isDark ? '#020617' : '#f8faff';
+  const card = isDark ? '#0f172a' : '#ffffff';
+  const border = isDark ? '#1e293b' : '#e2e8f0';
   const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
-  const textMuted   = '#94a3b8';
-  const inputBg     = isDark ? '#0f172a' : '#ffffff';
+  const textMuted = '#94a3b8';
+  const inputBg = isDark ? '#0f172a' : '#ffffff';
 
   // ── OTP Boxes ───────────────────────────────────────────────────────────────
   const renderOtpBoxes = () => (
@@ -471,8 +484,10 @@ export default function LoginScreen({ navigation }: Props) {
                     </Text>
                   </Text>
                 ) : (
-                  <TouchableOpacity onPress={handleSendOtp}>
-                    <Text style={styles.resendLink}>Resend verification code</Text>
+                  <TouchableOpacity onPress={handleResendOtp} disabled={sendingOtp}>
+                    <Text style={[styles.resendLink, sendingOtp && { opacity: 0.5 }]}>
+                      {sendingOtp ? 'Resending...' : 'Resend verification code'}
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>
